@@ -1,6 +1,6 @@
 {
-  "name": "testbeat-diagnostic-aggregator",
-  "version": "4.0.0",
+  "name": "testbeat-diagnostic-platform",
+  "version": "5.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",

@@ -12,12 +12,19 @@ function Header() {
   const [otp, setOtp] = useState('');
   const [pincode, setPincode] = useState('201310');
   const [loading, setLoading] = useState(false);
-  const [msgInfo, setMsgInfo] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successInfo, setSuccessInfo] = useState('');
 
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (phone.length !== 10) return;
+    if (phone.length !== 10) {
+      setErrorMessage('10-digit ka valid mobile number enter karein');
+      return;
+    }
     setLoading(true);
+    setErrorMessage('');
+    setSuccessInfo('');
+
     try {
       const res = await fetch('/api/auth/send-otp', {
         method: 'POST',
@@ -26,26 +33,28 @@ function Header() {
       });
       const data = await res.json();
       setLoading(false);
+
       if (data.success) {
         setOtpStep(true);
-        if (data.mockOtp) {
-          setMsgInfo(`OTP sent to +91 ${phone} (Code: ${data.mockOtp})`);
-        } else {
-          setMsgInfo(`OTP sent to +91 ${phone} via SMS`);
-        }
+        setSuccessInfo(`OTP safalta-poorvak aapke mobile number +91 ${phone} par bhej diya gaya hai.`);
       } else {
-        alert(data.error || 'Failed to send OTP');
+        setErrorMessage(data.error || 'OTP send nahi ho paya. Kripya thodi der baad prayas karein.');
       }
-    } catch (err) {
+    } catch (err: any) {
       setLoading(false);
-      setOtpStep(true);
-      setMsgInfo(`OTP sent to +91 ${phone} (Demo Code: 123456)`);
+      setErrorMessage('Network error: Server tak request nahi pahunchi');
     }
   };
 
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (otp.length !== 6) {
+      setErrorMessage('Kripya 6-digit ka OTP enter karein');
+      return;
+    }
     setLoading(true);
+    setErrorMessage('');
+
     try {
       const res = await fetch('/api/auth/verify-otp', {
         method: 'POST',
@@ -54,18 +63,19 @@ function Header() {
       });
       const data = await res.json();
       setLoading(false);
+
       if (data.success) {
-        loginCustomer(phone, data.patient?.name || 'Shubhranshu Kumar');
+        loginCustomer(phone, data.customer?.name || 'Customer');
         setShowLoginModal(false);
         setOtpStep(false);
+        setOtp('');
+        setPhone('');
       } else {
-        alert(data.error || 'Invalid OTP');
+        setErrorMessage(data.error || 'Galat OTP enter kiya gaya hai');
       }
-    } catch (err) {
+    } catch (err: any) {
       setLoading(false);
-      loginCustomer(phone, 'Shubhranshu Kumar');
-      setShowLoginModal(false);
-      setOtpStep(false);
+      setErrorMessage('Server se verify nahi ho paya');
     }
   };
 
@@ -131,7 +141,7 @@ function Header() {
               </div>
             ) : (
               <button
-                onClick={() => setShowLoginModal(true)}
+                onClick={() => { setShowLoginModal(true); setOtpStep(false); setErrorMessage(''); setSuccessInfo(''); }}
                 className="text-xs px-5 py-2.5 rounded-xl bg-[#FF5A00] hover:bg-[#E04E00] text-white font-bold transition shadow-md shadow-orange-500/20"
               >
                 Patient Login / OTP
@@ -141,58 +151,74 @@ function Header() {
         </div>
       </header>
 
+      {/* Real Mobile OTP Modal */}
       {showLoginModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
           <div className="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-200">
             <div className="flex justify-between items-center pb-3 border-b border-slate-100">
               <div>
-                <h3 className="font-bold text-slate-900 text-base">Patient Login / Verification</h3>
+                <h3 className="font-bold text-slate-900 text-base">Patient Login & Verification</h3>
                 <p className="text-[11px] text-slate-500">Track sample pickup & download smart reports</p>
               </div>
               <button onClick={() => setShowLoginModal(false)} className="text-slate-400 font-bold">✕</button>
             </div>
 
+            {errorMessage && (
+              <div className="mt-3 p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-xl font-medium">
+                ⚠️ {errorMessage}
+              </div>
+            )}
+
+            {successInfo && (
+              <div className="mt-3 p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-xl font-medium">
+                ✓ {successInfo}
+              </div>
+            )}
+
             {!otpStep ? (
               <form onSubmit={handleSendOtp} className="mt-4 space-y-4">
                 <div>
-                  <label className="text-[11px] font-bold text-slate-700 block mb-1">Mobile Number</label>
+                  <label className="text-[11px] font-bold text-slate-700 block mb-1">Mobile Number (10 Digits)</label>
                   <div className="flex gap-2">
                     <span className="p-2.5 bg-slate-100 rounded-xl text-xs font-bold text-slate-600 border border-slate-200">+91</span>
                     <input
                       type="tel"
                       required
                       maxLength={10}
-                      placeholder="9876543210"
+                      placeholder="Enter 10-digit mobile"
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
+                      onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
                       className="w-full p-2.5 text-xs border rounded-xl font-bold focus:outline-none focus:border-[#FF5A00]"
                     />
                   </div>
                 </div>
                 <button type="submit" disabled={loading} className="w-full py-3 bg-[#FF5A00] hover:bg-[#E04E00] text-white rounded-xl text-xs font-bold shadow-md transition disabled:opacity-50">
-                  {loading ? 'Dispatching OTP...' : 'Send Instant OTP'}
+                  {loading ? 'Connecting to MSG91...' : 'Send Live SMS OTP'}
                 </button>
               </form>
             ) : (
               <form onSubmit={handleVerifyOtp} className="mt-4 space-y-4">
-                <div className="p-3 bg-orange-50 rounded-xl text-xs text-orange-950 border border-orange-200">
-                  {msgInfo}
-                </div>
                 <div>
-                  <label className="text-[11px] font-bold text-slate-700 block mb-1">Enter 6-Digit OTP</label>
+                  <label className="text-[11px] font-bold text-slate-700 block mb-1">Enter 6-Digit SMS Code</label>
                   <input
                     type="text"
                     required
                     maxLength={6}
-                    placeholder="123456"
+                    placeholder="Enter SMS OTP"
                     value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
+                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
                     className="w-full p-2.5 text-xs border rounded-xl font-bold text-center tracking-widest text-base focus:outline-none focus:border-[#FF5A00]"
                   />
+                  <p className="text-[11px] text-slate-400 mt-1 text-center">Mobile par aaye huye OTP ko yahan dalein</p>
                 </div>
                 <button type="submit" disabled={loading} className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-md transition disabled:opacity-50">
-                  {loading ? 'Verifying...' : 'Verify & Open Dashboard'}
+                  {loading ? 'Verifying OTP...' : 'Verify OTP & Continue'}
                 </button>
+                <div className="text-center pt-1">
+                  <button type="button" onClick={() => { setOtpStep(false); setErrorMessage(''); }} className="text-[11px] text-[#002B49] font-bold hover:underline">
+                    ← Change Mobile Number
+                  </button>
+                </div>
               </form>
             )}
           </div>
