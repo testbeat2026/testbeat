@@ -10,10 +10,10 @@ export default function HomeEcgPage() {
       <div className="mt-8 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm max-w-md mx-auto text-left">
         <div className="flex justify-between items-center pb-3 border-b">
           <h3 className="font-bold text-slate-900 text-sm">12-Lead ECG + Doctor Review</h3>
-          <span className="text-lg font-black text-cyan-900">₹799</span>
+          <span className="text-lg font-black text-slate-900">₹799</span>
         </div>
         <p className="py-3 text-xs text-slate-500">✓ Paramedic arrives in 60-90 minutes with machine</p>
-        <Link href="/" className="block text-center w-full py-2.5 bg-cyan-600 text-white font-bold rounded-xl text-xs">Book Home ECG Slot</Link>
+        <Link href="/" className="block text-center w-full py-2.5 bg-teal-600 text-white font-bold rounded-xl text-xs">Book Home ECG Slot</Link>
       </div>
     </div>
   );
