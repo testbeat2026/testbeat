@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { DB, Lab, MasterTest, LabTestMapping, Order } from '@/lib/dataStore';
+import { DB } from '@/lib/dataStore';
 
 export default function WorkplaceMasterPortal() {
   const router = useRouter();
@@ -19,11 +19,8 @@ export default function WorkplaceMasterPortal() {
     router.push('/portal/login');
   };
 
-  // State management for adding Tests, Labs, Mappings
   const [newLabName, setNewLabName] = useState('');
   const [newLabCode, setNewLabCode] = useState('');
-  const [newTestName, setNewTestName] = useState('');
-  const [newTestCat, setNewTestCat] = useState('Vitamins');
 
   const handleAddLab = (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,7 +46,6 @@ export default function WorkplaceMasterPortal() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col md:flex-row">
-      {/* Sidebar */}
       <aside className="w-full md:w-64 bg-slate-900 border-r border-slate-800 p-5 flex flex-col justify-between">
         <div>
           <div className="flex items-center gap-3 pb-6 border-b border-slate-800">
@@ -60,13 +56,11 @@ export default function WorkplaceMasterPortal() {
             </div>
           </div>
 
-          {/* Department-Specific Navigations */}
           <nav className="mt-6 space-y-1 text-xs font-semibold">
             <button onClick={() => setActiveTab('DASHBOARD')} className={`w-full text-left px-3 py-2.5 rounded-xl transition ${activeTab === 'DASHBOARD' ? 'bg-teal-600 text-white font-bold' : 'text-slate-400 hover:bg-slate-800'}`}>
               📊 Overview & Analytics
             </button>
 
-            {/* Operations Specific */}
             {(role === 'SUPER_ADMIN' || role === 'OPERATIONS') && (
               <>
                 <button onClick={() => setActiveTab('ORDERS')} className={`w-full text-left px-3 py-2.5 rounded-xl transition ${activeTab === 'ORDERS' ? 'bg-teal-600 text-white font-bold' : 'text-slate-400 hover:bg-slate-800'}`}>
@@ -75,13 +69,9 @@ export default function WorkplaceMasterPortal() {
                 <button onClick={() => setActiveTab('LABS')} className={`w-full text-left px-3 py-2.5 rounded-xl transition ${activeTab === 'LABS' ? 'bg-teal-600 text-white font-bold' : 'text-slate-400 hover:bg-slate-800'}`}>
                   🏥 Labs Network Management
                 </button>
-                <button onClick={() => setActiveTab('TESTS')} className={`w-full text-left px-3 py-2.5 rounded-xl transition ${activeTab === 'TESTS' ? 'bg-teal-600 text-white font-bold' : 'text-slate-400 hover:bg-slate-800'}`}>
-                  🧪 Master Test Normalization
-                </button>
               </>
             )}
 
-            {/* Sales & Marketing Specific */}
             {(role === 'SUPER_ADMIN' || role === 'SALES_MARKETING') && (
               <>
                 <button onClick={() => setActiveTab('CUSTOMERS')} className={`w-full text-left px-3 py-2.5 rounded-xl transition ${activeTab === 'CUSTOMERS' ? 'bg-teal-600 text-white font-bold' : 'text-slate-400 hover:bg-slate-800'}`}>
@@ -93,7 +83,6 @@ export default function WorkplaceMasterPortal() {
               </>
             )}
 
-            {/* Finance Specific */}
             {(role === 'SUPER_ADMIN' || role === 'FINANCE') && (
               <>
                 <button onClick={() => setActiveTab('PRICING')} className={`w-full text-left px-3 py-2.5 rounded-xl transition ${activeTab === 'PRICING' ? 'bg-teal-600 text-white font-bold' : 'text-slate-400 hover:bg-slate-800'}`}>
@@ -113,9 +102,7 @@ export default function WorkplaceMasterPortal() {
         </div>
       </aside>
 
-      {/* Workplace Workplace Body */}
       <main className="flex-1 p-6 md:p-8 overflow-y-auto max-h-screen">
-        {/* Overview */}
         {activeTab === 'DASHBOARD' && (
           <div className="space-y-6">
             <h2 className="text-2xl font-black text-white">{role.replace('_', ' ')} Executive Dashboard</h2>
@@ -140,7 +127,6 @@ export default function WorkplaceMasterPortal() {
           </div>
         )}
 
-        {/* Orders */}
         {activeTab === 'ORDERS' && (
           <div className="space-y-6">
             <h2 className="text-2xl font-black text-white">Live Phlebotomy Dispatch & Order Tracking</h2>
@@ -171,13 +157,9 @@ export default function WorkplaceMasterPortal() {
           </div>
         )}
 
-        {/* Labs Network */}
         {activeTab === 'LABS' && (
           <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-black text-white">Connected Diagnostic Laboratory Partners</h2>
-            </div>
-
+            <h2 className="text-2xl font-black text-white">Connected Diagnostic Laboratory Partners</h2>
             <form onSubmit={handleAddLab} className="bg-slate-900 p-5 rounded-2xl border border-slate-800 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
               <input type="text" required placeholder="Lab Name (e.g. Apollo Diagnostics)" value={newLabName} onChange={(e) => setNewLabName(e.target.value)} className="p-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white" />
               <input type="text" required placeholder="Lab Code (e.g. APOLLO)" value={newLabCode} onChange={(e) => setNewLabCode(e.target.value)} className="p-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white" />
@@ -202,7 +184,6 @@ export default function WorkplaceMasterPortal() {
           </div>
         )}
 
-        {/* Customers CRM */}
         {activeTab === 'CUSTOMERS' && (
           <div className="space-y-6">
             <h2 className="text-2xl font-black text-white">Customer Database & Patient CRM</h2>
@@ -228,7 +209,6 @@ export default function WorkplaceMasterPortal() {
           </div>
         )}
 
-        {/* Affiliates & Standees */}
         {activeTab === 'AFFILIATES' && (
           <div className="space-y-6">
             <h2 className="text-2xl font-black text-white">Clinic Partners, QR Standees & Commission Wallets</h2>
@@ -258,7 +238,6 @@ export default function WorkplaceMasterPortal() {
           </div>
         )}
 
-        {/* B2B Pricing & Margins */}
         {activeTab === 'PRICING' && (
           <div className="space-y-6">
             <h2 className="text-2xl font-black text-white">B2B Contracted Cost vs Customer Retail Margin</h2>
@@ -268,25 +247,21 @@ export default function WorkplaceMasterPortal() {
                   <tr><th className="p-4">Lab</th><th className="p-4">Test Title</th><th className="p-4">Agreed B2B Cost</th><th className="p-4">Customer Retail</th><th className="p-4">Platform Margin</th></tr>
                 </thead>
                 <tbody className="divide-y divide-slate-800">
-                  {DB.labMappings.map(m => {
-                    const lab = DB.labs.find(l => l.id === mapLabId(m.labId));
-                    return (
-                      <tr key={m.id}>
-                        <td className="p-4 font-bold text-white">{m.labId.replace('lab-', '').toUpperCase()}</td>
-                        <td className="p-4">{m.labTestName}</td>
-                        <td className="p-4 font-mono text-rose-400">₹{m.b2bCost}</td>
-                        <td className="p-4 font-mono text-teal-400 font-bold">₹{m.retailPrice}</td>
-                        <td className="p-4 font-mono text-emerald-400 font-bold">+₹{m.platformMargin}</td>
-                      </tr>
-                    );
-                  })}
+                  {DB.labMappings.map(m => (
+                    <tr key={m.id}>
+                      <td className="p-4 font-bold text-white">{m.labId.replace('lab-', '').toUpperCase()}</td>
+                      <td className="p-4">{m.labTestName}</td>
+                      <td className="p-4 font-mono text-rose-400">₹{m.b2bCost}</td>
+                      <td className="p-4 font-mono text-teal-400 font-bold">₹{m.retailPrice}</td>
+                      <td className="p-4 font-mono text-emerald-400 font-bold">+₹{m.platformMargin}</td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
           </div>
         )}
 
-        {/* Finance Settlements */}
         {activeTab === 'FINANCE_SETTLEMENTS' && (
           <div className="space-y-6">
             <h2 className="text-2xl font-black text-white">Finance & Laboratory Settlement Ledger</h2>
@@ -310,8 +285,4 @@ export default function WorkplaceMasterPortal() {
       </main>
     </div>
   );
-}
-
-function mapLabId(id: string) {
-  return id;
 }

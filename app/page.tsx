@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { DB, MasterTest, HealthPackage } from '@/lib/dataStore';
+import { DB } from '@/lib/dataStore';
 
 export default function StorefrontHomePage() {
   const [search, setSearch] = useState('');
@@ -51,7 +51,6 @@ export default function StorefrontHomePage() {
 
   return (
     <div className="pb-20">
-      {/* Premium Healthcare Hero Banner */}
       <section className="bg-gradient-to-b from-teal-50/70 via-white to-slate-50 border-b border-slate-200/80 pt-14 pb-16 px-4">
         <div className="max-w-5xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-teal-100 text-teal-900 px-3.5 py-1.5 rounded-full text-xs font-bold mb-4 shadow-sm">
@@ -71,7 +70,6 @@ export default function StorefrontHomePage() {
             Book pre-negotiated B2B retail prices across Thyrocare, Healthians, Redcliffe & Dr Lal. Trained phlebotomists arrive at your door with barcoded vials and digital WhatsApp delivery.
           </p>
 
-          {/* Location & Search Bar */}
           <div className="mt-8 max-w-3xl mx-auto bg-white p-2.5 rounded-2xl shadow-xl shadow-teal-900/5 border border-slate-200 flex flex-col sm:flex-row gap-2">
             <div className="flex items-center px-3 border-b sm:border-b-0 sm:border-r border-slate-200 pb-2 sm:pb-0">
               <span className="text-slate-400 mr-2">📍</span>
@@ -98,7 +96,6 @@ export default function StorefrontHomePage() {
             </button>
           </div>
 
-          {/* Trust Guarantees */}
           <div className="mt-8 flex flex-wrap justify-center items-center gap-6 text-xs font-semibold text-slate-500">
             <span>✓ 100% NABL Accredited</span>
             <span>✓ Barcoded Vials & Cold Chain Logistics</span>
@@ -108,7 +105,6 @@ export default function StorefrontHomePage() {
         </div>
       </section>
 
-      {/* Main Catalog Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12" id="tests">
         <div className="flex items-center gap-3 border-b border-slate-200 pb-4 mb-8">
           <button
@@ -125,7 +121,6 @@ export default function StorefrontHomePage() {
           </button>
         </div>
 
-        {/* Tab 1: Individual Tests Comparison */}
         {activeTab === 'TESTS' && (
           <div className="space-y-6">
             {filteredTests.map((test) => {
@@ -148,7 +143,6 @@ export default function StorefrontHomePage() {
                     </div>
                   </div>
 
-                  {/* Multi-Lab Real-time Pricing Comparison Rows */}
                   <div className="divide-y divide-slate-100">
                     {labMappings.map((map) => {
                       const lab = DB.labs.find(l => l.id === map.labId);
@@ -199,7 +193,6 @@ export default function StorefrontHomePage() {
           </div>
         )}
 
-        {/* Tab 2: Health Packages */}
         {activeTab === 'PACKAGES' && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6" id="packages">
             {DB.packages.map((pkg) => (
@@ -239,7 +232,6 @@ export default function StorefrontHomePage() {
         )}
       </section>
 
-      {/* Booking Checkout Modal */}
       {selectedItem && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">

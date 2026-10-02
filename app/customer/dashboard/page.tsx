@@ -33,7 +33,6 @@ export default function CustomerDashboardPage() {
         </Link>
       </div>
 
-      {/* Tabs Navigation */}
       <div className="flex gap-2 border-b border-slate-200 mt-6 pb-2 text-xs font-bold">
         {[
           { id: 'ORDERS', label: '📦 My Bookings & Live Phlebo Tracking' },
@@ -51,7 +50,6 @@ export default function CustomerDashboardPage() {
         ))}
       </div>
 
-      {/* Tab 1: Orders */}
       {activeTab === 'ORDERS' && (
         <div className="mt-6 space-y-4">
           {DB.orders.map(o => (
@@ -87,7 +85,6 @@ export default function CustomerDashboardPage() {
         </div>
       )}
 
-      {/* Tab 2: Family Members */}
       {activeTab === 'FAMILY' && (
         <div className="mt-6 space-y-6">
           <form onSubmit={handleAddMember} className="bg-white p-6 rounded-2xl border border-slate-200 grid grid-cols-1 sm:grid-cols-5 gap-3 text-xs">
@@ -135,7 +132,6 @@ export default function CustomerDashboardPage() {
         </div>
       )}
 
-      {/* Tab 3: Reports */}
       {activeTab === 'REPORTS' && (
         <div className="mt-6 bg-white p-6 rounded-2xl border border-slate-200">
           <h3 className="font-bold text-sm text-slate-900 mb-3">Lifetime Downloadable Diagnostic Vault</h3>
@@ -152,7 +148,6 @@ export default function CustomerDashboardPage() {
         </div>
       )}
 
-      {/* Tab 4: Profile */}
       {activeTab === 'PROFILE' && (
         <div className="mt-6 bg-white p-6 rounded-2xl border border-slate-200 max-w-lg text-xs space-y-3">
           <h3 className="font-bold text-sm text-slate-900">Patient Master Profile</h3>

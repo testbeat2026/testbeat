@@ -206,8 +206,8 @@ export const DB = {
       sampleType: "Blood (Serum)",
       fastingRequired: false,
       fastingHours: 0,
-      preparation: "No special dietary restrictions required.",
-      description: "Checks 25-hydroxy vitamin D level to evaluate bone fragility, fatigue, and immune health."
+      preparation: "No dietary restrictions.",
+      description: "Checks 25-hydroxy vitamin D level to evaluate bone fragility, fatigue, and immunity."
     },
     {
       id: "T-102",
@@ -217,8 +217,8 @@ export const DB = {
       sampleType: "Blood (EDTA)",
       fastingRequired: false,
       fastingHours: 0,
-      preparation: "Drink normal water before sample pickup.",
-      description: "Screens for infections, anemia, leukemia, platelet counts, and immune system status."
+      preparation: "Normal hydration.",
+      description: "Screens for infections, anemia, platelet counts, and immune system health."
     },
     {
       id: "T-103",
@@ -228,8 +228,8 @@ export const DB = {
       sampleType: "Blood (Serum)",
       fastingRequired: true,
       fastingHours: 8,
-      preparation: "Overnight fasting recommended. Avoid thyroid medication before sample collection.",
-      description: "Measures triiodothyronine (T3), thyroxine (T4), and thyroid-stimulating hormone (TSH)."
+      preparation: "Overnight fasting recommended.",
+      description: "Measures T3, T4, and TSH hormones regulating overall body metabolism."
     },
     {
       id: "T-104",
@@ -240,7 +240,7 @@ export const DB = {
       fastingRequired: false,
       fastingHours: 0,
       preparation: "Fasting not strictly required.",
-      description: "Evaluates 3-month average plasma glucose concentration for diabetes diagnosis & control."
+      description: "Evaluates 3-month average plasma glucose control."
     },
     {
       id: "T-105",
@@ -250,8 +250,8 @@ export const DB = {
       sampleType: "Blood (Serum)",
       fastingRequired: true,
       fastingHours: 10,
-      preparation: "10-12 hours fasting. Avoid alcohol and greasy foods 24 hours prior.",
-      description: "Measures SGPT, SGOT, Bilirubin Total/Direct, Alkaline Phosphatase, Protein, Albumin."
+      preparation: "10-12 hours fasting.",
+      description: "Measures SGPT, SGOT, Bilirubin Total/Direct, Protein, and Albumin."
     },
     {
       id: "T-106",
@@ -261,8 +261,8 @@ export const DB = {
       sampleType: "Blood (Serum)",
       fastingRequired: false,
       fastingHours: 0,
-      preparation: "Maintain regular hydration.",
-      description: "Evaluates blood urea nitrogen (BUN), serum creatinine, uric acid, and calcium levels."
+      preparation: "Normal hydration.",
+      description: "Evaluates BUN, creatinine, uric acid, and calcium levels."
     }
   ] as MasterTest[],
 
@@ -295,7 +295,7 @@ export const DB = {
       name: "Executive Senior Citizen Health Screening (92 Tests)",
       category: "Elderly Care",
       testsCount: 92,
-      parameters: ["Advanced Cardiac Risk", "Bone Density Markers", "Uric Acid & Arthritis", "HbA1c & Fasting Glucose", "Complete LFT & KFT", "Electrolytes Profile", "Urine Complete Examination"],
+      parameters: ["Cardiac Risk", "Bone Density Markers", "Uric Acid & Arthritis", "HbA1c & Fasting Glucose", "Complete LFT & KFT", "Electrolytes Profile"],
       mrp: 5499,
       price: 1799,
       b2bCost: 950,
@@ -413,5 +413,18 @@ export const DB = {
       walletBalance: 9240,
       payoutStatus: "PAID"
     }
-  ] as Affiliate[]
+  ] as Affiliate[],
+
+  coupons: [
+    { code: "TESTBEAT100", discount: 100, type: "FLAT", minOrder: 499, active: true },
+    { code: "HEALTH20", discount: 20, type: "PERCENT", minOrder: 999, active: true }
+  ],
+
+  apis: [
+    { id: "thyrocare", name: "Thyrocare Technologies API", category: "LAB", mode: "LIVE", endpoint: "https://api.thyrocare.com", apiKey: "thyro_live_key_993412", status: "ONLINE" },
+    { id: "healthians", name: "Healthians Diagnostic API", category: "LAB", mode: "MOCK", endpoint: "https://api.healthians.mock", apiKey: "hlth_sec_mock_442911", status: "ONLINE" }
+  ]
 };
+
+// Also export as DATA for any legacy imports
+export const DATA = DB;
