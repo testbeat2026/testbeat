@@ -2,6 +2,7 @@
 import './globals.css';
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Script from 'next/script';
 import { AuthProvider, useAuth } from '@/lib/authContext';
 
 function Header() {
@@ -18,7 +19,7 @@ function Header() {
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (phone.length !== 10) {
-      setErrorMessage('10-digit ka valid mobile number enter karein');
+      setErrorMessage('10-digit mobile number enter karein');
       return;
     }
     setLoading(true);
@@ -36,20 +37,20 @@ function Header() {
 
       if (data.success) {
         setOtpStep(true);
-        setSuccessInfo(`OTP safalta-poorvak aapke mobile number +91 ${phone} par bhej diya gaya hai.`);
+        setSuccessInfo(`OTP bhej diya gaya hai +91 ${phone} par.`);
       } else {
-        setErrorMessage(data.error || 'OTP send nahi ho paya. Kripya thodi der baad prayas karein.');
+        setErrorMessage(data.error || 'OTP send nahi ho paya.');
       }
-    } catch (err: any) {
+    } catch (err) {
       setLoading(false);
-      setErrorMessage('Network error: Server tak request nahi pahunchi');
+      setErrorMessage('Network error: Server connect nahi ho saka.');
     }
   };
 
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (otp.length !== 6) {
-      setErrorMessage('Kripya 6-digit ka OTP enter karein');
+      setErrorMessage('6-digit OTP code enter karein');
       return;
     }
     setLoading(true);
@@ -71,11 +72,11 @@ function Header() {
         setOtp('');
         setPhone('');
       } else {
-        setErrorMessage(data.error || 'Galat OTP enter kiya gaya hai');
+        setErrorMessage(data.error || 'Galat OTP code hai');
       }
-    } catch (err: any) {
+    } catch (err) {
       setLoading(false);
-      setErrorMessage('Server se verify nahi ho paya');
+      setErrorMessage('Verification request fail ho gayi');
     }
   };
 
@@ -151,7 +152,6 @@ function Header() {
         </div>
       </header>
 
-      {/* Real Mobile OTP Modal */}
       {showLoginModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
           <div className="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-200">
@@ -231,6 +231,10 @@ function Header() {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        {/* Cashfree Payment Gateway SDK */}
+        <Script src="https://sdk.cashfree.com/js/v3/cashfree.js" strategy="beforeInteractive" />
+      </head>
       <body className="min-h-screen flex flex-col justify-between antialiased bg-[#F4F7F9] text-slate-900">
         <AuthProvider>
           <Header />
@@ -244,7 +248,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <span className="text-white font-black text-lg">TESTBEAT</span>
                 </div>
                 <p className="text-slate-400 leading-relaxed text-[11px]">
-                  India's certified multi-lab diagnostic aggregator marketplace. Compare live prices across Thyrocare, Healthians, Redcliffe & Dr Lal with guaranteed cold chain sample collection.
+                  India's certified multi-lab diagnostic aggregator marketplace. Powered by Cashfree Payment Gateway and temperature-controlled collection network.
                 </p>
               </div>
               <div>
