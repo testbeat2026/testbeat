@@ -10,7 +10,7 @@ function Header() {
   const [phone, setPhone] = useState('');
   const [otpStep, setOtpStep] = useState(false);
   const [otp, setOtp] = useState('');
-  const [locationPincode, setLocationPincode] = useState('201310');
+  const [pincode, setPincode] = useState('201310');
 
   const handleSendOtp = (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,29 +26,23 @@ function Header() {
 
   return (
     <>
-      {/* Top Notification Announcement Bar (Healthians Style) */}
-      <div className="bg-[#002B49] text-white text-[11px] py-1.5 px-4 font-medium">
+      {/* Healthians Top Bar */}
+      <div className="bg-[#002B49] text-white text-[11px] py-1.5 px-4 font-medium border-b border-slate-800">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1.5 text-amber-400 font-bold">
-              ⚡ Flat 70% OFF on Full Body Health Packages
-            </span>
-            <span className="hidden md:inline text-slate-400">•</span>
-            <span className="hidden md:inline text-slate-300">Free Home Sample Pickup in 60 Mins</span>
+          <div className="flex items-center gap-3">
+            <span className="text-amber-400 font-bold">⚡ Up to 70% OFF Diagnostic Lab Aggregator</span>
+            <span className="hidden sm:inline text-slate-400">•</span>
+            <span className="hidden sm:inline text-slate-300">Free Home Sample Pickup in 60 Mins</span>
           </div>
-          <div className="flex items-center gap-5 text-slate-300">
-            <span>📞 Call / WhatsApp: <b>+91 99990 00000</b></span>
-            <Link href="/portal/login" className="text-slate-400 hover:text-amber-400 transition text-[10px]">
-              Workplace Staff Login →
-            </Link>
+          <div className="flex items-center gap-4 text-slate-300">
+            <span>📞 24x7 Helpline: <b>+91 99990 00000</b></span>
           </div>
         </div>
       </div>
 
-      {/* Main Sticky Header */}
+      {/* Main Header */}
       <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
-          {/* Logo & Pincode */}
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center gap-2">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#FF5A00] to-amber-500 flex items-center justify-center text-white font-black text-2xl shadow-md shadow-orange-500/20">
@@ -56,40 +50,40 @@ function Header() {
               </div>
               <div>
                 <span className="text-2xl font-black tracking-tight text-[#002B49]">TEST<span className="text-[#FF5A00]">BEAT</span></span>
-                <span className="text-[10px] block font-bold text-slate-400 uppercase tracking-widest -mt-1">Diagnostic Labs Network</span>
+                <span className="text-[10px] block font-bold text-slate-400 uppercase tracking-widest -mt-1">Diagnostic Aggregator</span>
               </div>
             </Link>
 
-            {/* Location Selector (Pincode) */}
+            {/* Pincode selector */}
             <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700">
               <span className="text-[#FF5A00]">📍</span>
               <span className="text-slate-400 text-[11px]">Deliver to:</span>
               <input
                 type="text"
-                value={locationPincode}
-                onChange={(e) => setLocationPincode(e.target.value)}
+                value={pincode}
+                onChange={(e) => setPincode(e.target.value)}
                 className="w-16 bg-transparent font-bold text-slate-900 focus:outline-none"
               />
             </div>
           </div>
 
-          {/* Navigation Links */}
+          {/* Customer Specific Clean Menu */}
           <nav className="hidden lg:flex items-center gap-7 text-xs font-bold text-[#002B49] uppercase tracking-wide">
             <Link href="/#packages" className="hover:text-[#FF5A00] transition">Health Packages</Link>
-            <Link href="/#tests" className="hover:text-[#FF5A00] transition">Blood Tests</Link>
+            <Link href="/#compare" className="hover:text-[#FF5A00] transition">Compare Labs</Link>
+            <Link href="/#tests" className="hover:text-[#FF5A00] transition">Individual Tests</Link>
             <Link href="/prescription" className="text-[#FF5A00] hover:text-[#E04E00] transition flex items-center gap-1.5 bg-orange-50 px-3 py-1.5 rounded-full border border-orange-200">
               <span>📄 Upload Prescription</span>
             </Link>
             <Link href="/home-ecg" className="hover:text-[#FF5A00] transition">Home ECG (12-Lead)</Link>
-            <Link href="/affiliate" className="hover:text-[#FF5A00] transition">Clinic Standee QR</Link>
           </nav>
 
-          {/* Customer Auth Button */}
+          {/* Customer Login CTA */}
           <div className="flex items-center gap-3">
             {customerPhone ? (
               <div className="flex items-center gap-3">
                 <Link href="/customer/dashboard" className="text-xs px-4 py-2.5 rounded-xl bg-[#002B49] text-white font-bold hover:bg-slate-800 transition shadow-sm flex items-center gap-1.5">
-                  <span>👤 My Account / Orders</span>
+                  <span>👤 My Orders & Reports</span>
                 </Link>
                 <button onClick={logoutCustomer} className="text-xs text-rose-500 hover:underline font-bold">
                   Logout
@@ -100,21 +94,21 @@ function Header() {
                 onClick={() => setShowLoginModal(true)}
                 className="text-xs px-5 py-2.5 rounded-xl bg-[#FF5A00] hover:bg-[#E04E00] text-white font-bold transition shadow-md shadow-orange-500/20"
               >
-                Login / Signup
+                Patient Login / OTP
               </button>
             )}
           </div>
         </div>
       </header>
 
-      {/* Login / OTP Modal */}
+      {/* Customer Mobile OTP Modal */}
       {showLoginModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
           <div className="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-200">
             <div className="flex justify-between items-center pb-3 border-b border-slate-100">
               <div>
                 <h3 className="font-bold text-slate-900 text-base">Patient Login / Verification</h3>
-                <p className="text-[11px] text-slate-500">View orders, live reports & family health records</p>
+                <p className="text-[11px] text-slate-500">Track sample pickup & download smart reports</p>
               </div>
               <button onClick={() => setShowLoginModal(false)} className="text-slate-400 font-bold">✕</button>
             </div>
@@ -158,7 +152,7 @@ function Header() {
                   />
                 </div>
                 <button type="submit" className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-md transition">
-                  Verify & Open Account
+                  Verify & Open Dashboard
                 </button>
               </form>
             )}
@@ -177,7 +171,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Header />
           <main className="flex-grow">{children}</main>
           
-          {/* Healthians Grade Clean Footer */}
+          {/* Customer Centric Footer */}
           <footer className="bg-[#002B49] text-slate-400 text-xs mt-20 py-14 border-t border-slate-800">
             <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
               <div>
@@ -186,33 +180,33 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <span className="text-white font-black text-lg">TESTBEAT</span>
                 </div>
                 <p className="text-slate-400 leading-relaxed text-[11px]">
-                  India's certified diagnostic aggregator platform. Partnering with NABL/CAP laboratories to provide temperature-controlled smart home blood sample pickups and transparent healthcare prices.
+                  India's certified multi-lab diagnostic aggregator marketplace. Compare live prices across Thyrocare, Healthians, Redcliffe & Dr Lal with guaranteed cold chain sample collection.
                 </p>
               </div>
               <div>
-                <h4 className="text-white font-bold mb-3 uppercase tracking-wider text-[11px]">Top Health Packages</h4>
+                <h4 className="text-white font-bold mb-3 uppercase tracking-wider text-[11px]">Popular Health Screenings</h4>
                 <ul className="space-y-2 text-slate-400 text-[11px]">
-                  <li>• HealthShield Full Body (84 Parameters)</li>
-                  <li>• Senior Citizen Vital Organ Care (92 Tests)</li>
-                  <li>• Women Hormonal & PCOD Screening (72 Tests)</li>
-                  <li>• Cardiac & Lipid Risk Profile</li>
+                  <li>• HealthShield Complete Full Body Checkup (84 Tests)</li>
+                  <li>• Executive Senior Citizen Vital Organ Panel (92 Tests)</li>
+                  <li>• Women Hormonal, PCOD & Thyroid Profile (72 Tests)</li>
+                  <li>• Diabetes 90-Day Glycemic Control Panel</li>
                 </ul>
               </div>
               <div>
-                <h4 className="text-white font-bold mb-3 uppercase tracking-wider text-[11px]">Certified Lab Network</h4>
+                <h4 className="text-white font-bold mb-3 uppercase tracking-wider text-[11px]">Accredited Lab Partners</h4>
                 <ul className="space-y-2 text-slate-400 text-[11px]">
-                  <li>• Healthians Diagnostic</li>
-                  <li>• Thyrocare Technologies</li>
-                  <li>• Redcliffe Labs</li>
-                  <li>• Dr Lal PathLabs</li>
+                  <li>• Healthians Diagnostic (NABL, CAP)</li>
+                  <li>• Thyrocare Technologies (NABL, CAP, ISO)</li>
+                  <li>• Redcliffe Labs (NABL)</li>
+                  <li>• Dr Lal PathLabs (NABL, CAP Gold)</li>
                 </ul>
               </div>
               <div>
-                <h4 className="text-white font-bold mb-3 uppercase tracking-wider text-[11px]">Contact & Workplace</h4>
-                <p className="text-slate-300 mb-2">24x7 Customer Care: <b>+91 99990 00000</b></p>
+                <h4 className="text-white font-bold mb-3 uppercase tracking-wider text-[11px]">Workplace & Operations</h4>
+                <p className="text-slate-300 mb-2">24x7 Phlebotomy Support: +91 99990 00000</p>
                 <div className="pt-3 border-t border-slate-800 mt-3">
                   <Link href="/portal/login" className="text-slate-400 hover:text-amber-400 text-[11px] underline">
-                    Authorized Staff & Admin Workplace Portal →
+                    Authorized Staff & Workplace Console →
                   </Link>
                 </div>
               </div>
