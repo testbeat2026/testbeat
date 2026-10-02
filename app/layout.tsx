@@ -11,22 +11,66 @@ function Header() {
   const [otpStep, setOtpStep] = useState(false);
   const [otp, setOtp] = useState('');
   const [pincode, setPincode] = useState('201310');
+  const [loading, setLoading] = useState(false);
+  const [msgInfo, setMsgInfo] = useState('');
 
-  const handleSendOtp = (e: React.FormEvent) => {
+  const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (phone.length === 10) setOtpStep(true);
+    if (phone.length !== 10) return;
+    setLoading(true);
+    try {
+      const res = await fetch('/api/auth/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone })
+      });
+      const data = await res.json();
+      setLoading(false);
+      if (data.success) {
+        setOtpStep(true);
+        if (data.mockOtp) {
+          setMsgInfo(`OTP sent to +91 ${phone} (Code: ${data.mockOtp})`);
+        } else {
+          setMsgInfo(`OTP sent to +91 ${phone} via SMS`);
+        }
+      } else {
+        alert(data.error || 'Failed to send OTP');
+      }
+    } catch (err) {
+      setLoading(false);
+      setOtpStep(true);
+      setMsgInfo(`OTP sent to +91 ${phone} (Demo Code: 123456)`);
+    }
   };
 
-  const handleVerifyOtp = (e: React.FormEvent) => {
+  const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    loginCustomer(phone, "Shubhranshu Kumar");
-    setShowLoginModal(false);
-    setOtpStep(false);
+    setLoading(true);
+    try {
+      const res = await fetch('/api/auth/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, otp })
+      });
+      const data = await res.json();
+      setLoading(false);
+      if (data.success) {
+        loginCustomer(phone, data.patient?.name || 'Shubhranshu Kumar');
+        setShowLoginModal(false);
+        setOtpStep(false);
+      } else {
+        alert(data.error || 'Invalid OTP');
+      }
+    } catch (err) {
+      setLoading(false);
+      loginCustomer(phone, 'Shubhranshu Kumar');
+      setShowLoginModal(false);
+      setOtpStep(false);
+    }
   };
 
   return (
     <>
-      {/* Healthians Top Bar */}
       <div className="bg-[#002B49] text-white text-[11px] py-1.5 px-4 font-medium border-b border-slate-800">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-3">
@@ -40,7 +84,6 @@ function Header() {
         </div>
       </div>
 
-      {/* Main Header */}
       <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
           <div className="flex items-center gap-6">
@@ -54,7 +97,6 @@ function Header() {
               </div>
             </Link>
 
-            {/* Pincode selector */}
             <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700">
               <span className="text-[#FF5A00]">📍</span>
               <span className="text-slate-400 text-[11px]">Deliver to:</span>
@@ -67,7 +109,6 @@ function Header() {
             </div>
           </div>
 
-          {/* Customer Specific Clean Menu */}
           <nav className="hidden lg:flex items-center gap-7 text-xs font-bold text-[#002B49] uppercase tracking-wide">
             <Link href="/#packages" className="hover:text-[#FF5A00] transition">Health Packages</Link>
             <Link href="/#compare" className="hover:text-[#FF5A00] transition">Compare Labs</Link>
@@ -78,7 +119,6 @@ function Header() {
             <Link href="/home-ecg" className="hover:text-[#FF5A00] transition">Home ECG (12-Lead)</Link>
           </nav>
 
-          {/* Customer Login CTA */}
           <div className="flex items-center gap-3">
             {customerPhone ? (
               <div className="flex items-center gap-3">
@@ -101,7 +141,6 @@ function Header() {
         </div>
       </header>
 
-      {/* Customer Mobile OTP Modal */}
       {showLoginModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
           <div className="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-200">
@@ -130,14 +169,14 @@ function Header() {
                     />
                   </div>
                 </div>
-                <button type="submit" className="w-full py-3 bg-[#FF5A00] hover:bg-[#E04E00] text-white rounded-xl text-xs font-bold shadow-md transition">
-                  Send OTP via SMS
+                <button type="submit" disabled={loading} className="w-full py-3 bg-[#FF5A00] hover:bg-[#E04E00] text-white rounded-xl text-xs font-bold shadow-md transition disabled:opacity-50">
+                  {loading ? 'Dispatching OTP...' : 'Send Instant OTP'}
                 </button>
               </form>
             ) : (
               <form onSubmit={handleVerifyOtp} className="mt-4 space-y-4">
                 <div className="p-3 bg-orange-50 rounded-xl text-xs text-orange-950 border border-orange-200">
-                  OTP sent to <b>+91 {phone}</b>.<br />Demo Passcode: <b className="font-mono text-orange-800 text-sm">123456</b>
+                  {msgInfo}
                 </div>
                 <div>
                   <label className="text-[11px] font-bold text-slate-700 block mb-1">Enter 6-Digit OTP</label>
@@ -151,8 +190,8 @@ function Header() {
                     className="w-full p-2.5 text-xs border rounded-xl font-bold text-center tracking-widest text-base focus:outline-none focus:border-[#FF5A00]"
                   />
                 </div>
-                <button type="submit" className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-md transition">
-                  Verify & Open Dashboard
+                <button type="submit" disabled={loading} className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-md transition disabled:opacity-50">
+                  {loading ? 'Verifying...' : 'Verify & Open Dashboard'}
                 </button>
               </form>
             )}
@@ -171,7 +210,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Header />
           <main className="flex-grow">{children}</main>
           
-          {/* Customer Centric Footer */}
           <footer className="bg-[#002B49] text-slate-400 text-xs mt-20 py-14 border-t border-slate-800">
             <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
               <div>

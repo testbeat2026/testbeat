@@ -271,38 +271,30 @@ export const DB = {
   ] as MasterTest[],
 
   labPricing: [
-    // Vitamin D comparisons
     { id: "P-1", masterTestId: "T-101", labId: "lab-healthians", labName: "Healthians Diagnostic", b2bCost: 260, mrp: 1400, retailPrice: 489, discountPercent: 65, tat: "12-24 Hours", rating: 4.9, accreditation: "NABL, CAP Certified" },
     { id: "P-2", masterTestId: "T-101", labId: "lab-thyrocare", labName: "Thyrocare Technologies", b2bCost: 240, mrp: 1200, retailPrice: 449, discountPercent: 62, tat: "24-36 Hours", rating: 4.8, accreditation: "NABL, ISO 9001" },
     { id: "P-3", masterTestId: "T-101", labId: "lab-redcliffe", labName: "Redcliffe Labs", b2bCost: 280, mrp: 1500, retailPrice: 499, discountPercent: 66, tat: "Same Day (8-10 Hrs)", rating: 4.8, accreditation: "NABL Accredited" },
     { id: "P-4", masterTestId: "T-101", labId: "lab-drlal", labName: "Dr Lal PathLabs", b2bCost: 480, mrp: 1800, retailPrice: 850, discountPercent: 52, tat: "12-24 Hours", rating: 4.9, accreditation: "NABL, CAP Gold" },
 
-    // CBC comparisons
     { id: "P-5", masterTestId: "T-102", labId: "lab-healthians", labName: "Healthians Diagnostic", b2bCost: 110, mrp: 500, retailPrice: 249, discountPercent: 50, tat: "8-12 Hours", rating: 4.9, accreditation: "NABL, CAP Certified" },
     { id: "P-6", masterTestId: "T-102", labId: "lab-redcliffe", labName: "Redcliffe Labs", b2bCost: 120, mrp: 550, retailPrice: 260, discountPercent: 52, tat: "6-8 Hours (Fast Track)", rating: 4.8, accreditation: "NABL Accredited" },
     { id: "P-7", masterTestId: "T-102", labId: "lab-thyrocare", labName: "Thyrocare Technologies", b2bCost: 115, mrp: 480, retailPrice: 239, discountPercent: 50, tat: "24 Hours", rating: 4.8, accreditation: "NABL, ISO 9001" },
 
-    // Thyroid comparisons
     { id: "P-8", masterTestId: "T-103", labId: "lab-thyrocare", labName: "Thyrocare Technologies", b2bCost: 130, mrp: 650, retailPrice: 299, discountPercent: 54, tat: "24 Hours", rating: 4.8, accreditation: "NABL, ISO 9001" },
     { id: "P-9", masterTestId: "T-103", labId: "lab-healthians", labName: "Healthians Diagnostic", b2bCost: 150, mrp: 750, retailPrice: 320, discountPercent: 57, tat: "12 Hours", rating: 4.9, accreditation: "NABL, CAP Certified" },
 
-    // HbA1c comparisons
     { id: "P-10", masterTestId: "T-104", labId: "lab-healthians", labName: "Healthians Diagnostic", b2bCost: 160, mrp: 700, retailPrice: 349, discountPercent: 50, tat: "12 Hours", rating: 4.9, accreditation: "NABL, CAP Certified" },
     { id: "P-11", masterTestId: "T-104", labId: "lab-redcliffe", labName: "Redcliffe Labs", b2bCost: 170, mrp: 750, retailPrice: 360, discountPercent: 52, tat: "8 Hours", rating: 4.8, accreditation: "NABL Accredited" },
 
-    // LFT comparisons
     { id: "P-12", masterTestId: "T-105", labId: "lab-thyrocare", labName: "Thyrocare Technologies", b2bCost: 220, mrp: 1000, retailPrice: 449, discountPercent: 55, tat: "24 Hours", rating: 4.8, accreditation: "NABL, ISO 9001" },
     { id: "P-13", masterTestId: "T-105", labId: "lab-healthians", labName: "Healthians Diagnostic", b2bCost: 240, mrp: 1100, retailPrice: 480, discountPercent: 56, tat: "12-18 Hours", rating: 4.9, accreditation: "NABL, CAP Certified" },
 
-    // KFT comparisons
     { id: "P-14", masterTestId: "T-106", labId: "lab-healthians", labName: "Healthians Diagnostic", b2bCost: 210, mrp: 950, retailPrice: 420, discountPercent: 55, tat: "12 Hours", rating: 4.9, accreditation: "NABL, CAP Certified" },
     { id: "P-15", masterTestId: "T-106", labId: "lab-redcliffe", labName: "Redcliffe Labs", b2bCost: 215, mrp: 980, retailPrice: 430, discountPercent: 56, tat: "10 Hours", rating: 4.8, accreditation: "NABL Accredited" },
 
-    // Lipid comparisons
     { id: "P-16", masterTestId: "T-107", labId: "lab-thyrocare", labName: "Thyrocare Technologies", b2bCost: 190, mrp: 900, retailPrice: 399, discountPercent: 55, tat: "24 Hours", rating: 4.8, accreditation: "NABL, ISO 9001" },
     { id: "P-17", masterTestId: "T-107", labId: "lab-healthians", labName: "Healthians Diagnostic", b2bCost: 200, mrp: 950, retailPrice: 420, discountPercent: 55, tat: "12 Hours", rating: 4.9, accreditation: "NABL, CAP Certified" },
 
-    // Vitamin B12
     { id: "P-18", masterTestId: "T-108", labId: "lab-healthians", labName: "Healthians Diagnostic", b2bCost: 250, mrp: 1300, retailPrice: 499, discountPercent: 61, tat: "18 Hours", rating: 4.9, accreditation: "NABL, CAP Certified" }
   ] as LabPricing[],
 
