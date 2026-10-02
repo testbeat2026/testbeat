@@ -5,10 +5,10 @@ export interface AuthContextType {
   customerPhone: string | null;
   customerName: string | null;
   adminLoggedIn: boolean;
-  adminRole: 'SUPER_ADMIN' | 'ADMIN' | 'STAFF' | null;
+  adminRole: 'SUPER_ADMIN' | 'OPERATIONS' | 'FINANCE' | 'SALES' | null;
   loginCustomer: (phone: string, name: string) => void;
   logoutCustomer: () => void;
-  loginAdmin: (role: 'SUPER_ADMIN' | 'ADMIN' | 'STAFF') => void;
+  loginAdmin: (role: any) => void;
   logoutAdmin: () => void;
 }
 
@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [customerPhone, setCustomerPhone] = useState<string | null>(null);
   const [customerName, setCustomerName] = useState<string | null>(null);
   const [adminLoggedIn, setAdminLoggedIn] = useState<boolean>(false);
-  const [adminRole, setAdminRole] = useState<'SUPER_ADMIN' | 'ADMIN' | 'STAFF' | null>(null);
+  const [adminRole, setAdminRole] = useState<any>(null);
 
   useEffect(() => {
     try {
@@ -38,41 +38,33 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (n) setCustomerName(n);
       if (ar) {
         setAdminLoggedIn(true);
-        setAdminRole(ar as any);
+        setAdminRole(ar);
       }
     } catch (e) {}
   }, []);
 
   const loginCustomer = (phone: string, name: string) => {
-    try {
-      localStorage.setItem('tb_customer_phone', phone);
-      localStorage.setItem('tb_customer_name', name);
-    } catch (e) {}
+    localStorage.setItem('tb_customer_phone', phone);
+    localStorage.setItem('tb_customer_name', name);
     setCustomerPhone(phone);
     setCustomerName(name);
   };
 
   const logoutCustomer = () => {
-    try {
-      localStorage.removeItem('tb_customer_phone');
-      localStorage.removeItem('tb_customer_name');
-    } catch (e) {}
+    localStorage.removeItem('tb_customer_phone');
+    localStorage.removeItem('tb_customer_name');
     setCustomerPhone(null);
     setCustomerName(null);
   };
 
-  const loginAdmin = (role: 'SUPER_ADMIN' | 'ADMIN' | 'STAFF') => {
-    try {
-      localStorage.setItem('tb_admin_role', role);
-    } catch (e) {}
+  const loginAdmin = (role: any) => {
+    localStorage.setItem('tb_admin_role', role);
     setAdminLoggedIn(true);
     setAdminRole(role);
   };
 
   const logoutAdmin = () => {
-    try {
-      localStorage.removeItem('tb_admin_role');
-    } catch (e) {}
+    localStorage.removeItem('tb_admin_role');
     setAdminLoggedIn(false);
     setAdminRole(null);
   };

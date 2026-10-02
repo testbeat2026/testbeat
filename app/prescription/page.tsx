@@ -19,15 +19,15 @@ export default function PrescriptionUploadPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-black text-slate-900">AI Doctor Prescription Reader</h1>
-        <p className="text-sm text-slate-500 mt-1">Upload doctor's prescription slip (Parcha). Medical OCR extracts and matches verified lab tests.</p>
+        <h1 className="text-3xl font-black text-[#002B49]">AI Doctor Prescription Reader</h1>
+        <p className="text-sm text-slate-500 mt-1">Upload handwriting prescription slip (Parcha). Medical OCR extracts and matches verified lab tests.</p>
       </div>
 
       <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm text-center">
-        <div className="border-2 border-dashed border-teal-200 rounded-2xl p-10 bg-teal-50/30">
+        <div className="border-2 border-dashed border-orange-200 rounded-2xl p-10 bg-orange-50/20">
           <span className="text-4xl block mb-3">📄</span>
           <p className="text-sm font-bold text-slate-700">Drag & drop doctor prescription or Browse</p>
-          <label className="mt-5 inline-block bg-teal-600 hover:bg-teal-700 text-white font-semibold text-xs px-6 py-2.5 rounded-xl cursor-pointer shadow-md transition">
+          <label className="mt-5 inline-block bg-[#FF5A00] hover:bg-[#E04E00] text-white font-semibold text-xs px-6 py-2.5 rounded-xl cursor-pointer shadow-md transition">
             Choose Prescription Image
             <input type="file" className="hidden" onChange={handleSimulateOCR} accept="image/*,application/pdf" />
           </label>
@@ -35,7 +35,7 @@ export default function PrescriptionUploadPage() {
 
         {analyzing && (
           <div className="mt-6 p-4 bg-slate-50 rounded-2xl flex items-center justify-center gap-3">
-            <div className="w-4 h-4 border-2 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-4 h-4 border-2 border-[#FF5A00] border-t-transparent rounded-full animate-spin"></div>
             <span className="text-xs font-bold text-slate-700">OCR AI Reading Handwriting & Normalizing Medical Names...</span>
           </div>
         )}
@@ -51,9 +51,9 @@ export default function PrescriptionUploadPage() {
                 <h4 className="font-bold text-slate-900">Vitamin D (25-OH Total)</h4>
                 <p className="text-slate-400 text-[11px]">Line: "Rx: Vit D3 60k cap / 25-OH test"</p>
               </div>
-              <span className="font-bold text-teal-600">Matched in Master Catalog</span>
+              <span className="font-bold text-[#FF5A00]">Matched in Master Catalog</span>
             </div>
-            <Link href="/" className="block text-center w-full py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl text-xs transition">
+            <Link href="/" className="block text-center w-full py-3 bg-[#FF5A00] hover:bg-[#E04E00] text-white font-bold rounded-xl text-xs transition shadow-md">
               Compare Lab Prices for Detected Tests →
             </Link>
           </div>

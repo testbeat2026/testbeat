@@ -4,11 +4,13 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        brand: {
-          50: '#f0fdfa',
-          500: '#14b8a6',
-          600: '#0d9488',
-          700: '#0f766e',
+        healthians: {
+          blue: '#002B49',
+          orange: '#FF5A00',
+          darkOrange: '#E04E00',
+          teal: '#00A896',
+          lightBlue: '#EBF4F6',
+          bgGrey: '#F4F7F9'
         }
       }
     }
