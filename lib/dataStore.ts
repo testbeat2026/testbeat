@@ -426,5 +426,4 @@ export const DB = {
   ]
 };
 
-// Also export as DATA for any legacy imports
 export const DATA = DB;

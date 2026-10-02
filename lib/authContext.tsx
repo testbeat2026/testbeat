@@ -1,30 +1,45 @@
 'use client';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-interface AuthContextType {
+export interface AuthContextType {
   customerPhone: string | null;
   customerName: string | null;
+  adminLoggedIn: boolean;
+  adminRole: 'SUPER_ADMIN' | 'ADMIN' | 'STAFF' | null;
   loginCustomer: (phone: string, name: string) => void;
   logoutCustomer: () => void;
+  loginAdmin: (role: 'SUPER_ADMIN' | 'ADMIN' | 'STAFF') => void;
+  logoutAdmin: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
   customerPhone: null,
   customerName: null,
+  adminLoggedIn: false,
+  adminRole: null,
   loginCustomer: () => {},
-  logoutCustomer: () => {}
+  logoutCustomer: () => {},
+  loginAdmin: () => {},
+  logoutAdmin: () => {}
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [customerPhone, setCustomerPhone] = useState<string | null>(null);
   const [customerName, setCustomerName] = useState<string | null>(null);
+  const [adminLoggedIn, setAdminLoggedIn] = useState<boolean>(false);
+  const [adminRole, setAdminRole] = useState<'SUPER_ADMIN' | 'ADMIN' | 'STAFF' | null>(null);
 
   useEffect(() => {
     try {
       const p = localStorage.getItem('tb_customer_phone');
       const n = localStorage.getItem('tb_customer_name');
+      const ar = localStorage.getItem('tb_admin_role');
       if (p) setCustomerPhone(p);
       if (n) setCustomerName(n);
+      if (ar) {
+        setAdminLoggedIn(true);
+        setAdminRole(ar as any);
+      }
     } catch (e) {}
   }, []);
 
@@ -46,8 +61,33 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setCustomerName(null);
   };
 
+  const loginAdmin = (role: 'SUPER_ADMIN' | 'ADMIN' | 'STAFF') => {
+    try {
+      localStorage.setItem('tb_admin_role', role);
+    } catch (e) {}
+    setAdminLoggedIn(true);
+    setAdminRole(role);
+  };
+
+  const logoutAdmin = () => {
+    try {
+      localStorage.removeItem('tb_admin_role');
+    } catch (e) {}
+    setAdminLoggedIn(false);
+    setAdminRole(null);
+  };
+
   return (
-    <AuthContext.Provider value={{ customerPhone, customerName, loginCustomer, logoutCustomer }}>
+    <AuthContext.Provider value={{
+      customerPhone,
+      customerName,
+      adminLoggedIn,
+      adminRole,
+      loginCustomer,
+      logoutCustomer,
+      loginAdmin,
+      logoutAdmin
+    }}>
       {children}
     </AuthContext.Provider>
   );
