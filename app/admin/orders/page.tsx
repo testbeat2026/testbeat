@@ -1,25 +1,45 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { RefreshCw, CheckCircle2, Clock, Phone, Search, MessageSquare, Send } from 'lucide-react';
+import { 
+  ClipboardList, 
+  RefreshCw, 
+  CheckCircle2, 
+  Clock, 
+  FileText, 
+  Send, 
+  Eye, 
+  Phone, 
+  Building2, 
+  AlertCircle,
+  ExternalLink,
+  Share2
+} from 'lucide-react';
 
-interface Order {
+interface OrderItem {
   id: number;
   order_id: string;
   customer_name: string;
   customer_phone: string;
+  customer_email: string;
   amount: string;
-  payment_status: string;
-  cf_order_id: string;
   lab_assigned: string;
+  payment_status: string;
+  fulfillment_status: string;
+  lab_rider_name: string | null;
+  lab_rider_phone: string | null;
+  report_pdf_url: string | null;
+  report_dispatched_at: string | null;
+  dispatch_channel: string | null;
   created_at: string;
 }
 
-export default function AdminOrdersPage() {
-  const [orders, setOrders] = useState<Order[]>([]);
+export default function AdminOrdersTrackingPage() {
+  const [orders, setOrders] = useState<OrderItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<OrderItem | null>(null);
+  const [reportUrlInput, setReportUrlInput] = useState('');
+  const [dispatching, setDispatching] = useState(false);
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -27,10 +47,13 @@ export default function AdminOrdersPage() {
       const res = await fetch('/api/admin/orders');
       const data = await res.json();
       if (data.success) {
-        setOrders(data.orders);
+        setOrders(data.orders || []);
+        if (data.orders?.length > 0 && !selectedOrder) {
+          setSelectedOrder(data.orders[0]);
+        }
       }
-    } catch (err) {
-      console.error(err);
+    } catch (e) {
+      console.error(e);
     } finally {
       setLoading(false);
     }
@@ -40,165 +63,234 @@ export default function AdminOrdersPage() {
     fetchOrders();
   }, []);
 
-  const handleLabChange = async (orderId: string, lab: string) => {
-    setUpdatingId(orderId);
+  const handleManualReportDispatch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedOrder || !reportUrlInput) return;
+
+    setDispatching(true);
     try {
       const res = await fetch('/api/admin/orders', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orderId, labAssigned: lab })
-      });
-      const data = await res.json();
-      if (data.success) {
-        setOrders(prev => prev.map(o => o.order_id === orderId ? { ...o, lab_assigned: lab } : o));
-      }
-    } catch (err) {
-      alert('Failed to update lab');
-    } finally {
-      setUpdatingId(null);
-    }
-  };
-
-  const handleDispatchWhatsApp = async (orderId: string, type: 'patient' | 'phlebo') => {
-    try {
-      const res = await fetch('/api/orders/dispatch', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orderId, phleboName: 'Rahul (Phlebotomist)', phleboPhone: '7666953705' })
+        body: JSON.stringify({
+          orderId: selectedOrder.order_id,
+          reportUrl: reportUrlInput,
+          action: 'DISPATCH_NOW'
+        })
       });
+
       const data = await res.json();
+      setDispatching(false);
+
       if (data.success) {
-        const targetUrl = type === 'patient' ? data.patientWhatsAppUrl : data.phleboWhatsAppUrl;
-        window.open(targetUrl, '_blank');
+        alert('Report link updated! WhatsApp window opening...');
+        if (data.waUrl) window.open(data.waUrl, '_blank');
+        fetchOrders();
+      } else {
+        alert('Dispatch error: ' + data.error);
       }
     } catch (err: any) {
-      alert('Failed to generate dispatch link');
+      setDispatching(false);
+      alert('Error triggering dispatch');
     }
   };
 
-  const filteredOrders = orders.filter(o => 
-    o.customer_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    o.customer_phone?.includes(searchTerm) ||
-    o.order_id?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'REPORT_READY':
+        return <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black px-2 py-0.5 rounded-full">Report Delivered</span>;
+      case 'SAMPLE_COLLECTED':
+        return <span className="bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-black px-2 py-0.5 rounded-full">Sample Collected</span>;
+      case 'PHLEBO_ASSIGNED':
+        return <span className="bg-purple-50 text-purple-700 border border-purple-200 text-[10px] font-black px-2 py-0.5 rounded-full">Phlebo Dispatched</span>;
+      default:
+        return <span className="bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-black px-2 py-0.5 rounded-full">Lab Processing</span>;
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-[#F4F7F9] p-4 sm:p-8 font-sans">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-          <div>
-            <h1 className="text-2xl font-black text-slate-900">Bookings & Dispatch Console</h1>
-            <p className="text-xs text-slate-500 font-bold mt-1">Live Neon DB Orders, Cashfree Settlements & Lab Routing</p>
+    <div className="space-y-6 font-sans">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-black text-slate-900">Live Orders & Report Dispatch Desk 📑</h1>
+          <p className="text-xs text-slate-500 font-bold mt-1">
+            Real-time Lab fulfillment tracking, Phlebo status & automated WhatsApp/Email report delivery
+          </p>
+        </div>
+
+        <button
+          onClick={fetchOrders}
+          className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 font-bold text-xs rounded-xl shadow-2xs hover:bg-slate-50 cursor-pointer"
+        >
+          <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
+          <span>Refresh Live Orders</span>
+        </button>
+      </div>
+
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
+          <span className="text-[11px] font-bold text-slate-400 uppercase">Active Bookings</span>
+          <div className="flex items-center justify-between mt-2">
+            <span className="text-2xl font-black text-slate-900">{orders.length}</span>
+            <ClipboardList className="text-[#00A896]" size={20} />
           </div>
-          <button 
-            onClick={fetchOrders}
-            className="flex items-center justify-center gap-2 bg-[#009387] hover:bg-[#007A70] text-white font-extrabold text-xs px-4 py-2.5 rounded-xl shadow cursor-pointer transition w-fit"
-          >
-            <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
-            <span>Sync Live Orders</span>
-          </button>
         </div>
 
-        {/* Search */}
-        <div className="bg-white p-3 rounded-2xl border border-slate-200 shadow-xs mb-6 flex items-center gap-3">
-          <Search size={16} className="text-slate-400 ml-2" />
-          <input
-            type="text"
-            placeholder="Search by Patient Name, Phone or Order ID..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full text-xs font-bold text-slate-800 outline-none placeholder:text-slate-400"
-          />
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
+          <span className="text-[11px] font-bold text-slate-400 uppercase">Sample Pending</span>
+          <div className="flex items-center justify-between mt-2">
+            <span className="text-2xl font-black text-amber-600">
+              {orders.filter(o => o.fulfillment_status !== 'REPORT_READY').length}
+            </span>
+            <Clock className="text-amber-500" size={20} />
+          </div>
         </div>
 
-        {/* Orders Table */}
-        <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-black uppercase text-[10px] tracking-wider">
-                  <th className="py-3 px-4">Order ID & Date</th>
-                  <th className="py-3 px-4">Patient</th>
-                  <th className="py-3 px-4">Amount</th>
-                  <th className="py-3 px-4">Payment</th>
-                  <th className="py-3 px-4">Assigned Lab</th>
-                  <th className="py-3 px-4 text-center">Instant Dispatch</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 font-semibold text-slate-700">
-                {filteredOrders.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="text-center py-8 text-slate-400 font-bold">
-                      {loading ? 'Fetching orders from database...' : 'No orders found.'}
-                    </td>
-                  </tr>
-                ) : (
-                  filteredOrders.map((ord) => (
-                    <tr key={ord.id} className="hover:bg-slate-50/80 transition">
-                      <td className="py-3 px-4">
-                        <span className="font-mono font-bold text-slate-900 block">{ord.order_id}</span>
-                        <span className="text-[10px] text-slate-400">
-                          {new Date(ord.created_at).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4">
-                        <span className="font-bold text-slate-900 block">{ord.customer_name || 'Patient'}</span>
-                        <span className="text-[11px] text-slate-500 flex items-center gap-1 font-mono">
-                          <Phone size={10} /> {ord.customer_phone}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4">
-                        <span className="font-black text-slate-900">₹{ord.amount}</span>
-                      </td>
-                      <td className="py-3 px-4">
-                        {ord.payment_status === 'PAID' ? (
-                          <span className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 font-bold text-[10px] px-2 py-0.5 rounded-full border border-emerald-200">
-                            <CheckCircle2 size={12} /> PAID
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-700 font-bold text-[10px] px-2 py-0.5 rounded-full border border-amber-200">
-                            <Clock size={12} /> {ord.payment_status || 'PENDING'}
-                          </span>
-                        )}
-                      </td>
-                      <td className="py-3 px-4">
-                        <select
-                          disabled={updatingId === ord.order_id}
-                          value={ord.lab_assigned || 'Redcliffe Labs'}
-                          onChange={(e) => handleLabChange(ord.order_id, e.target.value)}
-                          className="bg-slate-50 border border-slate-200 text-xs font-bold rounded-lg px-2 py-1 outline-none cursor-pointer text-[#17466E]"
-                        >
-                          <option value="Redcliffe Labs">Redcliffe Labs</option>
-                          <option value="Dr Lal PathLabs">Dr Lal PathLabs</option>
-                          <option value="Thyrocare">Thyrocare</option>
-                          <option value="Direct Phlebotomist">Direct Phlebotomist</option>
-                        </select>
-                      </td>
-                      <td className="py-3 px-4">
-                        <div className="flex items-center justify-center gap-2">
-                          <button
-                            title="Send Patient WhatsApp Confirmation"
-                            onClick={() => handleDispatchWhatsApp(ord.order_id, 'patient')}
-                            className="p-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-lg cursor-pointer transition flex items-center gap-1 font-bold text-[11px]"
-                          >
-                            <MessageSquare size={13} />
-                            <span>Patient</span>
-                          </button>
-                          <button
-                            title="Dispatch Phlebotomist Pickup Lead"
-                            onClick={() => handleDispatchWhatsApp(ord.order_id, 'phlebo')}
-                            className="p-1.5 bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 rounded-lg cursor-pointer transition flex items-center gap-1 font-bold text-[11px]"
-                          >
-                            <Send size={13} />
-                            <span>Phlebo</span>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
+          <span className="text-[11px] font-bold text-slate-400 uppercase">Reports Dispatched</span>
+          <div className="flex items-center justify-between mt-2">
+            <span className="text-2xl font-black text-emerald-600">
+              {orders.filter(o => o.report_pdf_url).length}
+            </span>
+            <CheckCircle2 className="text-emerald-500" size={20} />
+          </div>
+        </div>
+
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
+          <span className="text-[11px] font-bold text-slate-400 uppercase">Auto-Dispatch Engine</span>
+          <div className="flex items-center justify-between mt-2">
+            <span className="text-sm font-black text-blue-600">WhatsApp + Email</span>
+            <Share2 className="text-blue-500" size={18} />
+          </div>
+        </div>
+      </div>
+
+      {/* 2-Column Console */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left Column: Orders List (7 Cols) */}
+        <div className="lg:col-span-7 space-y-3">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-xs font-black text-slate-900 uppercase tracking-wider">
+              Diagnostic Orders Pipeline ({orders.length})
+            </h2>
+            <span className="text-[11px] text-slate-400">Click to view Lab & Report tracking</span>
+          </div>
+
+          {orders.map((ord) => {
+            const isSelected = selectedOrder?.id === ord.id;
+            return (
+              <div
+                key={ord.id}
+                onClick={() => {
+                  setSelectedOrder(ord);
+                  setReportUrlInput(ord.report_pdf_url || '');
+                }}
+                className={`p-4 rounded-3xl border transition cursor-pointer flex items-center justify-between gap-4 ${
+                  isSelected 
+                    ? 'bg-white border-[#00A896] ring-2 ring-[#00A896]/15 shadow-sm' 
+                    : 'bg-white border-slate-200 hover:border-slate-300 shadow-2xs'
+                }`}
+              >
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono font-bold text-xs text-slate-900">{ord.order_id}</span>
+                    <span className="text-[10px] font-bold text-[#00A896] bg-teal-50 px-2 py-0.5 rounded-md">
+                      {ord.lab_assigned}
+                    </span>
+                  </div>
+                  <h3 className="text-xs font-black text-slate-800 mt-1">{ord.customer_name || 'Patient'}</h3>
+                  <div className="text-[11px] text-slate-500 font-mono mt-0.5 flex items-center gap-2">
+                    <span>+91 {ord.customer_phone}</span>
+                    <span>•</span>
+                    <span className="font-black text-slate-900">₹{ord.amount}</span>
+                  </div>
+                </div>
+
+                <div className="text-right shrink-0">
+                  {getStatusBadge(ord.fulfillment_status)}
+                  <span className="block text-[10px] text-slate-400 mt-1">
+                    {new Date(ord.created_at).toLocaleDateString('en-IN')}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Right Column: Lab Fulfillment & Report Dispatcher (5 Cols) */}
+        <div className="lg:col-span-5">
+          <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-2xs sticky top-6 space-y-5">
+            <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+              <Building2 size={16} className="text-[#00A896]" />
+              Lab Fulfillment & Patient Delivery Status
+            </h3>
+
+            {selectedOrder ? (
+              <div className="space-y-4 text-xs font-bold">
+                {/* Order Summary Card */}
+                <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Assigned Lab Partner:</span>
+                    <span className="text-[#00A896] font-black">{selectedOrder.lab_assigned}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Payment Status:</span>
+                    <span className={selectedOrder.payment_status === 'PAID' ? 'text-emerald-600' : 'text-amber-600'}>
+                      {selectedOrder.payment_status}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Lab Rider / Phlebotomist:</span>
+                    <span className="text-slate-800">{selectedOrder.lab_rider_name || 'Assigned by Lab via API'}</span>
+                  </div>
+                </div>
+
+                {/* Report Section */}
+                <div className="space-y-3 pt-2">
+                  <label className="text-slate-800 block uppercase tracking-wider text-[11px]">
+                    Verified PDF Report URL
+                  </label>
+                  <input
+                    type="url"
+                    placeholder="https://reports.partnerlab.com/report_123.pdf"
+                    value={reportUrlInput}
+                    onChange={(e) => setReportUrlInput(e.target.value)}
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none font-mono text-xs focus:border-[#00A896]"
+                  />
+
+                  {selectedOrder.report_pdf_url && (
+                    <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-between text-emerald-800 text-[11px]">
+                      <span className="flex items-center gap-1.5 font-bold">
+                        <CheckCircle2 size={14} className="text-emerald-600" />
+                        Report sent via WhatsApp!
+                      </span>
+                      <a
+                        href={selectedOrder.report_pdf_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="underline font-black flex items-center gap-1"
+                      >
+                        <Eye size={12} /> View PDF
+                      </a>
+                    </div>
+                  )}
+
+                  <button
+                    onClick={handleManualReportDispatch}
+                    disabled={dispatching || !reportUrlInput}
+                    className="w-full py-3.5 bg-[#00A896] hover:bg-[#008f80] text-white rounded-xl shadow-md transition font-black text-xs flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  >
+                    <Send size={14} />
+                    <span>{dispatching ? 'Dispatching...' : 'Dispatch Report to Patient (WhatsApp & Email)'}</span>
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="py-12 text-center text-slate-400 font-bold text-xs">
+                Select an order from the left to view Lab status or deliver report.
+              </div>
+            )}
           </div>
         </div>
       </div>
