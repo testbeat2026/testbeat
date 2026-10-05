@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import React, { useEffect, useState } from 'react';
 import { 
   Building2, 
@@ -10,9 +12,7 @@ import {
   RefreshCw, 
   CheckCircle2, 
   AlertCircle, 
-  Lock, 
   Clock, 
-  Percent, 
   Radio
 } from 'lucide-react';
 
@@ -57,15 +57,16 @@ export default function AdminLabsManagementPage() {
     setLoading(true);
     try {
       const res = await fetch('/api/admin/labs');
+      if (!res.ok) throw new Error('API unavailable during build');
       const data = await res.json();
       if (data.success) {
         setLabs(data.labs || []);
-        if (data.labs?.length > 0 && !selectedLab) {
+        if (data.labs?.length > 0) {
           selectLabForEdit(data.labs[0]);
         }
       }
     } catch (e) {
-      console.error(e);
+      console.warn('Labs data fetch skipped during static generation phase');
     } finally {
       setLoading(false);
     }
@@ -205,7 +206,6 @@ export default function AdminLabsManagementPage() {
         </div>
       </div>
 
-      {/* 4 Summary Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
           <span className="text-[11px] font-bold text-slate-400 uppercase">Connected Labs</span>
@@ -244,9 +244,7 @@ export default function AdminLabsManagementPage() {
         </div>
       </div>
 
-      {/* Main 2-Column Console */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Labs Cards List (7 Cols) */}
         <div className="lg:col-span-7 space-y-3">
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-xs font-black text-slate-900 uppercase tracking-wider">
@@ -255,63 +253,67 @@ export default function AdminLabsManagementPage() {
             <span className="text-[11px] text-slate-400 font-semibold">Click to configure API credentials</span>
           </div>
 
-          {labs.map((lab) => {
-            const isSelected = selectedLab?.id === lab.id;
-            const isLive = lab.status === 'LIVE';
+          {labs.length === 0 ? (
+            <div className="bg-white rounded-2xl p-8 text-center text-slate-400 font-bold text-xs border border-slate-200">
+              {loading ? 'Loading labs network...' : 'No lab partners configured.'}
+            </div>
+          ) : (
+            labs.map((lab) => {
+              const isSelected = selectedLab?.id === lab.id;
+              const isLive = lab.status === 'LIVE';
 
-            return (
-              <div
-                key={lab.id}
-                onClick={() => selectLabForEdit(lab)}
-                className={`p-5 rounded-3xl border transition cursor-pointer flex items-center justify-between gap-4 ${
-                  isSelected
-                    ? 'bg-white border-[#00A896] ring-2 ring-[#00A896]/15 shadow-sm'
-                    : 'bg-white border-slate-200 hover:border-slate-300 shadow-2xs'
-                }`}
-              >
-                <div className="flex items-center gap-4 min-w-0">
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-base shadow-xs shrink-0 ${
-                    isLive ? 'bg-teal-50 text-[#00A896] border border-teal-200' : 'bg-slate-100 text-slate-400 border border-slate-200'
-                  }`}>
-                    {lab.lab_code.slice(0, 2)}
+              return (
+                <div
+                  key={lab.id}
+                  onClick={() => selectLabForEdit(lab)}
+                  className={`p-5 rounded-3xl border transition cursor-pointer flex items-center justify-between gap-4 ${
+                    isSelected
+                      ? 'bg-white border-[#00A896] ring-2 ring-[#00A896]/15 shadow-sm'
+                      : 'bg-white border-slate-200 hover:border-slate-300 shadow-2xs'
+                  }`}
+                >
+                  <div className="flex items-center gap-4 min-w-0">
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-base shadow-xs shrink-0 ${
+                      isLive ? 'bg-teal-50 text-[#00A896] border border-teal-200' : 'bg-slate-100 text-slate-400 border border-slate-200'
+                    }`}>
+                      {lab.lab_code.slice(0, 2)}
+                    </div>
+                    <div className="truncate">
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-sm font-black text-slate-900">{lab.lab_name}</h3>
+                        <span className="text-[10px] font-mono font-bold text-slate-400">({lab.lab_code})</span>
+                      </div>
+                      <p className="text-xs text-slate-500 font-semibold truncate mt-0.5">{lab.tagline}</p>
+                      <div className="flex items-center gap-3 text-[11px] text-slate-400 font-bold mt-1">
+                        <span className="flex items-center gap-1"><Clock size={11} /> {lab.pickup_tat_mins} Mins Pickup</span>
+                        <span>•</span>
+                        <span className="text-emerald-600 font-black">{lab.default_discount_pct}% Base Margin</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="truncate">
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-sm font-black text-slate-900">{lab.lab_name}</h3>
-                      <span className="text-[10px] font-mono font-bold text-slate-400">({lab.lab_code})</span>
-                    </div>
-                    <p className="text-xs text-slate-500 font-semibold truncate mt-0.5">{lab.tagline}</p>
-                    <div className="flex items-center gap-3 text-[11px] text-slate-400 font-bold mt-1">
-                      <span className="flex items-center gap-1"><Clock size={11} /> {lab.pickup_tat_mins} Mins Pickup</span>
-                      <span>•</span>
-                      <span className="text-emerald-600 font-black">{lab.default_discount_pct}% Base Margin</span>
-                    </div>
+
+                  <div className="text-right shrink-0" onClick={(e) => e.stopPropagation()}>
+                    <button
+                      onClick={() => toggleLabStatus(lab)}
+                      className={`px-3 py-1.5 rounded-xl font-black text-xs flex items-center gap-1.5 cursor-pointer transition ${
+                        isLive 
+                          ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200' 
+                          : 'bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200'
+                      }`}
+                    >
+                      <Power size={13} />
+                      <span>{isLive ? 'LIVE' : 'UNLIVE'}</span>
+                    </button>
+                    <span className="block text-[10px] text-slate-400 mt-1 font-semibold">
+                      {isLive ? 'Customer Visible' : 'Hidden from comparison'}
+                    </span>
                   </div>
                 </div>
-
-                {/* Status Toggle Switch */}
-                <div className="text-right shrink-0" onClick={(e) => e.stopPropagation()}>
-                  <button
-                    onClick={() => toggleLabStatus(lab)}
-                    className={`px-3 py-1.5 rounded-xl font-black text-xs flex items-center gap-1.5 cursor-pointer transition ${
-                      isLive 
-                        ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200' 
-                        : 'bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200'
-                    }`}
-                  >
-                    <Power size={13} />
-                    <span>{isLive ? 'LIVE' : 'UNLIVE'}</span>
-                  </button>
-                  <span className="block text-[10px] text-slate-400 mt-1 font-semibold">
-                    {isLive ? 'Customer Visible' : 'Hidden from comparison'}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
 
-        {/* Right Column: Lab API Credentials Editor (5 Cols) */}
         <div className="lg:col-span-5">
           <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm sticky top-6">
             <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
@@ -385,7 +387,6 @@ export default function AdminLabsManagementPage() {
         </div>
       </div>
 
-      {/* POPUP MODAL: ADD NEW LAB */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-4">
@@ -401,7 +402,7 @@ export default function AdminLabsManagementPage() {
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Healthians / Metropolis"
+                    placeholder="e.g. Healthians"
                     value={newLabName}
                     onChange={(e) => setNewLabName(e.target.value)}
                     className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none"
@@ -421,10 +422,10 @@ export default function AdminLabsManagementPage() {
               </div>
 
               <div>
-                <label className="text-slate-700 block mb-1">Tagline / Key Feature</label>
+                <label className="text-slate-700 block mb-1">Tagline</label>
                 <input
                   type="text"
-                  placeholder="e.g. 60-min express sample collection in Greater Noida"
+                  placeholder="e.g. 60-min express sample collection"
                   value={newTagline}
                   onChange={(e) => setNewTagline(e.target.value)}
                   className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none"
