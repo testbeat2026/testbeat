@@ -1,10 +1,11 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import React, { useState } from 'react';
 import { 
   BadgePercent, 
   UserPlus, 
-  Link as LinkIcon, 
   Copy, 
   Check, 
   Building2, 
@@ -25,7 +26,6 @@ interface Affiliate {
 export default function AdminAffiliatesPage() {
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
-  // Mock-backed active affiliates list
   const [affiliates, setAffiliates] = useState<Affiliate[]>([
     {
       id: 1,
@@ -64,10 +64,13 @@ export default function AdminAffiliatesPage() {
   const [partnerType, setPartnerType] = useState('Doctor / Clinic');
   const [partnerRate, setPartnerRate] = useState('15');
 
+  // SSR-Safe Clipboard Copy
   const handleCopyLink = (code: string) => {
-    navigator.clipboard.writeText(`https://testbeat.in/?ref=${code}`);
-    setCopiedCode(code);
-    setTimeout(() => setCopiedCode(null), 3000);
+    if (typeof window !== 'undefined' && navigator?.clipboard) {
+      navigator.clipboard.writeText(`https://testbeat.in/?ref=${code}`);
+      setCopiedCode(code);
+      setTimeout(() => setCopiedCode(null), 3000);
+    }
   };
 
   const handleCreateAffiliate = (e: React.FormEvent) => {
