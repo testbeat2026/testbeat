@@ -1,22 +1,21 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { 
-  Users, 
   ClipboardList, 
   FileText, 
   TrendingUp, 
-  Activity, 
   RefreshCw, 
-  ArrowUpRight,
-  ShieldCheck,
   CheckCircle2,
   Clock,
-  MapPin,
   Eye
 } from 'lucide-react';
 
 export default function MasterDashboardPage() {
+  const router = useRouter();
   const [stats, setStats] = useState({
     totalOrders: 0,
     paidOrders: 0,
@@ -31,17 +30,30 @@ export default function MasterDashboardPage() {
     setLoading(true);
     try {
       const [ordRes, rxRes, visRes] = await Promise.all([
-        fetch('/api/admin/orders').then(r => r.json()),
-        fetch('/api/admin/prescriptions').then(r => r.json()),
-        fetch('/api/tracker').then(r => r.json())
+        fetch('/api/admin/orders').catch(() => null),
+        fetch('/api/admin/prescriptions').catch(() => null),
+        fetch('/api/tracker').catch(() => null)
       ]);
 
-      const orders = ordRes.orders || [];
-      const prescriptions = rxRes.prescriptions || [];
-      const visitors = visRes.visitors || [];
+      let orders: any[] = [];
+      let prescriptions: any[] = [];
+      let visitors: any[] = [];
 
-      const paid = orders.filter((o: any) => o.payment_status === 'PAID');
-      const totalRevenue = paid.reduce((sum: number, o: any) => sum + Number(o.amount || 0), 0);
+      if (ordRes && ordRes.ok) {
+        const d = await ordRes.json().catch(() => ({}));
+        orders = d.orders || [];
+      }
+      if (rxRes && rxRes.ok) {
+        const d = await rxRes.json().catch(() => ({}));
+        prescriptions = d.prescriptions || [];
+      }
+      if (visRes && visRes.ok) {
+        const d = await visRes.json().catch(() => ({}));
+        visitors = d.visitors || [];
+      }
+
+      const paid = orders.filter((o: any) => o?.payment_status === 'PAID');
+      const totalRevenue = paid.reduce((sum: number, o: any) => sum + Number(o?.amount || 0), 0);
 
       setStats({
         totalOrders: orders.length,
@@ -53,7 +65,7 @@ export default function MasterDashboardPage() {
 
       setRecentOrders(orders.slice(0, 5));
     } catch (err) {
-      console.error(err);
+      console.warn('Dashboard stats fetch skipped during build phase');
     } finally {
       setLoading(false);
     }
@@ -64,12 +76,12 @@ export default function MasterDashboardPage() {
   }, []);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-sans">
       {/* Top Banner Greeting */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-slate-900">Welcome back, Admin 👋</h1>
-          <p className="text-xs text-slate-500 font-bold mt-1">Here is what is happening across your diagnostic network today.</p>
+          <p className="text-xs text-slate-500 font-bold mt-1">Diagnostic network telemetry & operations overview.</p>
         </div>
         <button
           onClick={fetchDashboardData}
@@ -80,7 +92,7 @@ export default function MasterDashboardPage() {
         </button>
       </div>
 
-      {/* 4 Top KPI Cards (Ref Style) */}
+      {/* 4 Top KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
           <div className="flex items-center justify-between text-slate-400">
@@ -129,26 +141,25 @@ export default function MasterDashboardPage() {
         </div>
       </div>
 
-      {/* Center Grid: Performance Bars & Split Overview */}
+      {/* Lab Load & Sample Overview */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Lab Fulfillment Distribution (8 Cols) */}
         <div className="lg:col-span-8 bg-white rounded-3xl p-6 border border-slate-200 shadow-2xs space-y-5">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-sm font-black text-slate-900 uppercase tracking-wider">
-                Multi-Lab Fulfillment & Routing
+                Multi-Lab Fulfillment Distribution
               </h2>
-              <p className="text-xs text-slate-400 mt-0.5">Automated distribution across connected lab network</p>
+              <p className="text-xs text-slate-400 mt-0.5">Automated workload distribution across partners</p>
             </div>
             <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-xl">
-              100% SLA Adherence
+              Online
             </span>
           </div>
 
           <div className="space-y-4 pt-2">
             <div>
               <div className="flex justify-between text-xs font-bold mb-1.5">
-                <span className="text-slate-700">Redcliffe Labs (Fastest Turnaround)</span>
+                <span className="text-slate-700">Redcliffe Labs (60-Min Pickup)</span>
                 <span className="text-[#00A896]">62% Load</span>
               </div>
               <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
@@ -158,7 +169,7 @@ export default function MasterDashboardPage() {
 
             <div>
               <div className="flex justify-between text-xs font-bold mb-1.5">
-                <span className="text-slate-700">Dr Lal PathLabs (Gold Standard Profiles)</span>
+                <span className="text-slate-700">Dr Lal PathLabs (Gold Standard)</span>
                 <span className="text-blue-600">25% Load</span>
               </div>
               <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
@@ -168,7 +179,7 @@ export default function MasterDashboardPage() {
 
             <div>
               <div className="flex justify-between text-xs font-bold mb-1.5">
-                <span className="text-slate-700">Thyrocare (Preventive Packages)</span>
+                <span className="text-slate-700">Thyrocare & Healthians (Preventive)</span>
                 <span className="text-amber-600">13% Load</span>
               </div>
               <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
@@ -178,29 +189,28 @@ export default function MasterDashboardPage() {
           </div>
         </div>
 
-        {/* Status Donut / Metric Widget (4 Cols) */}
         <div className="lg:col-span-4 bg-white rounded-3xl p-6 border border-slate-200 shadow-2xs flex flex-col justify-between">
           <div>
             <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-1">
               Sample Status Overview
             </h3>
-            <p className="text-xs text-slate-400">Real-time phlebotomy lifecycle</p>
+            <p className="text-xs text-slate-400">Phlebotomy and lab lifecycle</p>
           </div>
 
           <div className="my-6 text-center">
             <div className="w-32 h-32 rounded-full border-8 border-teal-500 border-t-amber-400 border-r-blue-500 flex flex-col items-center justify-center mx-auto shadow-inner">
               <span className="text-2xl font-black text-slate-900">{stats.totalOrders}</span>
-              <span className="text-[10px] font-bold text-slate-400 uppercase">Bookings</span>
+              <span className="text-[10px] font-bold text-slate-400 uppercase">Total Orders</span>
             </div>
           </div>
 
           <div className="grid grid-cols-3 gap-2 text-center text-xs font-bold">
             <div className="p-2 rounded-xl bg-teal-50 text-teal-800">
               <span className="block text-sm font-black">{stats.paidOrders}</span>
-              <span className="text-[9px] uppercase">Collected</span>
+              <span className="text-[9px] uppercase">Paid</span>
             </div>
             <div className="p-2 rounded-xl bg-amber-50 text-amber-800">
-              <span className="block text-sm font-black">{stats.totalOrders - stats.paidOrders}</span>
+              <span className="block text-sm font-black">{Math.max(0, stats.totalOrders - stats.paidOrders)}</span>
               <span className="text-[9px] uppercase">Pending</span>
             </div>
             <div className="p-2 rounded-xl bg-blue-50 text-blue-800">
@@ -211,13 +221,13 @@ export default function MasterDashboardPage() {
         </div>
       </div>
 
-      {/* Bottom Section: Recent Bookings Stream */}
+      {/* Recent Orders Table */}
       <div className="bg-white rounded-3xl border border-slate-200 shadow-2xs overflow-hidden">
         <div className="p-5 border-b border-slate-100 flex items-center justify-between">
           <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">
-            Live Feed: Latest Customer Diagnostic Bookings
+            Live Feed: Latest Customer Bookings
           </h3>
-          <span className="text-[11px] font-bold text-slate-400">Direct Neon DB Connection</span>
+          <span className="text-[11px] font-bold text-slate-400">Auto-Reconciled</span>
         </div>
 
         <div className="overflow-x-auto">
