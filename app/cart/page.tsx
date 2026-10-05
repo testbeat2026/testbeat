@@ -2,7 +2,14 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import Script from 'next/script';
 import { ShieldCheck, Clock, MapPin, CheckCircle2, AlertCircle } from 'lucide-react';
+
+declare global {
+  interface Window {
+    Cashfree: any;
+  }
+}
 
 function CartBookingContent() {
   const searchParams = useSearchParams();
@@ -16,8 +23,8 @@ function CartBookingContent() {
   const [pincode, setPincode] = useState('201310');
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [sdkReady, setSdkReady] = useState(false);
 
-  // Sample package details mapped to test_id
   const testPackages: Record<string, { name: string; lab: string; originalPrice: number; price: number }> = {
     '6': {
       name: 'HealthShield Comprehensive Full Body Checkup',
@@ -50,10 +57,15 @@ function CartBookingContent() {
       return;
     }
 
+    if (!window.Cashfree) {
+      alert('Payment SDK initialize ho raha hai, 2 second baad dobara click karein.');
+      return;
+    }
+
     setLoading(true);
 
     try {
-      // 1. Trigger Cashfree order on our API
+      // 1. Order generation call to backend
       const res = await fetch('/api/payment/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -68,7 +80,7 @@ function CartBookingContent() {
 
       const data = await res.json();
 
-      if (!res.ok || !data.success) {
+      if (!res.ok || !data.success || !data.paymentSessionId) {
         setLoading(false);
         const errorText = data.error || data.details?.message || 'Payment initiation failed';
         setErrorMessage(errorText);
@@ -76,18 +88,19 @@ function CartBookingContent() {
         return;
       }
 
-      // 2. Direct Redirect to Valid Cashfree Checkout URL with Session ID
-      if (data.paymentUrl) {
-        window.location.href = data.paymentUrl;
-      } else if (data.paymentSessionId) {
-        const checkoutHost = data.env === 'PRODUCTION'
-          ? 'https://api.cashfree.com/pg/view/sessions/checkout'
-          : 'https://sandbox.cashfree.com/pg/view/sessions/checkout';
-        window.location.href = `${checkoutHost}?payment_session_id=${data.paymentSessionId}`;
-      } else {
-        setLoading(false);
-        alert('Invalid session received from payment gateway.');
-      }
+      // 2. Initialize official Cashfree JS SDK v3
+      const isProd = data.env === 'PRODUCTION';
+      const cashfree = window.Cashfree({
+        mode: isProd ? 'production' : 'sandbox'
+      });
+
+      setLoading(false);
+
+      // 3. Launch seamless Cashfree Checkout UI
+      cashfree.checkout({
+        paymentSessionId: data.paymentSessionId,
+        redirectTarget: '_self'
+      });
 
     } catch (err: any) {
       setLoading(false);
@@ -98,6 +111,13 @@ function CartBookingContent() {
 
   return (
     <div className="min-h-screen bg-[#F4F7F9] font-sans pb-16">
+      {/* Official Cashfree v3 SDK Loader */}
+      <Script
+        src="https://sdk.cashfree.com/js/v3/cashfree.js"
+        strategy="afterInteractive"
+        onLoad={() => setSdkReady(true)}
+      />
+
       {/* Top Banner */}
       <div className="bg-[#17466E] text-white text-[11px] font-bold text-center py-2 px-4 shadow-sm flex items-center justify-center gap-2">
         <span>⚡ Up to 70% OFF Diagnostic Lab Aggregator</span>
@@ -124,7 +144,7 @@ function CartBookingContent() {
         </div>
       </header>
 
-      {/* Main Form & Summary Container */}
+      {/* Main Container */}
       <main className="max-w-5xl mx-auto p-4 sm:p-6 mt-4">
         <div className="text-center mb-6">
           <span className="text-[10px] font-black uppercase tracking-wider bg-teal-50 text-[#009387] px-3 py-1 rounded-full border border-teal-200">
@@ -141,7 +161,6 @@ function CartBookingContent() {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Patient Details Form */}
           <div className="md:col-span-2 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
             <h2 className="text-base font-black text-[#17466E] mb-4 flex items-center gap-2">
               <span className="w-6 h-6 rounded-full bg-[#17466E] text-white flex items-center justify-center text-xs">1</span>
@@ -211,7 +230,6 @@ function CartBookingContent() {
             </form>
           </div>
 
-          {/* Order Summary Card */}
           <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between h-fit space-y-4">
             <div>
               <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-3">Order Summary</h3>
