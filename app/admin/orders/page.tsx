@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { RefreshCw, CheckCircle2, Clock, Phone, MapPin, Building2, Search } from 'lucide-react';
+import { RefreshCw, CheckCircle2, Clock, Phone, Search, MessageSquare, Send } from 'lucide-react';
 
 interface Order {
   id: number;
@@ -59,6 +59,23 @@ export default function AdminOrdersPage() {
     }
   };
 
+  const handleDispatchWhatsApp = async (orderId: string, type: 'patient' | 'phlebo') => {
+    try {
+      const res = await fetch('/api/orders/dispatch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId, phleboName: 'Rahul (Phlebotomist)', phleboPhone: '7666953705' })
+      });
+      const data = await res.json();
+      if (data.success) {
+        const targetUrl = type === 'patient' ? data.patientWhatsAppUrl : data.phleboWhatsAppUrl;
+        window.open(targetUrl, '_blank');
+      }
+    } catch (err: any) {
+      alert('Failed to generate dispatch link');
+    }
+  };
+
   const filteredOrders = orders.filter(o => 
     o.customer_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     o.customer_phone?.includes(searchTerm) ||
@@ -71,7 +88,7 @@ export default function AdminOrdersPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div>
             <h1 className="text-2xl font-black text-slate-900">Bookings & Dispatch Console</h1>
-            <p className="text-xs text-slate-500 font-bold mt-1">Live Neon DB Orders & Cashfree Collections</p>
+            <p className="text-xs text-slate-500 font-bold mt-1">Live Neon DB Orders, Cashfree Settlements & Lab Routing</p>
           </div>
           <button 
             onClick={fetchOrders}
@@ -82,7 +99,7 @@ export default function AdminOrdersPage() {
           </button>
         </div>
 
-        {/* Search Bar */}
+        {/* Search */}
         <div className="bg-white p-3 rounded-2xl border border-slate-200 shadow-xs mb-6 flex items-center gap-3">
           <Search size={16} className="text-slate-400 ml-2" />
           <input
@@ -94,7 +111,7 @@ export default function AdminOrdersPage() {
           />
         </div>
 
-        {/* Table */}
+        {/* Orders Table */}
         <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
@@ -105,12 +122,13 @@ export default function AdminOrdersPage() {
                   <th className="py-3 px-4">Amount</th>
                   <th className="py-3 px-4">Payment</th>
                   <th className="py-3 px-4">Assigned Lab</th>
+                  <th className="py-3 px-4 text-center">Instant Dispatch</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 font-semibold text-slate-700">
                 {filteredOrders.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="text-center py-8 text-slate-400 font-bold">
+                    <td colSpan={6} className="text-center py-8 text-slate-400 font-bold">
                       {loading ? 'Fetching orders from database...' : 'No orders found.'}
                     </td>
                   </tr>
@@ -148,13 +166,33 @@ export default function AdminOrdersPage() {
                           disabled={updatingId === ord.order_id}
                           value={ord.lab_assigned || 'Redcliffe Labs'}
                           onChange={(e) => handleLabChange(ord.order_id, e.target.value)}
-                          className="bg-slate-50 border border-slate-200 text-xs font-bold rounded-lg px-2.5 py-1.5 outline-none cursor-pointer text-[#17466E]"
+                          className="bg-slate-50 border border-slate-200 text-xs font-bold rounded-lg px-2 py-1 outline-none cursor-pointer text-[#17466E]"
                         >
                           <option value="Redcliffe Labs">Redcliffe Labs</option>
                           <option value="Dr Lal PathLabs">Dr Lal PathLabs</option>
                           <option value="Thyrocare">Thyrocare</option>
                           <option value="Direct Phlebotomist">Direct Phlebotomist</option>
                         </select>
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="flex items-center justify-center gap-2">
+                          <button
+                            title="Send Patient WhatsApp Confirmation"
+                            onClick={() => handleDispatchWhatsApp(ord.order_id, 'patient')}
+                            className="p-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-lg cursor-pointer transition flex items-center gap-1 font-bold text-[11px]"
+                          >
+                            <MessageSquare size={13} />
+                            <span>Patient</span>
+                          </button>
+                          <button
+                            title="Dispatch Phlebotomist Pickup Lead"
+                            onClick={() => handleDispatchWhatsApp(ord.order_id, 'phlebo')}
+                            className="p-1.5 bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 rounded-lg cursor-pointer transition flex items-center gap-1 font-bold text-[11px]"
+                          >
+                            <Send size={13} />
+                            <span>Phlebo</span>
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))
