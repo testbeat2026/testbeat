@@ -12,12 +12,12 @@ import {
   Building2, 
   ArrowLeft, 
   Bell, 
-  Search,
-  LogOut,
-  ShieldCheck,
-  Eye,
-  Wallet,
-  BadgePercent
+  Search, 
+  LogOut, 
+  ShieldCheck, 
+  Eye, 
+  Wallet, 
+  BadgePercent 
 } from 'lucide-react';
 
 interface UserSession {
@@ -62,12 +62,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
-  // Dynamic Navigation filtered strictly by Role
   const role = session.role;
+
+  // Complete Menu List with Lab Partners included
   const menu = [
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard, show: true },
     { name: 'Live Bookings', href: '/admin/orders', icon: ClipboardList, show: ['SUPER_ADMIN', 'ADMIN', 'FINANCE'].includes(role) },
     { name: 'Prescription Desk', href: '/admin/prescriptions', icon: FileText, show: ['SUPER_ADMIN', 'ADMIN', 'SALES'].includes(role) },
+    { name: 'Lab Partners & APIs', href: '/admin/labs', icon: Building2, show: ['SUPER_ADMIN', 'ADMIN'].includes(role) },
     { name: 'Live Visitors & Leads', href: '/admin/visitors', icon: Eye, show: ['SUPER_ADMIN', 'SALES'].includes(role) },
     { name: 'User & Roles', href: '/admin/users', icon: ShieldCheck, show: role === 'SUPER_ADMIN' },
     { name: 'Finance & P&L', href: '/admin/finance', icon: Wallet, show: ['SUPER_ADMIN', 'FINANCE'].includes(role) },
