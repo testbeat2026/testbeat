@@ -14,55 +14,71 @@ import {
   Bell, 
   Search,
   LogOut,
-  ShieldCheck
+  ShieldCheck,
+  Eye,
+  Wallet,
+  BadgePercent
 } from 'lucide-react';
 
-const MENU_ITEMS = [
-  { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-  { name: 'Live Bookings', href: '/admin/orders', icon: ClipboardList },
-  { name: 'Prescription Desk', href: '/admin/prescriptions', icon: FileText },
-  { name: 'User & Roles', href: '/admin/users', icon: ShieldCheck },
-  { name: 'Lab Partners', href: '/admin/labs', icon: Building2 },
-  { name: 'Phlebotomists', href: '/admin/riders', icon: Users },
-  { name: 'Settings', href: '/admin/settings', icon: Settings },
-];
+interface UserSession {
+  id: number;
+  name: string;
+  phone: string;
+  role: 'SUPER_ADMIN' | 'ADMIN' | 'FINANCE' | 'SALES' | 'AFFILIATE';
+}
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [session, setSession] = useState<UserSession | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const auth = localStorage.getItem('tb_admin_auth');
-    if (auth === 'true') {
-      setIsAuthenticated(true);
+    const raw = localStorage.getItem('tb_user_session');
+    const isAuth = localStorage.getItem('tb_admin_auth');
+    if (isAuth === 'true' && raw) {
+      try {
+        setSession(JSON.parse(raw));
+      } catch {
+        router.replace('/login');
+      }
     } else {
-      setIsAuthenticated(false);
-      // Agar login nahi hai toh login screen par bhej dega
       router.replace('/login');
     }
+    setLoading(false);
   }, [pathname, router]);
 
   const handleLogout = () => {
     localStorage.removeItem('tb_admin_auth');
     localStorage.removeItem('tb_user_session');
-    setIsAuthenticated(false);
-    window.location.href = '/login';
+    router.replace('/login');
   };
 
-  // Jab tak verification chal raha hai
-  if (isAuthenticated === null || !isAuthenticated) {
+  if (loading || !session) {
     return (
       <div className="fixed inset-0 z-50 bg-[#0F1E36] flex items-center justify-center text-white font-bold text-sm">
-        Verifying Session...
+        Verifying Security Credentials...
       </div>
     );
   }
 
+  // Dynamic Navigation filtered strictly by Role
+  const role = session.role;
+  const menu = [
+    { name: 'Dashboard', href: '/admin', icon: LayoutDashboard, show: true },
+    { name: 'Live Bookings', href: '/admin/orders', icon: ClipboardList, show: ['SUPER_ADMIN', 'ADMIN', 'FINANCE'].includes(role) },
+    { name: 'Prescription Desk', href: '/admin/prescriptions', icon: FileText, show: ['SUPER_ADMIN', 'ADMIN', 'SALES'].includes(role) },
+    { name: 'Live Visitors & Leads', href: '/admin/visitors', icon: Eye, show: ['SUPER_ADMIN', 'SALES'].includes(role) },
+    { name: 'User & Roles', href: '/admin/users', icon: ShieldCheck, show: role === 'SUPER_ADMIN' },
+    { name: 'Finance & P&L', href: '/admin/finance', icon: Wallet, show: ['SUPER_ADMIN', 'FINANCE'].includes(role) },
+    { name: 'Affiliate Desk', href: '/admin/affiliates', icon: BadgePercent, show: ['SUPER_ADMIN', 'AFFILIATE'].includes(role) },
+    { name: 'Settings', href: '/admin/settings', icon: Settings, show: ['SUPER_ADMIN', 'ADMIN'].includes(role) },
+  ].filter(item => item.show);
+
   return (
     <div className="fixed inset-0 z-50 flex bg-[#F4F7FB] font-sans antialiased overflow-hidden">
       {/* 1. DARK NAVY SIDEBAR */}
-      <aside className="w-64 bg-[#0F1E36] text-slate-300 flex flex-col justify-between shrink-0 shadow-xl border-r border-[#1B2D4B]">
+      <aside className="w-64 bg-[#0F1E36] text-slate-300 flex flex-col justify-between shrink-0 shadow-2xl border-r border-[#1B2D4B]">
         <div>
           {/* Logo Brand Header */}
           <div className="p-5 border-b border-[#1B2D4B] flex items-center justify-between">
@@ -72,14 +88,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               </div>
               <div>
                 <span className="text-lg font-black text-white tracking-tight">Test<span className="text-[#00A896]">Beat</span></span>
-                <span className="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Ops Console</span>
+                <span className="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">{session.role.replace('_', ' ')}</span>
               </div>
             </div>
           </div>
 
           {/* Navigation Links */}
           <nav className="p-4 space-y-1.5">
-            {MENU_ITEMS.map((item) => {
+            {menu.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
 
@@ -105,16 +121,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="p-4 border-t border-[#1B2D4B] space-y-2">
           <Link
             href="/"
-            className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:text-white hover:bg-[#162744] transition"
+            className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white hover:bg-[#162744] transition"
           >
-            <ArrowLeft size={16} />
-            <span>Live Website</span>
+            <ArrowLeft size={15} />
+            <span>Public Website</span>
           </Link>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold text-rose-400 hover:bg-rose-500/10 transition cursor-pointer"
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-rose-400 hover:bg-rose-500/10 transition cursor-pointer"
           >
-            <LogOut size={16} />
+            <LogOut size={15} />
             <span>Sign Out</span>
           </button>
         </div>
@@ -136,17 +152,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:text-slate-800 cursor-pointer relative">
-              <Bell size={16} />
-              <span className="w-2 h-2 rounded-full bg-rose-500 absolute top-1.5 right-1.5" />
-            </div>
-            <div className="flex items-center gap-3 pl-3 border-l border-slate-200">
+            <div className="flex items-center gap-3 pl-3">
               <div className="w-8 h-8 rounded-full bg-[#0F1E36] text-white font-bold text-xs flex items-center justify-center">
-                SK
+                {session.name ? session.name.slice(0, 2).toUpperCase() : 'TB'}
               </div>
               <div className="text-left text-xs">
-                <span className="font-extrabold text-slate-800 block">Super Admin</span>
-                <span className="text-[10px] text-[#00A896] font-bold">Full Clearance</span>
+                <span className="font-extrabold text-slate-800 block">{session.name}</span>
+                <span className="text-[10px] text-[#00A896] font-bold">{session.role}</span>
               </div>
             </div>
           </div>
