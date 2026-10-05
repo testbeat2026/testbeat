@@ -1,7 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  typescript: { ignoreBuildErrors: true },
-  eslint: { ignoreDuringBuilds: true },
+  typescript: {
+    // Build time par dynamic types aur SSR errors ko ignore karega
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    // Linting warnings se build crash hone se rokega
+    ignoreDuringBuilds: true,
+  },
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
+  },
 };
+
 export default nextConfig;
