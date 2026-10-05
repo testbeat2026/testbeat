@@ -30,15 +30,15 @@ export default function CashfreeCheckout({
   const [sdkReady, setSdkReady] = useState(false);
 
   const initiatePayment = async () => {
-    if (!sdkReady && !window.Cashfree) {
-      alert('Cashfree SDK is initializing, please wait 2 seconds.');
+    if (!window.Cashfree) {
+      alert('Cashfree Gateway load ho raha hai, 2 second baad dobara dabayein.');
       return;
     }
 
     setLoading(true);
 
     try {
-      // 1. Create order on backend
+      // 1. Backend se session ID generate karna
       const res = await fetch('/api/payment/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -59,19 +59,32 @@ export default function CashfreeCheckout({
         return;
       }
 
-      // 2. Initialize Cashfree SDK
+      // 2. Cashfree SDK Initialise
+      const isProd = data.env === 'PRODUCTION';
       const cashfree = window.Cashfree({
-        mode: process.env.NEXT_PUBLIC_CASHFREE_MODE === 'PRODUCTION' ? 'production' : 'sandbox'
+        mode: isProd ? 'production' : 'sandbox'
       });
 
-      // 3. Launch Checkout Dropin / Redirection
-      cashfree.checkout({
+      // 3. Dropin Modal Launch (No broken blank redirect)
+      const checkoutOptions = {
         paymentSessionId: data.paymentSessionId,
-        redirectTarget: '_self'
+        redirectTarget: '_modal' // Screen ke upar clean UPI/Card modal khulega
+      };
+
+      cashfree.checkout(checkoutOptions).then((result: any) => {
+        if (result.error) {
+          // Fallback redirect with session param if modal is closed
+          window.location.href = isProd 
+            ? `https://api.cashfree.com/pg/view/sessions/checkout?payment_session_id=${data.paymentSessionId}`
+            : `https://sandbox.cashfree.com/pg/view/sessions/checkout?payment_session_id=${data.paymentSessionId}`;
+        }
+        if (result.paymentDetails) {
+          window.location.href = `/payment/status?order_id=${data.orderId}`;
+        }
       });
 
     } catch (err: any) {
-      alert('Payment initialization failed: ' + err.message);
+      alert('Payment execution failed: ' + err.message);
       setLoading(false);
     }
   };
@@ -80,15 +93,17 @@ export default function CashfreeCheckout({
     <>
       <Script
         src="https://sdk.cashfree.com/js/v3/cashfree.js"
+        strategy="afterInteractive"
         onLoad={() => setSdkReady(true)}
       />
 
       <button
+        type="button"
         onClick={initiatePayment}
         disabled={loading}
-        className="w-full py-3 bg-[#009387] hover:bg-[#007A70] text-white font-extrabold text-sm rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
+        className="w-full py-3.5 bg-[#009387] hover:bg-[#007A70] text-white font-extrabold text-sm rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
       >
-        {loading ? 'Opening Secure Gateway...' : `Pay ₹${amount} & Confirm Booking`}
+        {loading ? 'Opening Cashfree Gateway...' : `Pay ₹${amount} & Confirm Booking`}
       </button>
     </>
   );
