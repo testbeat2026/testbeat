@@ -1,18 +1,16 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import React, { useEffect, useState } from 'react';
 import { 
   ClipboardList, 
   RefreshCw, 
   CheckCircle2, 
   Clock, 
-  FileText, 
   Send, 
   Eye, 
-  Phone, 
   Building2, 
-  AlertCircle,
-  ExternalLink,
   Share2
 } from 'lucide-react';
 
@@ -45,15 +43,17 @@ export default function AdminOrdersTrackingPage() {
     setLoading(true);
     try {
       const res = await fetch('/api/admin/orders');
+      if (!res.ok) throw new Error('API offline during build');
       const data = await res.json();
       if (data.success) {
-        setOrders(data.orders || []);
-        if (data.orders?.length > 0 && !selectedOrder) {
-          setSelectedOrder(data.orders[0]);
+        const orderList = data.orders || [];
+        setOrders(orderList);
+        if (orderList.length > 0 && !selectedOrder) {
+          setSelectedOrder(orderList[0]);
         }
       }
     } catch (e) {
-      console.error(e);
+      console.warn('Orders fetch skipped during static generation phase');
     } finally {
       setLoading(false);
     }
@@ -84,10 +84,12 @@ export default function AdminOrdersTrackingPage() {
 
       if (data.success) {
         alert('Report link updated! WhatsApp window opening...');
-        if (data.waUrl) window.open(data.waUrl, '_blank');
+        if (data.waUrl && typeof window !== 'undefined') {
+          window.open(data.waUrl, '_blank');
+        }
         fetchOrders();
       } else {
-        alert('Dispatch error: ' + data.error);
+        alert('Dispatch error: ' + (data.error || 'Server error'));
       }
     } catch (err: any) {
       setDispatching(false);
@@ -151,7 +153,7 @@ export default function AdminOrdersTrackingPage() {
           <span className="text-[11px] font-bold text-slate-400 uppercase">Reports Dispatched</span>
           <div className="flex items-center justify-between mt-2">
             <span className="text-2xl font-black text-emerald-600">
-              {orders.filter(o => o.report_pdf_url).length}
+              {orders.filter(o => Boolean(o.report_pdf_url)).length}
             </span>
             <CheckCircle2 className="text-emerald-500" size={20} />
           </div>
@@ -168,7 +170,7 @@ export default function AdminOrdersTrackingPage() {
 
       {/* 2-Column Console */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Orders List (7 Cols) */}
+        {/* Left Column: Orders List */}
         <div className="lg:col-span-7 space-y-3">
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-xs font-black text-slate-900 uppercase tracking-wider">
@@ -177,48 +179,54 @@ export default function AdminOrdersTrackingPage() {
             <span className="text-[11px] text-slate-400">Click to view Lab & Report tracking</span>
           </div>
 
-          {orders.map((ord) => {
-            const isSelected = selectedOrder?.id === ord.id;
-            return (
-              <div
-                key={ord.id}
-                onClick={() => {
-                  setSelectedOrder(ord);
-                  setReportUrlInput(ord.report_pdf_url || '');
-                }}
-                className={`p-4 rounded-3xl border transition cursor-pointer flex items-center justify-between gap-4 ${
-                  isSelected 
-                    ? 'bg-white border-[#00A896] ring-2 ring-[#00A896]/15 shadow-sm' 
-                    : 'bg-white border-slate-200 hover:border-slate-300 shadow-2xs'
-                }`}
-              >
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono font-bold text-xs text-slate-900">{ord.order_id}</span>
-                    <span className="text-[10px] font-bold text-[#00A896] bg-teal-50 px-2 py-0.5 rounded-md">
-                      {ord.lab_assigned}
+          {orders.length === 0 ? (
+            <div className="bg-white rounded-2xl p-8 text-center text-slate-400 font-bold text-xs border border-slate-200">
+              {loading ? 'Fetching orders from database...' : 'No orders booked yet.'}
+            </div>
+          ) : (
+            orders.map((ord) => {
+              const isSelected = selectedOrder?.id === ord.id;
+              return (
+                <div
+                  key={ord.id}
+                  onClick={() => {
+                    setSelectedOrder(ord);
+                    setReportUrlInput(ord.report_pdf_url || '');
+                  }}
+                  className={`p-4 rounded-3xl border transition cursor-pointer flex items-center justify-between gap-4 ${
+                    isSelected 
+                      ? 'bg-white border-[#00A896] ring-2 ring-[#00A896]/15 shadow-sm' 
+                      : 'bg-white border-slate-200 hover:border-slate-300 shadow-2xs'
+                  }`}
+                >
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono font-bold text-xs text-slate-900">{ord.order_id}</span>
+                      <span className="text-[10px] font-bold text-[#00A896] bg-teal-50 px-2 py-0.5 rounded-md">
+                        {ord.lab_assigned}
+                      </span>
+                    </div>
+                    <h3 className="text-xs font-black text-slate-800 mt-1">{ord.customer_name || 'Patient'}</h3>
+                    <div className="text-[11px] text-slate-500 font-mono mt-0.5 flex items-center gap-2">
+                      <span>+91 {ord.customer_phone}</span>
+                      <span>•</span>
+                      <span className="font-black text-slate-900">₹{ord.amount}</span>
+                    </div>
+                  </div>
+
+                  <div className="text-right shrink-0">
+                    {getStatusBadge(ord.fulfillment_status)}
+                    <span className="block text-[10px] text-slate-400 mt-1">
+                      {ord.created_at ? new Date(ord.created_at).toLocaleDateString('en-IN') : ''}
                     </span>
                   </div>
-                  <h3 className="text-xs font-black text-slate-800 mt-1">{ord.customer_name || 'Patient'}</h3>
-                  <div className="text-[11px] text-slate-500 font-mono mt-0.5 flex items-center gap-2">
-                    <span>+91 {ord.customer_phone}</span>
-                    <span>•</span>
-                    <span className="font-black text-slate-900">₹{ord.amount}</span>
-                  </div>
                 </div>
-
-                <div className="text-right shrink-0">
-                  {getStatusBadge(ord.fulfillment_status)}
-                  <span className="block text-[10px] text-slate-400 mt-1">
-                    {new Date(ord.created_at).toLocaleDateString('en-IN')}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
 
-        {/* Right Column: Lab Fulfillment & Report Dispatcher (5 Cols) */}
+        {/* Right Column: Lab Fulfillment & Report Dispatcher */}
         <div className="lg:col-span-5">
           <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-2xs sticky top-6 space-y-5">
             <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
@@ -228,7 +236,6 @@ export default function AdminOrdersTrackingPage() {
 
             {selectedOrder ? (
               <div className="space-y-4 text-xs font-bold">
-                {/* Order Summary Card */}
                 <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
                   <div className="flex justify-between">
                     <span className="text-slate-400">Assigned Lab Partner:</span>
@@ -246,7 +253,6 @@ export default function AdminOrdersTrackingPage() {
                   </div>
                 </div>
 
-                {/* Report Section */}
                 <div className="space-y-3 pt-2">
                   <label className="text-slate-800 block uppercase tracking-wider text-[11px]">
                     Verified PDF Report URL
