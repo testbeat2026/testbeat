@@ -291,7 +291,7 @@ export default function HomePage() {
               
               <div className="space-y-2 mt-4">
                 <a 
-                  href="/prescription"
+                  href="/upload-prescription"
                   className="w-full py-2.5 px-3 rounded-xl bg-[#0F223A] hover:bg-[#163252] text-white text-xs font-bold flex items-center justify-center gap-2 transition"
                 >
                   <FileText size={15} /> Upload Prescription
