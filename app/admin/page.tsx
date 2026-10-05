@@ -64,7 +64,9 @@ export default function AdminPage() {
       setIsLoading(false);
       if (data.success) {
         setOtpSent(true);
+        alert("SMS Dispatched! Apne phone par SMS aur WhatsApp check karein.");
       } else {
+        alert("MSG91 Response: " + (data.error || JSON.stringify(data.msg91_status)));
         setAuthError(data.error || 'Failed to dispatch OTP.');
       }
     } catch (err: any) {
@@ -489,7 +491,7 @@ export default function AdminPage() {
                     </div>
                   </div>
                   <button 
-                    onClick={() => setSelectedStandee(aff)}
+                    onClick={() => { setSelectedStandee(aff); }}
                     className="w-full mt-4 py-2 bg-[#17466E] hover:bg-[#0F3556] text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer"
                   >
                     <Printer size={13} /> View & Print Standee
