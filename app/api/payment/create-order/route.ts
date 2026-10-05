@@ -3,10 +3,15 @@ import pool from '@/lib/db';
 
 export async function POST(req: Request) {
   try {
-    const { customerName, customerPhone, customerEmail, amount, labAssigned } = await req.json();
+    const body = await req.json().catch(() => ({}));
+    const customerPhone = body.customerPhone || body.phone;
+    const customerName = body.customerName || body.name || 'Valued Patient';
+    const customerEmail = body.customerEmail || body.email;
+    const amount = Number(body.amount) || 999;
+    const labAssigned = body.labAssigned || 'Redcliffe Labs';
 
-    if (!customerPhone || !amount) {
-      return NextResponse.json({ success: false, error: 'Phone and Amount are required' }, { status: 400 });
+    if (!customerPhone) {
+      return NextResponse.json({ success: false, error: 'Phone number is required' }, { status: 400 });
     }
 
     const appId = process.env.CASHFREE_APP_ID?.trim();
@@ -16,25 +21,24 @@ export async function POST(req: Request) {
     if (!appId || !secretKey) {
       return NextResponse.json({ 
         success: false, 
-        error: 'Cashfree credentials (CASHFREE_APP_ID or CASHFREE_SECRET_KEY) missing in Vercel' 
+        error: 'Cashfree credentials missing in Vercel Environment Variables' 
       }, { status: 500 });
     }
 
-    const orderId = `TB_${Date.now()}_${Math.floor(1000 + Math.random() * 9000)}`;
     const cleanPhone = customerPhone.replace(/\D/g, '').slice(-10);
+    const orderId = `TB_${Date.now()}_${Math.floor(1000 + Math.random() * 9000)}`;
 
-    // Switch Endpoint based on Environment
     const baseUrl = env === 'PRODUCTION' 
       ? 'https://api.cashfree.com/pg/orders' 
       : 'https://sandbox.cashfree.com/pg/orders';
 
     const orderPayload = {
       order_id: orderId,
-      order_amount: Number(amount),
+      order_amount: amount,
       order_currency: 'INR',
       customer_details: {
         customer_id: `CUST_${cleanPhone}`,
-        customer_name: customerName || 'Valued Patient',
+        customer_name: customerName,
         customer_phone: cleanPhone,
         customer_email: customerEmail || `${cleanPhone}@testbeat.in`
       },
@@ -60,9 +64,8 @@ export async function POST(req: Request) {
     if (!cfRes.ok || !cfData.payment_session_id) {
       return NextResponse.json({
         success: false,
-        error: cfData.message || 'Cashfree Authentication or Order Error',
-        details: cfData,
-        target_env: env
+        error: cfData.message || 'Cashfree Order Failed',
+        details: cfData
       }, { status: 400 });
     }
 
@@ -72,21 +75,28 @@ export async function POST(req: Request) {
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
       [
         orderId, 
-        customerName || 'Patient', 
+        customerName, 
         cleanPhone, 
         customerEmail || '', 
         amount, 
         cfData.cf_order_id || '', 
         cfData.payment_session_id,
-        labAssigned || 'Redcliffe Labs'
+        labAssigned
       ]
     );
+
+    // Direct Cashfree Web Checkout Link Builder
+    const checkoutHost = env === 'PRODUCTION'
+      ? 'https://api.cashfree.com/pg/view/sessions/checkout'
+      : 'https://sandbox.cashfree.com/pg/view/sessions/checkout';
+
+    const paymentUrl = `${checkoutHost}?payment_session_id=${cfData.payment_session_id}`;
 
     return NextResponse.json({
       success: true,
       orderId,
       paymentSessionId: cfData.payment_session_id,
-      cfOrderId: cfData.cf_order_id,
+      paymentUrl: paymentUrl,
       env: env
     });
 
