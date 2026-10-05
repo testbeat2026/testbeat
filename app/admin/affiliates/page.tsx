@@ -64,9 +64,8 @@ export default function AdminAffiliatesPage() {
   const [partnerType, setPartnerType] = useState('Doctor / Clinic');
   const [partnerRate, setPartnerRate] = useState('15');
 
-  // SSR-Safe Clipboard Copy
   const handleCopyLink = (code: string) => {
-    if (typeof window !== 'undefined' && navigator?.clipboard) {
+    if (typeof window !== 'undefined' && typeof navigator !== 'undefined' && navigator.clipboard) {
       navigator.clipboard.writeText(`https://testbeat.in/?ref=${code}`);
       setCopiedCode(code);
       setTimeout(() => setCopiedCode(null), 3000);
@@ -105,7 +104,6 @@ export default function AdminAffiliatesPage() {
         </div>
       </div>
 
-      {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
           <span className="text-[11px] font-bold text-slate-400 uppercase">Active B2B Affiliates</span>
@@ -136,9 +134,7 @@ export default function AdminAffiliatesPage() {
         </div>
       </div>
 
-      {/* Form + Table */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Onboarding Form */}
         <div className="lg:col-span-4 bg-white rounded-3xl p-6 border border-slate-200 shadow-2xs h-fit">
           <h2 className="text-xs font-black text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
             <UserPlus size={16} className="text-[#00A896]" />
@@ -203,7 +199,6 @@ export default function AdminAffiliatesPage() {
           </form>
         </div>
 
-        {/* Existing Partners Table */}
         <div className="lg:col-span-8 bg-white rounded-3xl border border-slate-200 shadow-2xs overflow-hidden">
           <div className="p-4 border-b border-slate-100 font-black text-xs uppercase text-slate-800">
             Registered Referral Partners ({affiliates.length})
