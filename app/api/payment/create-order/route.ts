@@ -11,18 +11,19 @@ export async function POST(req: Request) {
 
     const appId = process.env.CASHFREE_APP_ID?.trim();
     const secretKey = process.env.CASHFREE_SECRET_KEY?.trim();
-    const env = process.env.CASHFREE_ENV || 'SANDBOX'; // 'PRODUCTION' or 'SANDBOX'
+    const env = (process.env.CASHFREE_ENV || 'SANDBOX').trim().toUpperCase();
 
     if (!appId || !secretKey) {
       return NextResponse.json({ 
         success: false, 
-        error: 'Cashfree credentials missing in environment variables' 
+        error: 'Cashfree credentials (CASHFREE_APP_ID or CASHFREE_SECRET_KEY) missing in Vercel' 
       }, { status: 500 });
     }
 
     const orderId = `TB_${Date.now()}_${Math.floor(1000 + Math.random() * 9000)}`;
     const cleanPhone = customerPhone.replace(/\D/g, '').slice(-10);
 
+    // Switch Endpoint based on Environment
     const baseUrl = env === 'PRODUCTION' 
       ? 'https://api.cashfree.com/pg/orders' 
       : 'https://sandbox.cashfree.com/pg/orders';
@@ -35,7 +36,7 @@ export async function POST(req: Request) {
         customer_id: `CUST_${cleanPhone}`,
         customer_name: customerName || 'Valued Patient',
         customer_phone: cleanPhone,
-        customer_email: customerEmail || 'patient@testbeat.in'
+        customer_email: customerEmail || `${cleanPhone}@testbeat.in`
       },
       order_meta: {
         return_url: `https://testbeat.in/payment/status?order_id=${orderId}`
@@ -48,7 +49,8 @@ export async function POST(req: Request) {
         'x-client-id': appId,
         'x-client-secret': secretKey,
         'x-api-version': '2023-08-01',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
       },
       body: JSON.stringify(orderPayload)
     });
@@ -58,8 +60,9 @@ export async function POST(req: Request) {
     if (!cfRes.ok || !cfData.payment_session_id) {
       return NextResponse.json({
         success: false,
-        error: cfData.message || 'Cashfree Order Creation Failed',
-        details: cfData
+        error: cfData.message || 'Cashfree Authentication or Order Error',
+        details: cfData,
+        target_env: env
       }, { status: 400 });
     }
 
@@ -83,7 +86,8 @@ export async function POST(req: Request) {
       success: true,
       orderId,
       paymentSessionId: cfData.payment_session_id,
-      cfOrderId: cfData.cf_order_id
+      cfOrderId: cfData.cf_order_id,
+      env: env
     });
 
   } catch (err: any) {
