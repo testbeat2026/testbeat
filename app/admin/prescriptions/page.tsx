@@ -1,7 +1,19 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { RefreshCw, FileText, CheckCircle2, Send, Phone, MapPin, Eye, ExternalLink } from 'lucide-react';
+import { 
+  RefreshCw, 
+  FileText, 
+  CheckCircle2, 
+  Send, 
+  Phone, 
+  MapPin, 
+  Eye, 
+  Clock, 
+  Building2, 
+  Sparkles,
+  ExternalLink 
+} from 'lucide-react';
 
 interface Prescription {
   id: number;
@@ -11,6 +23,7 @@ interface Prescription {
   file_url: string;
   status: string;
   extracted_tests: string;
+  selected_lab: string;
   quoted_amount: string;
   created_at: string;
 }
@@ -32,6 +45,12 @@ export default function AdminPrescriptionsPage() {
       const data = await res.json();
       if (data.success) {
         setItems(data.prescriptions);
+        if (data.prescriptions.length > 0 && !selectedRx) {
+          setSelectedRx(data.prescriptions[0]);
+          setTestNames(data.prescriptions[0].extracted_tests || 'CBC with ESR, Lipid Profile');
+          setQuoteAmount(data.prescriptions[0].quoted_amount || '649');
+          setLab(data.prescriptions[0].selected_lab || 'Redcliffe Labs');
+        }
       }
     } catch (err) {
       console.error(err);
@@ -43,6 +62,13 @@ export default function AdminPrescriptionsPage() {
   useEffect(() => {
     fetchPrescriptions();
   }, []);
+
+  const handleSelectPrescription = (rx: Prescription) => {
+    setSelectedRx(rx);
+    setTestNames(rx.extracted_tests || 'CBC with ESR, Thyroid Profile');
+    setQuoteAmount(rx.quoted_amount || '649');
+    setLab(rx.selected_lab || 'Redcliffe Labs');
+  };
 
   const handleSendQuote = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,7 +93,6 @@ export default function AdminPrescriptionsPage() {
       if (data.success && data.waUrl) {
         window.open(data.waUrl, '_blank');
         fetchPrescriptions();
-        setSelectedRx(null);
       } else {
         alert('Quote failed: ' + (data.error || 'Server error'));
       }
@@ -78,145 +103,190 @@ export default function AdminPrescriptionsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F7F9] p-4 sm:p-8 font-sans">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-          <div>
-            <h1 className="text-2xl font-black text-slate-900">Prescription ("Parcha") Desk</h1>
-            <p className="text-xs text-slate-500 font-bold mt-1">Review Patient Uploads & Generate WhatsApp Quotes</p>
+    <div className="space-y-6">
+      {/* 4 Summary Stat Cards like the reference dashboard */}
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
+          <span className="text-[11px] font-bold text-slate-400 uppercase">Total Prescriptions</span>
+          <div className="flex items-center justify-between mt-2">
+            <span className="text-2xl font-black text-slate-900">{items.length}</span>
+            <span className="text-[11px] font-bold text-teal-600 bg-teal-50 px-2 py-0.5 rounded-full">Live Neon DB</span>
           </div>
-          <button 
+        </div>
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
+          <span className="text-[11px] font-bold text-slate-400 uppercase">Pending Review</span>
+          <div className="flex items-center justify-between mt-2">
+            <span className="text-2xl font-black text-amber-600">
+              {items.filter(i => i.status !== 'QUOTED').length}
+            </span>
+            <span className="text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full">Action Req.</span>
+          </div>
+        </div>
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
+          <span className="text-[11px] font-bold text-slate-400 uppercase">Quoted & Converted</span>
+          <div className="flex items-center justify-between mt-2">
+            <span className="text-2xl font-black text-emerald-600">
+              {items.filter(i => i.status === 'QUOTED').length}
+            </span>
+            <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">Dispatched</span>
+          </div>
+        </div>
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs flex items-center justify-between">
+          <div>
+            <span className="text-[11px] font-bold text-slate-400 uppercase">Database Status</span>
+            <span className="text-sm font-black text-[#00A896] block mt-1">100% Operational</span>
+          </div>
+          <button
             onClick={fetchPrescriptions}
-            className="flex items-center justify-center gap-2 bg-[#009387] hover:bg-[#007A70] text-white font-extrabold text-xs px-4 py-2.5 rounded-xl shadow cursor-pointer transition w-fit"
+            className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 cursor-pointer transition"
+            title="Refresh DB"
           >
-            <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
-            <span>Sync Uploads</span>
+            <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
           </button>
         </div>
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* List of Prescriptions */}
-          <div className="lg:col-span-2 space-y-4">
-            {items.length === 0 ? (
-              <div className="bg-white rounded-3xl p-8 border border-slate-200 text-center text-slate-400 font-bold text-xs">
-                {loading ? 'Loading prescriptions...' : 'No prescriptions uploaded yet.'}
-              </div>
-            ) : (
-              items.map((item) => (
-                <div 
-                  key={item.id} 
-                  className={`bg-white rounded-3xl p-5 border transition cursor-pointer shadow-xs ${selectedRx?.id === item.id ? 'border-[#009387] ring-2 ring-[#009387]/20' : 'border-slate-200 hover:border-slate-300'}`}
-                  onClick={() => {
-                    setSelectedRx(item);
-                    setTestNames(item.extracted_tests || 'CBC + LFT + KFT Profile');
-                    setQuoteAmount(item.quoted_amount || '799');
-                  }}
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex gap-3">
-                      <div className="w-12 h-12 bg-slate-100 rounded-xl overflow-hidden shrink-0 border border-slate-200 flex items-center justify-center">
-                        {item.file_url ? (
-                          <img src={item.file_url} alt="Rx" className="w-full h-full object-cover" />
-                        ) : (
-                          <FileText size={20} className="text-slate-400" />
-                        )}
-                      </div>
-                      <div>
-                        <h3 className="text-sm font-black text-slate-900">{item.patient_name || 'Patient'}</h3>
-                        <p className="text-xs font-mono text-slate-500 font-bold mt-0.5">+91 {item.patient_phone}</p>
-                        <p className="text-[11px] text-slate-400 mt-1 flex items-center gap-1">
-                          <MapPin size={10} /> {item.patient_address || 'Greater Noida'}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="text-right">
-                      {item.status === 'QUOTED' ? (
-                        <span className="text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-full uppercase">
-                          Quoted (₹{item.quoted_amount})
-                        </span>
-                      ) : (
-                        <span className="text-[10px] font-black bg-amber-50 text-amber-700 border border-amber-200 px-2.5 py-1 rounded-full uppercase">
-                          Pending Review
-                        </span>
-                      )}
-                      <span className="block text-[10px] text-slate-400 font-semibold mt-2">
-                        {new Date(item.created_at).toLocaleDateString('en-IN')}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
+      {/* Main 2-Column Console */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left Column: List of Prescriptions (7 Cols) */}
+        <div className="lg:col-span-7 space-y-3">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-sm font-black text-slate-900 uppercase tracking-wider">
+              Incoming Prescriptions Queue ({items.length})
+            </h2>
+            <span className="text-xs text-slate-400 font-semibold">Click row to review & dispatch</span>
           </div>
 
-          {/* Action Box */}
-          <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm h-fit">
-            <h2 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-4">
-              Quote & Dispatch Generator
-            </h2>
+          {items.length === 0 ? (
+            <div className="bg-white rounded-2xl p-12 text-center text-slate-400 font-bold text-xs border border-slate-200">
+              {loading ? 'Fetching live prescriptions...' : 'No prescriptions uploaded yet.'}
+            </div>
+          ) : (
+            items.map((rx) => {
+              const isSelected = selectedRx?.id === rx.id;
+              return (
+                <div
+                  key={rx.id}
+                  onClick={() => handleSelectPrescription(rx)}
+                  className={`p-4 rounded-2xl border transition cursor-pointer flex items-center justify-between gap-4 ${
+                    isSelected
+                      ? 'bg-white border-[#00A896] ring-2 ring-[#00A896]/15 shadow-sm'
+                      : 'bg-white border-slate-200 hover:border-slate-300 shadow-2xs'
+                  }`}
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center">
+                      {rx.file_url ? (
+                        <img src={rx.file_url} alt="Rx" className="w-full h-full object-cover" />
+                      ) : (
+                        <FileText size={18} className="text-slate-400" />
+                      )}
+                    </div>
+                    <div className="truncate">
+                      <h3 className="text-xs font-black text-slate-900 truncate">{rx.patient_name || 'Patient'}</h3>
+                      <p className="text-[11px] text-slate-500 font-mono font-bold mt-0.5 flex items-center gap-1">
+                        <Phone size={10} /> +91 {rx.patient_phone}
+                      </p>
+                      <p className="text-[10px] text-slate-400 truncate mt-0.5">
+                        {rx.extracted_tests || 'General Tests Selected'}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="text-right shrink-0">
+                    {rx.status === 'QUOTED' ? (
+                      <span className="text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full uppercase">
+                        Quoted ₹{rx.quoted_amount}
+                      </span>
+                    ) : (
+                      <span className="text-[10px] font-black bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full uppercase">
+                        Pending
+                      </span>
+                    )}
+                    <span className="block text-[10px] text-slate-400 mt-1 font-semibold">
+                      {new Date(rx.created_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        {/* Right Column: Review & Dispatch Generator Card (5 Cols) */}
+        <div className="lg:col-span-5">
+          <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm sticky top-6">
+            <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
+              <Sparkles size={14} className="text-[#00A896]" />
+              Prescription Inspection & WhatsApp Dispatch
+            </h3>
 
             {selectedRx ? (
               <form onSubmit={handleSendQuote} className="space-y-4 text-xs font-bold">
+                {/* Prescription Image Inspection */}
                 <div>
-                  <span className="text-slate-400 block mb-1">Prescription Preview:</span>
-                  <a href={selectedRx.file_url} target="_blank" rel="noreferrer" className="block relative group overflow-hidden rounded-2xl border border-slate-200 max-h-44">
-                    <img src={selectedRx.file_url} alt="Prescription" className="w-full h-full object-cover" />
+                  <span className="text-slate-400 block text-[10px] uppercase mb-1">Doctor Parcha Preview:</span>
+                  <a
+                    href={selectedRx.file_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block relative group overflow-hidden rounded-2xl border border-slate-200 max-h-48 bg-slate-100"
+                  >
+                    <img src={selectedRx.file_url} alt="Prescription" className="w-full h-full object-contain" />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white gap-1 transition">
-                      <Eye size={14} /> Full View
+                      <Eye size={14} /> Click to Full Screen
                     </div>
                   </a>
                 </div>
 
                 <div>
-                  <label className="text-slate-700 block mb-1">Diagnosed Tests (Extracted)</label>
+                  <label className="text-slate-700 block mb-1">Diagnosed Tests (Extracted / Customized)</label>
                   <input
                     type="text"
                     required
                     value={testNames}
                     onChange={(e) => setTestNames(e.target.value)}
-                    placeholder="e.g. Thyroid, HbA1c, Vitamin D"
-                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-[#009387]"
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-[#00A896] text-xs font-bold"
                   />
                 </div>
 
-                <div>
-                  <label className="text-slate-700 block mb-1">Fulfillment Lab Partner</label>
-                  <select
-                    value={lab}
-                    onChange={(e) => setLab(e.target.value)}
-                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none text-[#17466E]"
-                  >
-                    <option value="Redcliffe Labs">Redcliffe Labs (Fastest)</option>
-                    <option value="Dr Lal PathLabs">Dr Lal PathLabs</option>
-                    <option value="Thyrocare">Thyrocare</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="text-slate-700 block mb-1">Discounted Quote Amount (₹)</label>
-                  <input
-                    type="number"
-                    required
-                    value={quoteAmount}
-                    onChange={(e) => setQuoteAmount(e.target.value)}
-                    placeholder="e.g. 699"
-                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none text-emerald-600 font-extrabold"
-                  />
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-slate-700 block mb-1">Assigned Lab</label>
+                    <select
+                      value={lab}
+                      onChange={(e) => setLab(e.target.value)}
+                      className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none text-[#0F1E36] text-xs font-bold"
+                    >
+                      <option value="Redcliffe Labs">Redcliffe Labs</option>
+                      <option value="Dr Lal PathLabs">Dr Lal PathLabs</option>
+                      <option value="Thyrocare">Thyrocare</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-slate-700 block mb-1">Quote Price (₹)</label>
+                    <input
+                      type="number"
+                      required
+                      value={quoteAmount}
+                      onChange={(e) => setQuoteAmount(e.target.value)}
+                      className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none text-emerald-600 font-extrabold text-xs"
+                    />
+                  </div>
                 </div>
 
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full py-3.5 bg-[#009387] hover:bg-[#007A70] text-white rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer font-black"
+                  className="w-full py-3.5 bg-[#00A896] hover:bg-[#008f80] text-white rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer font-black text-xs"
                 >
                   <Send size={14} />
-                  <span>{submitting ? 'Creating Quote...' : 'Send WhatsApp Quote Link'}</span>
+                  <span>{submitting ? 'Generating Quote...' : 'Dispatch Quote to Patient WhatsApp'}</span>
                 </button>
               </form>
             ) : (
-              <div className="py-12 text-center text-slate-400 font-bold text-xs">
-                Select any prescription from the list to review and send instant quote.
+              <div className="py-16 text-center text-slate-400 font-bold text-xs">
+                Select a prescription from the queue to inspect and dispatch.
               </div>
             )}
           </div>
