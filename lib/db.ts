@@ -1,22 +1,16 @@
 import { Pool } from 'pg';
 
-let pool: Pool | null = null;
+let pool: Pool;
 
-export function getDbPool() {
-  if (!pool) {
-    const connectionString = process.env.DATABASE_URL;
-    if (connectionString) {
-      pool = new Pool({
-        connectionString,
-        ssl: { rejectUnauthorized: false }
-      });
-    }
-  }
-  return pool;
+// @ts-ignore
+if (!global.pgPool) {
+  // @ts-ignore
+  global.pgPool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false },
+  });
 }
+// @ts-ignore
+pool = global.pgPool;
 
-export async function query(text: string, params?: any[]) {
-  const p = getDbPool();
-  if (!p) return null;
-  return p.query(text, params);
-}
+export default pool;
