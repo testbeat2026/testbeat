@@ -7,7 +7,6 @@ export default function VisitorTracker() {
   const pathname = usePathname();
 
   useEffect(() => {
-    // Only track public routes (ignore internal admin paths)
     if (pathname.startsWith('/admin') || pathname.startsWith('/login')) return;
 
     fetch('/api/tracker', {
