@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
@@ -13,7 +13,7 @@ import {
   ArrowLeft, 
   Bell, 
   Search,
-  Activity
+  LogOut
 } from 'lucide-react';
 
 const MENU_ITEMS = [
@@ -27,10 +27,44 @@ const MENU_ITEMS = [
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
+  useEffect(() => {
+    // Check local session
+    const auth = localStorage.getItem('tb_admin_auth');
+    setIsAuthenticated(auth === 'true');
+  }, [pathname]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('tb_admin_auth');
+    setIsAuthenticated(false);
+    window.location.href = '/admin';
+  };
+
+  // Jab tak check ho raha hai
+  if (isAuthenticated === null) {
+    return (
+      <div className="fixed inset-0 z-50 bg-[#0F1E36] flex items-center justify-center text-white font-bold text-sm">
+        Verifying Session...
+      </div>
+    );
+  }
+
+  // AGAR LOGIN NAHI HAI: Show Only Clean Fullscreen Login
+  if (!isAuthenticated) {
+    return (
+      <div className="fixed inset-0 z-50 bg-[#0A1628] flex items-center justify-center p-4 overflow-y-auto">
+        <div className="w-full max-w-md">
+          {children}
+        </div>
+      </div>
+    );
+  }
+
+  // AGAR LOGIN HAI: Show Complete Operational Dashboard
   return (
-    <div className="flex h-screen bg-[#F4F7FB] font-sans antialiased overflow-hidden">
-      {/* 1. DARK NAVY SIDEBAR (Exact reference UI) */}
+    <div className="fixed inset-0 z-50 flex bg-[#F4F7FB] font-sans antialiased overflow-hidden">
+      {/* 1. DARK NAVY SIDEBAR */}
       <aside className="w-64 bg-[#0F1E36] text-slate-300 flex flex-col justify-between shrink-0 shadow-xl border-r border-[#1B2D4B]">
         <div>
           {/* Logo Brand Header */}
@@ -50,7 +84,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <nav className="p-4 space-y-1.5">
             {MENU_ITEMS.map((item) => {
               const Icon = item.icon;
-              const isActive = pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href));
+              const isActive = pathname === item.href;
 
               return (
                 <Link
@@ -70,21 +104,28 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </nav>
         </div>
 
-        {/* Back to Live Website Footer Link */}
-        <div className="p-4 border-t border-[#1B2D4B]">
+        {/* Footer Actions */}
+        <div className="p-4 border-t border-[#1B2D4B] space-y-2">
           <Link
             href="/"
             className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:text-white hover:bg-[#162744] transition"
           >
             <ArrowLeft size={16} />
-            <span>Back to Live Website</span>
+            <span>Live Website</span>
           </Link>
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold text-rose-400 hover:bg-rose-500/10 transition cursor-pointer"
+          >
+            <LogOut size={16} />
+            <span>Sign Out</span>
+          </button>
         </div>
       </aside>
 
-      {/* 2. MAIN CONTENT AREA */}
+      {/* 2. MAIN VIEWPORT */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Top Operational Header */}
+        {/* Top Header */}
         <header className="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between shrink-0 shadow-2xs">
           <div className="flex items-center gap-4 w-96">
             <div className="relative w-full">
@@ -108,13 +149,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               </div>
               <div className="text-left text-xs">
                 <span className="font-extrabold text-slate-800 block">Admin</span>
-                <span className="text-[10px] text-[#00A896] font-bold">Greater Noida Node</span>
+                <span className="text-[10px] text-[#00A896] font-bold">Founder Control</span>
               </div>
             </div>
           </div>
         </header>
 
-        {/* Scrollable Main Viewport */}
+        {/* Scrollable Content */}
         <main className="flex-1 overflow-y-auto p-6 bg-[#F8FAFC]">
           {children}
         </main>
