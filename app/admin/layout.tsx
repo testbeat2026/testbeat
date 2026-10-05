@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { 
   LayoutDashboard, 
   FileText, 
@@ -13,13 +13,15 @@ import {
   ArrowLeft, 
   Bell, 
   Search,
-  LogOut
+  LogOut,
+  ShieldCheck
 } from 'lucide-react';
 
 const MENU_ITEMS = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
   { name: 'Live Bookings', href: '/admin/orders', icon: ClipboardList },
   { name: 'Prescription Desk', href: '/admin/prescriptions', icon: FileText },
+  { name: 'User & Roles', href: '/admin/users', icon: ShieldCheck },
   { name: 'Lab Partners', href: '/admin/labs', icon: Building2 },
   { name: 'Phlebotomists', href: '/admin/riders', icon: Users },
   { name: 'Settings', href: '/admin/settings', icon: Settings },
@@ -27,22 +29,29 @@ const MENU_ITEMS = [
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
-    // Check local session
     const auth = localStorage.getItem('tb_admin_auth');
-    setIsAuthenticated(auth === 'true');
-  }, [pathname]);
+    if (auth === 'true') {
+      setIsAuthenticated(true);
+    } else {
+      setIsAuthenticated(false);
+      // Agar login nahi hai toh login screen par bhej dega
+      router.replace('/login');
+    }
+  }, [pathname, router]);
 
   const handleLogout = () => {
     localStorage.removeItem('tb_admin_auth');
+    localStorage.removeItem('tb_user_session');
     setIsAuthenticated(false);
-    window.location.href = '/admin';
+    window.location.href = '/login';
   };
 
-  // Jab tak check ho raha hai
-  if (isAuthenticated === null) {
+  // Jab tak verification chal raha hai
+  if (isAuthenticated === null || !isAuthenticated) {
     return (
       <div className="fixed inset-0 z-50 bg-[#0F1E36] flex items-center justify-center text-white font-bold text-sm">
         Verifying Session...
@@ -50,18 +59,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
-  // AGAR LOGIN NAHI HAI: Show Only Clean Fullscreen Login
-  if (!isAuthenticated) {
-    return (
-      <div className="fixed inset-0 z-50 bg-[#0A1628] flex items-center justify-center p-4 overflow-y-auto">
-        <div className="w-full max-w-md">
-          {children}
-        </div>
-      </div>
-    );
-  }
-
-  // AGAR LOGIN HAI: Show Complete Operational Dashboard
   return (
     <div className="fixed inset-0 z-50 flex bg-[#F4F7FB] font-sans antialiased overflow-hidden">
       {/* 1. DARK NAVY SIDEBAR */}
@@ -148,8 +145,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 SK
               </div>
               <div className="text-left text-xs">
-                <span className="font-extrabold text-slate-800 block">Admin</span>
-                <span className="text-[10px] text-[#00A896] font-bold">Founder Control</span>
+                <span className="font-extrabold text-slate-800 block">Super Admin</span>
+                <span className="text-[10px] text-[#00A896] font-bold">Full Clearance</span>
               </div>
             </div>
           </div>
