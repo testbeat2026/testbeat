@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   ShieldCheck, 
   MapPin, 
@@ -11,29 +11,23 @@ import {
   Activity, 
   FlaskConical, 
   Menu, 
-  X,
-  Sparkles,
-  Award,
-  Clock,
-  ArrowRight,
-  Handshake,
-  CheckCircle2,
-  Lock,
-  Send,
-  UserCheck,
-  Check,
-  UploadCloud,
-  ThermometerSnowflake,
-  Microscope,
-  Stethoscope,
-  HeartPulse,
-  ChevronRight,
-  HelpCircle,
-  TrendingDown,
-  Building2
+  X, 
+  Sparkles, 
+  Award, 
+  Clock, 
+  ArrowRight, 
+  Handshake, 
+  CheckCircle2, 
+  Lock, 
+  Send, 
+  UserCheck, 
+  Check, 
+  UploadCloud, 
+  ThermometerSnowflake, 
+  Microscope, 
+  ChevronRight 
 } from 'lucide-react';
 
-// --- DATA STRUCTURES (API READY) ---
 interface TestItem {
   id: string;
   name: string;
@@ -71,7 +65,7 @@ const LAB_CHAINS = [
     labId: 'healthians',
     labName: 'Healthians Network',
     shortCode: 'HN',
-    badge: 'Smart Digital Tracking',
+    badge: 'Fastest Home Collection',
     accreditation: 'NABL Certified Lab',
     reportHours: 18,
     baseRateMultiplier: 1.08,
@@ -103,7 +97,6 @@ const LAB_CHAINS = [
 ];
 
 export default function TestBeatMedicalPortal() {
-  // Navigation & Customer Auth Modal States
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authStep, setAuthStep] = useState<'MOBILE' | 'OTP'>('MOBILE');
@@ -111,26 +104,22 @@ export default function TestBeatMedicalPortal() {
   const [patientOtp, setPatientOtp] = useState('');
   const [authLoading, setAuthLoading] = useState(false);
 
-  // Category Filtering & Multi-Select Engine
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTests, setSelectedTests] = useState<TestItem[]>([
-    DEFAULT_TESTS[0], // CBC
-    DEFAULT_TESTS[1], // Thyroid
-    DEFAULT_TESTS[6]  // Vitamin D
+    DEFAULT_TESTS[0],
+    DEFAULT_TESTS[1],
+    DEFAULT_TESTS[6]
   ]);
 
-  // Affiliate Lead Form
   const [affiliateData, setAffiliateData] = useState({
     name: '',
     phone: '',
     city: '',
     category: 'Doctor / Clinic',
-    volume: '20-100 tests/month'
   });
   const [affiliateSubmitted, setAffiliateSubmitted] = useState(false);
 
-  // Live Auto-Filter
   const filteredCatalog = useMemo(() => {
     return DEFAULT_TESTS.filter(item => {
       const matchCat = selectedCategory === 'All' || item.category === selectedCategory;
@@ -152,14 +141,12 @@ export default function TestBeatMedicalPortal() {
     return selectedTests.reduce((acc, t) => acc + t.parametersCount, 0);
   }, [selectedTests]);
 
-  // Dynamic Multi-Lab Price Engine with Value-Scoring Algorithm
   const calculatedLabQuotes = useMemo(() => {
-    const baseAggregatedCost = selectedTests.reduce((acc, _) => acc + 480, 0);
+    const baseAggregatedCost = selectedTests.reduce((acc) => acc + 480, 0);
 
     return LAB_CHAINS.map(lab => {
       const grossMrp = Math.round(baseAggregatedCost * lab.baseRateMultiplier * 1.7);
       const discountedNet = Math.round(grossMrp * (1 - lab.discountRate / 100));
-      // Best Value Index = Parameters covered per rupee spent
       const valueMetric = (totalSelectedParameters / (discountedNet || 1)) * 1000;
 
       return {
@@ -178,7 +165,7 @@ export default function TestBeatMedicalPortal() {
     setTimeout(() => {
       setAuthLoading(false);
       setAuthStep('OTP');
-    }, 700);
+    }, 600);
   };
 
   const handleVerifyOtp = (e: React.FormEvent) => {
@@ -189,9 +176,9 @@ export default function TestBeatMedicalPortal() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800 antialiased selection:bg-sky-600 selection:text-white">
-
-      {/* ================= 1. PAN-INDIA MEDICAL TRUST STRIP ================= */}
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800">
+      
+      {/* 1. TOP PAN-INDIA TRUST BAR */}
       <div className="bg-slate-950 text-slate-200 text-xs py-2.5 px-4 border-b border-slate-800">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center space-x-4 overflow-x-auto text-[11px] sm:text-xs">
@@ -220,13 +207,12 @@ export default function TestBeatMedicalPortal() {
         </div>
       </div>
 
-      {/* ================= 2. MASTER NAVBAR ================= */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-sm">
+      {/* 2. NAVBAR */}
+      <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           
-          {/* Logo & Updated Slogan */}
-          <a href="#" className="flex items-center space-x-3 group">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-sky-600 to-teal-500 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-sky-500/20 group-hover:scale-105 transition-transform">
+          <a href="#" className="flex items-center space-x-3">
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-sky-600 to-teal-500 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-sky-500/20">
               TB
             </div>
             <div>
@@ -240,27 +226,24 @@ export default function TestBeatMedicalPortal() {
             </div>
           </a>
 
-          {/* Core Navigation */}
           <nav className="hidden lg:flex items-center space-x-8 text-sm font-bold text-slate-700">
-            <a href="#compare" className="flex items-center space-x-1.5 text-sky-600 hover:text-sky-700">
+            <a href="#compare" className="flex items-center space-x-1.5 text-sky-600">
               <FlaskConical className="w-4 h-4" />
               <span>Compare Labs</span>
               <span className="bg-emerald-100 text-emerald-700 text-[10px] font-black px-1.5 py-0.5 rounded-full">Live</span>
             </a>
-            <a href="#packages" className="hover:text-sky-600 transition-colors">Health Packages</a>
-            <a href="#clinical-governance" className="hover:text-sky-600 transition-colors">Quality Standard</a>
-            <a href="#wellness" className="hover:text-sky-600 transition-colors">Health Guide</a>
-            <a href="#affiliate" className="flex items-center space-x-1 text-slate-600 hover:text-sky-600 transition-colors">
+            <a href="#compare" className="hover:text-sky-600">Health Packages</a>
+            <a href="#clinical-governance" className="hover:text-sky-600">Quality Standard</a>
+            <a href="#affiliate" className="flex items-center space-x-1 text-slate-600 hover:text-sky-600">
               <Handshake className="w-4 h-4 text-emerald-600" />
               <span>Partner With Us</span>
             </a>
           </nav>
 
-          {/* Patient Authentication Action */}
           <div className="flex items-center space-x-3">
             <button
               onClick={() => { setAuthStep('MOBILE'); setIsAuthOpen(true); }}
-              className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl border border-slate-300 text-slate-800 text-sm font-bold hover:border-sky-500 hover:text-sky-600 hover:bg-sky-50/70 transition-all shadow-sm"
+              className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl border border-slate-300 text-slate-800 text-sm font-bold hover:border-sky-500 hover:text-sky-600 hover:bg-sky-50 transition-all shadow-sm"
             >
               <User className="w-4 h-4 text-sky-600" />
               <span>Patient Sign In</span>
@@ -268,7 +251,7 @@ export default function TestBeatMedicalPortal() {
 
             <a
               href="#compare"
-              className="hidden sm:inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-gradient-to-r from-sky-600 to-teal-600 hover:from-sky-700 hover:to-teal-700 text-white text-sm font-extrabold shadow-md shadow-sky-600/20 transition-all"
+              className="hidden sm:inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-sm font-bold shadow-md shadow-sky-600/20 transition-all"
             >
               Book Home Collection
             </a>
@@ -282,11 +265,9 @@ export default function TestBeatMedicalPortal() {
           </div>
         </div>
 
-        {/* Mobile Flyout */}
         {mobileMenuOpen && (
           <div className="lg:hidden border-t border-slate-100 bg-white px-5 pt-3 pb-6 space-y-3 shadow-xl">
             <a href="#compare" onClick={() => setMobileMenuOpen(false)} className="block text-sm font-bold text-slate-800 py-1">Compare Labs Live</a>
-            <a href="#packages" onClick={() => setMobileMenuOpen(false)} className="block text-sm font-bold text-slate-800 py-1">Health Packages</a>
             <a href="#clinical-governance" onClick={() => setMobileMenuOpen(false)} className="block text-sm font-bold text-slate-800 py-1">Cold-Chain Assurance</a>
             <a href="#affiliate" onClick={() => setMobileMenuOpen(false)} className="block text-sm font-bold text-slate-800 py-1">Affiliate Partner Network</a>
             <button
@@ -299,26 +280,25 @@ export default function TestBeatMedicalPortal() {
         )}
       </header>
 
-      {/* ================= 3. HERO & CLINICAL VALUE PROP ================= */}
-      <section className="bg-gradient-to-b from-sky-50/60 to-white pt-12 pb-14 border-b border-slate-200/60">
+      {/* 3. HERO */}
+      <section className="bg-gradient-to-b from-sky-50 to-white pt-12 pb-14 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto">
-            <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-sky-100 text-sky-800 text-xs font-bold mb-4 shadow-sm">
+            <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-sky-100 text-sky-800 text-xs font-bold mb-4">
               <Sparkles className="w-4 h-4 text-sky-600" />
-              <span>Transparent Multi-Lab Aggregator • Up to 70% Honest Savings</span>
+              <span>Transparent Multi-Lab Aggregator • Up to 70% Savings</span>
             </div>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-tight">
               One Blood Sample. <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 via-teal-600 to-emerald-600">
+              <span className="text-sky-600">
                 India&apos;s Top Diagnostic Labs Compared.
               </span>
             </h1>
-            <p className="text-slate-600 text-sm sm:text-base mt-4 max-w-2xl mx-auto leading-relaxed font-medium">
-              Don&apos;t overpay for pathology. Select your required biomarkers, compare verified NABL & CAP accredited laboratory networks side-by-side, and book cold-chain phlebotomy at your doorstep.
+            <p className="text-slate-600 text-sm sm:text-base mt-4 max-w-2xl mx-auto font-medium">
+              Select your tests, compare verified NABL & CAP accredited laboratory networks side-by-side, and book cold-chain phlebotomy at your doorstep.
             </p>
           </div>
 
-          {/* Quick Metrics */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mt-10">
             <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm text-center">
               <p className="text-2xl font-black text-slate-900">100%</p>
@@ -340,14 +320,13 @@ export default function TestBeatMedicalPortal() {
         </div>
       </section>
 
-      {/* ================= 4. INTERACTIVE MULTI-TEST COMPARATOR ================= */}
+      {/* 4. MULTI-TEST SEARCH & SELECTOR */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14" id="compare">
         <div className="text-center max-w-2xl mx-auto mb-8">
           <h2 className="text-3xl font-black text-slate-900 tracking-tight">Step 1: Select Your Tests or Organs</h2>
           <p className="text-slate-500 text-sm mt-1">Pick multiple individual biomarkers to activate real-time lab price matching.</p>
         </div>
 
-        {/* Category Filter Tabs */}
         <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
           {['All', 'Full Body', 'Heart', 'Diabetes', 'Thyroid', 'Liver', 'Kidney', 'Vitamins'].map(category => (
             <button
@@ -355,7 +334,7 @@ export default function TestBeatMedicalPortal() {
               onClick={() => setSelectedCategory(category)}
               className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all ${
                 selectedCategory === category
-                  ? 'bg-sky-600 text-white shadow-md shadow-sky-600/20'
+                  ? 'bg-sky-600 text-white shadow-md'
                   : 'bg-white border border-slate-200 text-slate-600 hover:border-sky-400'
               }`}
             >
@@ -364,9 +343,8 @@ export default function TestBeatMedicalPortal() {
           ))}
         </div>
 
-        {/* Search Bar */}
         <div className="max-w-2xl mx-auto mb-8 relative">
-          <div className="relative flex items-center bg-white border-2 border-slate-200 focus-within:border-sky-600 rounded-2xl p-2 shadow-sm transition-all">
+          <div className="relative flex items-center bg-white border-2 border-slate-200 focus-within:border-sky-600 rounded-2xl p-2 shadow-sm">
             <Search className="w-5 h-5 text-sky-600 ml-3 flex-shrink-0" />
             <input
               type="text"
@@ -383,7 +361,6 @@ export default function TestBeatMedicalPortal() {
           </div>
         </div>
 
-        {/* Test Selection Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {filteredCatalog.map(test => {
             const isSelected = selectedTests.some(t => t.id === test.id);
@@ -391,10 +368,10 @@ export default function TestBeatMedicalPortal() {
               <div
                 key={test.id}
                 onClick={() => toggleTest(test)}
-                className={`p-4 rounded-2xl border cursor-pointer transition-all duration-200 flex flex-col justify-between ${
+                className={`p-4 rounded-2xl border cursor-pointer transition-all flex flex-col justify-between ${
                   isSelected
-                    ? 'bg-sky-50/80 border-sky-600 shadow-md ring-2 ring-sky-600/20'
-                    : 'bg-white border-slate-200 hover:border-slate-300 hover:shadow-sm'
+                    ? 'bg-sky-50 border-sky-600 shadow-md ring-2 ring-sky-600'
+                    : 'bg-white border-slate-200 hover:border-slate-300'
                 }`}
               >
                 <div>
@@ -407,7 +384,7 @@ export default function TestBeatMedicalPortal() {
                     </div>
                   </div>
                   <h4 className="font-bold text-slate-900 text-sm leading-snug">{test.name}</h4>
-                  <p className="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">{test.description}</p>
+                  <p className="text-xs text-slate-500 mt-1 line-clamp-2">{test.description}</p>
                 </div>
                 
                 <div className="pt-3 border-t border-slate-100 mt-3 flex items-center justify-between text-[11px] text-slate-500 font-medium">
@@ -427,7 +404,7 @@ export default function TestBeatMedicalPortal() {
             </div>
             <div>
               <p className="text-xs font-semibold text-slate-300">Biomarkers Configured</p>
-              <p className="text-sm font-extrabold text-white">{totalSelectedParameters} Total Clinical Parameters Selected</p>
+              <p className="text-sm font-extrabold text-white">{totalSelectedParameters} Total Parameters Selected</p>
             </div>
           </div>
           
@@ -444,7 +421,7 @@ export default function TestBeatMedicalPortal() {
           </div>
         </div>
 
-        {/* ================= MULTI-LAB QUOTE MATRIX ================= */}
+        {/* 5. MULTI-LAB COMPARISON MATRIX */}
         <div id="lab-matrix" className="pt-4">
           <div className="text-center max-w-2xl mx-auto mb-8">
             <span className="text-xs font-black text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full uppercase tracking-wider">
@@ -453,7 +430,7 @@ export default function TestBeatMedicalPortal() {
             <h3 className="text-2xl sm:text-3xl font-black text-slate-900 mt-2">
               Select Your Preferred Diagnostic Partner
             </h3>
-            <p className="text-slate-500 text-xs sm:text-sm mt-1">Algorithm automatically ranks the lab with maximum biomarker depth per rupee spent.</p>
+            <p className="text-slate-500 text-xs sm:text-sm mt-1">Algorithm automatically ranks the lab with maximum parameter depth per rupee spent.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -462,10 +439,10 @@ export default function TestBeatMedicalPortal() {
               return (
                 <div
                   key={lab.labId}
-                  className={`bg-white rounded-3xl p-6 border flex flex-col justify-between transition-all duration-300 relative ${
+                  className={`bg-white rounded-3xl p-6 border flex flex-col justify-between transition-all relative ${
                     isBestValue
-                      ? 'border-2 border-emerald-500 shadow-xl shadow-emerald-500/10 ring-4 ring-emerald-50 scale-102'
-                      : 'border-slate-200 shadow hover:shadow-lg hover:border-sky-300'
+                      ? 'border-2 border-emerald-500 shadow-xl ring-4 ring-emerald-50'
+                      : 'border-slate-200 shadow hover:shadow-lg'
                   }`}
                 >
                   {isBestValue && (
@@ -490,18 +467,18 @@ export default function TestBeatMedicalPortal() {
 
                     <div className="space-y-2 border-t border-b border-slate-100 py-3.5 mb-4 text-xs">
                       <div className="flex items-center justify-between text-slate-700">
-                        <span className="text-slate-500">Parameters Tested:</span>
+                        <span className="text-slate-500">Parameters:</span>
                         <span className="font-black text-slate-900">{totalSelectedParameters} Tests</span>
                       </div>
                       <div className="flex items-center justify-between text-slate-700">
-                        <span className="text-slate-500">Report Turnaround:</span>
+                        <span className="text-slate-500">Report In:</span>
                         <span className="font-bold text-slate-900 flex items-center">
                           <Clock className="w-3 h-3 mr-1 text-slate-400" />
                           Within {lab.reportHours} Hrs
                         </span>
                       </div>
                       <div className="flex items-center justify-between text-slate-700">
-                        <span className="text-slate-500">Sample Packaging:</span>
+                        <span className="text-slate-500">Packaging:</span>
                         <span className="font-semibold text-slate-900">{lab.techHighlight}</span>
                       </div>
                       <div className="flex items-center justify-between text-slate-700">
@@ -520,14 +497,14 @@ export default function TestBeatMedicalPortal() {
                           {lab.discountRate}% OFF
                         </span>
                       </div>
-                      <p className="text-[10px] text-slate-400 mt-1">Inclusive of home sample pickup & certified PDF report</p>
+                      <p className="text-[10px] text-slate-400 mt-1">Free home pickup & verified digital report</p>
                     </div>
 
                     <button
-                      onClick={() => alert(`Appointment initiated with ${lab.labName}. Proceeding to sample time slot selection.`)}
+                      onClick={() => alert(`Appointment initiated with ${lab.labName}.`)}
                       className={`w-full py-3.5 px-4 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center space-x-2 transition-all shadow-md ${
                         isBestValue
-                          ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/20'
+                          ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
                           : 'bg-slate-900 hover:bg-sky-600 text-white'
                       }`}
                     >
@@ -542,81 +519,46 @@ export default function TestBeatMedicalPortal() {
         </div>
       </section>
 
-      {/* ================= 5. CLINICAL GOVERNANCE & QUALITY TRANSPARENCY ================= */}
+      {/* 6. CLINICAL GOVERNANCE */}
       <section className="bg-slate-900 text-white py-16 px-4 sm:px-6 lg:px-8" id="clinical-governance">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="text-xs font-bold text-sky-400 uppercase tracking-widest bg-sky-950 px-3 py-1 rounded-full border border-sky-800">
-              The TestBeat Diagnostic Protocol
+            <span className="text-xs font-bold text-sky-400 uppercase tracking-widest bg-slate-800 px-3 py-1 rounded-full border border-slate-700">
+              Diagnostic Quality Assurance
             </span>
             <h2 className="text-3xl sm:text-4xl font-black mt-3">Why Doctors & Patients Trust Us</h2>
             <p className="text-slate-400 text-sm mt-2">Zero compromise on cold-chain specimen handling, sample barcodes, and accuracy.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-slate-800/70 border border-slate-700 rounded-3xl p-7">
+            <div className="bg-slate-800 border border-slate-700 rounded-3xl p-7">
               <ThermometerSnowflake className="w-10 h-10 text-sky-400 mb-4" />
               <h3 className="text-lg font-bold mb-2">2°C - 8°C Cold Chain Transport</h3>
               <p className="text-slate-400 text-xs leading-relaxed">
-                Biomarkers like enzymes, vitamins, and hormones degrade rapidly at ambient room temperatures. Our phlebotomists deploy certified gel-pack insulated boxes that maintain laboratory thermal standards until arrival at the testing hub.
+                Biomarkers degrade rapidly at ambient room temperatures. Our phlebotomists deploy certified gel-pack insulated boxes that maintain laboratory thermal standards until arrival at the testing hub.
               </p>
             </div>
 
-            <div className="bg-slate-800/70 border border-slate-700 rounded-3xl p-7">
+            <div className="bg-slate-800 border border-slate-700 rounded-3xl p-7">
               <Microscope className="w-10 h-10 text-teal-400 mb-4" />
               <h3 className="text-lg font-bold mb-2">100% NABL & CAP Accredited Labs</h3>
               <p className="text-slate-400 text-xs leading-relaxed">
-                We never route samples to unaccredited local collection centres. Every partner laboratory adheres to ISO 15189 standards with daily internal quality controls (IQC) and external quality assessment (EQAS).
+                We never route samples to unaccredited local collection centres. Every partner laboratory adheres to ISO 15189 standards with daily internal quality controls.
               </p>
             </div>
 
-            <div className="bg-slate-800/70 border border-slate-700 rounded-3xl p-7">
+            <div className="bg-slate-800 border border-slate-700 rounded-3xl p-7">
               <Activity className="w-10 h-10 text-emerald-400 mb-4" />
               <h3 className="text-lg font-bold mb-2">Smart AI Report Interpretation</h3>
               <p className="text-slate-400 text-xs leading-relaxed">
-                Beyond raw numbers, TestBeat generates a patient-friendly visual summary highlighting out-of-range parameters, chronological trend comparisons, and dietary clinical flags for your physician.
+                Beyond raw numbers, TestBeat generates a patient-friendly visual summary highlighting out-of-range parameters, chronological trend comparisons, and dietary flags for your physician.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ================= 6. HEALTH & WELLNESS CLINICAL GUIDANCE ================= */}
-      <section className="bg-white py-16 px-4 sm:px-6 lg:px-8 border-b border-slate-200" id="wellness">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="text-xs font-black text-sky-700 bg-sky-100 px-3 py-1 rounded-full uppercase tracking-wider">
-              Clinical Advisory
-            </span>
-            <h2 className="text-3xl font-black text-slate-900 mt-2">Essential Diagnostic Preparation Guidelines</h2>
-            <p className="text-slate-500 text-xs sm:text-sm mt-1">Accurate diagnostic insights require standard pre-analytical discipline.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <div className="border border-slate-200 rounded-2xl p-6 bg-slate-50/50">
-              <div className="flex items-center space-x-3 mb-3">
-                <Clock className="w-5 h-5 text-sky-600" />
-                <h4 className="font-bold text-slate-900 text-base">Fasting Protocols (10 to 12 Hours)</h4>
-              </div>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                For Fasting Blood Sugar, Lipid Profiles, and Thyroid panels, avoid food and beverages (except plain water) for 10-12 hours prior to sample collection. Consuming tea, coffee, or milk will spike triglycerides and glucose readings.
-              </p>
-            </div>
-
-            <div className="border border-slate-200 rounded-2xl p-6 bg-slate-50/50">
-              <div className="flex items-center space-x-3 mb-3">
-                <Activity className="w-5 h-5 text-emerald-600" />
-                <h4 className="font-bold text-slate-900 text-base">Medication & Supplement Rules</h4>
-              </div>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                If you are taking Biotin (Vitamin B7) or multivitamin supplements, pause them 48 hours prior to Thyroid or Vitamin testing as high-dose biotin can artificially skew immunoassays. Take regular prescription blood pressure pills with a sip of water.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= 7. AFFILIATE & CORPORATE PARTNERSHIP ================= */}
+      {/* 7. AFFILIATE / PARTNER NETWORK */}
       <section id="affiliate" className="bg-slate-50 py-16 px-4 sm:px-6 lg:px-8 border-b border-slate-200">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
@@ -647,7 +589,7 @@ export default function TestBeatMedicalPortal() {
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Full Name / Practice Name</label>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Full Name / Clinic Name</label>
                   <input 
                     type="text" 
                     required 
@@ -679,7 +621,7 @@ export default function TestBeatMedicalPortal() {
                     required 
                     value={affiliateData.city}
                     onChange={(e) => setAffiliateData({ ...affiliateData, city: e.target.value })}
-                    placeholder="e.g. Greater Noida, Delhi NCR, Patna" 
+                    placeholder="e.g. Greater Noida, Delhi, Lucknow" 
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold focus:outline-none focus:border-sky-600"
                   />
                 </div>
@@ -710,14 +652,14 @@ export default function TestBeatMedicalPortal() {
         </div>
       </section>
 
-      {/* ================= 8. COMPREHENSIVE FOOTER ================= */}
+      {/* 8. FOOTER */}
       <footer className="bg-slate-950 text-slate-400 text-xs border-t border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
             
             <div className="space-y-3 md:col-span-2">
               <div className="flex items-center space-x-2">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-600 to-teal-500 flex items-center justify-center text-white font-black text-sm">
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-sky-600 to-teal-500 flex items-center justify-center text-white font-black text-sm">
                   TB
                 </div>
                 <span className="text-xl font-black text-white">Test<span className="text-sky-500">Beat</span></span>
@@ -767,9 +709,9 @@ export default function TestBeatMedicalPortal() {
         </div>
       </footer>
 
-      {/* ================= 9. PATIENT-ONLY AUTH MODAL ================= */}
+      {/* 9. PATIENT-ONLY AUTH MODAL */}
       {isAuthOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
           <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl p-7 relative border border-slate-100">
             <button
               onClick={() => setIsAuthOpen(false)}
