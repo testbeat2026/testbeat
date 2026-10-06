@@ -22,8 +22,11 @@ import {
   Send, 
   UserCheck, 
   Check, 
+  UploadCloud, 
   Microscope, 
-  ChevronRight 
+  ChevronRight,
+  Package,
+  CalendarCheck
 } from 'lucide-react';
 
 interface TestItem {
@@ -36,15 +39,48 @@ interface TestItem {
   description: string;
 }
 
-const DEFAULT_TESTS: TestItem[] = [
-  { id: 't1', name: 'Complete Blood Count (CBC with 28 Parameters)', category: 'Full Body', parametersCount: 28, fastingRequired: false, sampleType: 'EDTA Whole Blood', description: 'Evaluates overall health and detects infections, anemia, and leukemia.' },
-  { id: 't2', name: 'Thyroid Profile Total (T3, T4, TSH)', category: 'Thyroid', parametersCount: 3, fastingRequired: true, sampleType: 'Serum', description: 'Screening for hypothyroidism, hyperthyroidism, and metabolic balance.' },
-  { id: 't3', name: 'HbA1c with Average Blood Glucose', category: 'Diabetes', parametersCount: 2, fastingRequired: false, sampleType: 'Whole Blood', description: '3-month average plasma glucose concentration for glycemic control.' },
-  { id: 't4', name: 'Lipid Profile Comprehensive (Cardiovascular Risk)', category: 'Heart', parametersCount: 8, fastingRequired: true, sampleType: 'Serum', description: 'HDL, LDL, VLDL, Total Cholesterol, and Triglycerides.' },
-  { id: 't5', name: 'Liver Function Test (LFT with Enzymes)', category: 'Liver', parametersCount: 12, fastingRequired: false, sampleType: 'Serum', description: 'SGOT, SGPT, Bilirubin, Albumin, and Alkaline Phosphatase.' },
-  { id: 't6', name: 'Kidney Function Test (KFT with Electrolytes)', category: 'Kidney', parametersCount: 11, fastingRequired: false, sampleType: 'Serum', description: 'Serum Creatinine, Blood Urea Nitrogen, Uric Acid, Sodium, Potassium.' },
-  { id: 't7', name: 'Vitamin D 25-Hydroxy (Immunity & Bone)', category: 'Vitamins', parametersCount: 1, fastingRequired: false, sampleType: 'Serum', description: 'Essential for calcium absorption, neuromuscular defense, and fatigue recovery.' },
-  { id: 't8', name: 'Vitamin B12 (Active Cyanocobalamin)', category: 'Vitamins', parametersCount: 1, fastingRequired: true, sampleType: 'Serum', description: 'Critical biomarker for nerve sheath health and red blood cell production.' }
+const AVAILABLE_TESTS: TestItem[] = [
+  { id: 't1', name: 'Complete Blood Count (CBC with 28 Parameters)', category: 'Full Body', parametersCount: 28, fastingRequired: false, sampleType: 'EDTA Whole Blood', description: 'Evaluates hemoglobin, platelets, WBC count, and detects latent infections.' },
+  { id: 't2', name: 'Thyroid Profile Total (T3, T4, TSH)', category: 'Thyroid', parametersCount: 3, fastingRequired: true, sampleType: 'Serum', description: 'Gold-standard screening for thyroid gland activity and metabolic regulation.' },
+  { id: 't3', name: 'HbA1c with Estimated Average Glucose (eAG)', category: 'Diabetes', parametersCount: 2, fastingRequired: false, sampleType: 'Whole Blood', description: '3-month average blood glucose control marker.' },
+  { id: 't4', name: 'Lipid Profile Comprehensive (Cardiovascular Risk)', category: 'Heart', parametersCount: 8, fastingRequired: true, sampleType: 'Serum', description: 'Total Cholesterol, HDL, LDL, VLDL, and Triglycerides levels.' },
+  { id: 't5', name: 'Liver Function Test (LFT with 12 Enzymes)', category: 'Liver', parametersCount: 12, fastingRequired: false, sampleType: 'Serum', description: 'Evaluates liver health via SGOT, SGPT, Bilirubin, and Proteins.' },
+  { id: 't6', name: 'Kidney Function Test (KFT with Electrolytes)', category: 'Kidney', parametersCount: 11, fastingRequired: false, sampleType: 'Serum', description: 'Serum Creatinine, Blood Urea, Uric Acid, Sodium, and Potassium.' },
+  { id: 't7', name: 'Vitamin D 25-Hydroxy (Bone & Defense)', category: 'Vitamins', parametersCount: 1, fastingRequired: false, sampleType: 'Serum', description: 'Immunity status, bone calcium density, and chronic fatigue indicator.' },
+  { id: 't8', name: 'Vitamin B12 (Active Cyanocobalamin)', category: 'Vitamins', parametersCount: 1, fastingRequired: true, sampleType: 'Serum', description: 'Crucial for nerve health, brain function, and red blood cell production.' }
+];
+
+const CURATED_PACKAGES = [
+  {
+    id: 'pkg-fullbody',
+    title: 'Full Body Wellness Comprehensive',
+    subtitle: 'NABL Certified Complete Checkup',
+    parameters: 84,
+    mrp: 3999,
+    price: 1199,
+    discount: '70% OFF',
+    features: ['CBC, LFT, KFT, Lipid Profile', 'Thyroid Profile (T3, T4, TSH)', 'Urine Routine & Glucose', 'Free Cold-Chain Home Pickup']
+  },
+  {
+    id: 'pkg-senior',
+    title: 'Senior Citizen Vital Care Package',
+    subtitle: 'Specialized Geriatric Health Profile',
+    parameters: 92,
+    mrp: 4999,
+    price: 1699,
+    discount: '66% OFF',
+    features: ['Cardiac Risk Markers & Extended LFT', 'Bone Health (Vitamin D & Calcium)', 'Kidney Function & Electrolytes', 'Guaranteed 18-Hour Report']
+  },
+  {
+    id: 'pkg-diab-cardio',
+    title: 'Diabetes & Heart Shield Checkup',
+    subtitle: 'Metabolic & Cardiovascular Health',
+    parameters: 68,
+    mrp: 2999,
+    price: 899,
+    discount: '70% OFF',
+    features: ['HbA1c + Fasting Blood Sugar', 'Lipid Profile (Cholesterol & Triglycerides)', 'Renal Function Screening', 'Doctor Summary on WhatsApp']
+  }
 ];
 
 const LAB_CHAINS = [
@@ -52,64 +88,68 @@ const LAB_CHAINS = [
     labId: 'thyrocare',
     labName: 'Thyrocare Technologies',
     shortCode: 'TC',
-    badge: 'Centralized Robotics Lab',
+    badge: 'Centralized Robotics Processing',
     accreditation: 'NABL & CAP Certified',
     reportHours: 24,
     baseRateMultiplier: 1.0,
     discountRate: 58,
-    techHighlight: 'Barcoded Monovette Vials'
+    techHighlight: 'Barcoded Vacutainer Tubes'
   },
   {
     labId: 'healthians',
     labName: 'Healthians Network',
     shortCode: 'HN',
-    badge: 'Fastest Home Collection',
-    accreditation: 'NABL Certified Lab',
+    badge: 'Smart Digital Cold-Chain',
+    accreditation: 'NABL Accredited',
     reportHours: 18,
     baseRateMultiplier: 1.08,
     discountRate: 60,
-    techHighlight: 'Cool-Gel Smart Bags'
+    techHighlight: 'Live Temp Monitored Gel-Kit'
   },
   {
     labId: 'redcliffe',
     labName: 'Redcliffe Lifetech',
     shortCode: 'RL',
-    badge: 'AI Smart Reports',
-    accreditation: 'NABL & ISO 15189',
+    badge: 'AI Smart Health Report',
+    accreditation: 'NABL & ISO Certified',
     reportHours: 16,
     baseRateMultiplier: 1.05,
     discountRate: 55,
-    techHighlight: 'Real-time Temp Logger'
+    techHighlight: 'Dual-Verified Medical Analytics'
   },
   {
     labId: 'drlal',
     labName: 'Dr. Lal PathLabs Partner',
     shortCode: 'LP',
-    badge: 'National Reference Lab',
+    badge: 'National Reference Standard',
     accreditation: 'NABL & CAP Gold',
     reportHours: 12,
     baseRateMultiplier: 1.35,
     discountRate: 35,
-    techHighlight: 'Dual-Verified Diagnostics'
+    techHighlight: 'Regional Diagnostic Center'
   }
 ];
 
-export default function TestBeatMedicalPortal() {
+export default function TestBeatProductionPlatform() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  // Patient Auth Modal States
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authStep, setAuthStep] = useState<'MOBILE' | 'OTP'>('MOBILE');
   const [patientMobile, setPatientMobile] = useState('');
   const [patientOtp, setPatientOtp] = useState('');
   const [authLoading, setAuthLoading] = useState(false);
 
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  // Test Selection Engine
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedTests, setSelectedTests] = useState<TestItem[]>([
-    DEFAULT_TESTS[0],
-    DEFAULT_TESTS[1],
-    DEFAULT_TESTS[6]
+    AVAILABLE_TESTS[0], // CBC
+    AVAILABLE_TESTS[1], // Thyroid
+    AVAILABLE_TESTS[6]  // Vitamin D
   ]);
 
+  // Affiliate Partner Form State
   const [affiliateData, setAffiliateData] = useState({
     name: '',
     phone: '',
@@ -118,8 +158,9 @@ export default function TestBeatMedicalPortal() {
   });
   const [affiliateSubmitted, setAffiliateSubmitted] = useState(false);
 
+  // Filter Catalog
   const filteredCatalog = useMemo(() => {
-    return DEFAULT_TESTS.filter(item => {
+    return AVAILABLE_TESTS.filter(item => {
       const matchCat = selectedCategory === 'All' || item.category === selectedCategory;
       const matchSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           item.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -139,6 +180,7 @@ export default function TestBeatMedicalPortal() {
     return selectedTests.reduce((acc, t) => acc + t.parametersCount, 0);
   }, [selectedTests]);
 
+  // Real-time Value Calculation Engine
   const calculatedLabQuotes = useMemo(() => {
     const baseAggregatedCost = selectedTests.reduce((acc) => acc + 480, 0);
 
@@ -158,7 +200,7 @@ export default function TestBeatMedicalPortal() {
 
   const handleSendOtp = (e: React.FormEvent) => {
     e.preventDefault();
-    if (patientMobile.length !== 10) return alert('Please enter valid 10-digit mobile number');
+    if (patientMobile.length !== 10) return alert('Please enter 10-digit mobile number');
     setAuthLoading(true);
     setTimeout(() => {
       setAuthLoading(false);
@@ -169,14 +211,14 @@ export default function TestBeatMedicalPortal() {
   const handleVerifyOtp = (e: React.FormEvent) => {
     e.preventDefault();
     if (patientOtp.length < 4) return alert('Enter valid OTP');
-    alert(`Signed into TestBeat Patient Portal with +91 ${patientMobile}`);
+    alert(`Logged in to Patient Portal! Welcome +91 ${patientMobile}`);
     setIsAuthOpen(false);
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800">
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800 selection:bg-sky-600 selection:text-white">
       
-      {/* 1. TOP PAN-INDIA TRUST BAR */}
+      {/* 1. PAN-INDIA ACCREDITATION & TRUST STRIP */}
       <div className="bg-slate-950 text-slate-200 text-xs py-2.5 px-4 border-b border-slate-800">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center space-x-4 overflow-x-auto text-[11px] sm:text-xs">
@@ -205,10 +247,11 @@ export default function TestBeatMedicalPortal() {
         </div>
       </div>
 
-      {/* 2. NAVBAR */}
+      {/* 2. MAIN HEADER & FOCUSED MEDICAL MENUS */}
       <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           
+          {/* Logo & Updated Slogan */}
           <a href="#" className="flex items-center space-x-3">
             <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-sky-600 to-teal-500 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-sky-500/20">
               TB
@@ -224,20 +267,32 @@ export default function TestBeatMedicalPortal() {
             </div>
           </a>
 
-          <nav className="hidden lg:flex items-center space-x-8 text-sm font-bold text-slate-700">
-            <a href="#compare" className="flex items-center space-x-1.5 text-sky-600">
+          {/* Genuine Diagnostic Navigation Menus */}
+          <nav className="hidden lg:flex items-center space-x-7 text-sm font-bold text-slate-700">
+            <a href="#compare" className="flex items-center space-x-1.5 text-sky-600 hover:text-sky-700">
               <FlaskConical className="w-4 h-4" />
               <span>Compare Labs</span>
               <span className="bg-emerald-100 text-emerald-700 text-[10px] font-black px-1.5 py-0.5 rounded-full">Live</span>
             </a>
-            <a href="#compare" className="hover:text-sky-600">Health Packages</a>
-            <a href="#clinical-governance" className="hover:text-sky-600">Quality Standard</a>
-            <a href="#affiliate" className="flex items-center space-x-1 text-slate-600 hover:text-sky-600">
+            <a href="#packages" className="flex items-center space-x-1.5 hover:text-sky-600">
+              <Package className="w-4 h-4 text-slate-400" />
+              <span>Health Packages</span>
+            </a>
+            <a href="#compare" className="flex items-center space-x-1.5 hover:text-sky-600">
+              <Microscope className="w-4 h-4 text-slate-400" />
+              <span>Blood Tests</span>
+            </a>
+            <a href="#prescription" className="flex items-center space-x-1.5 text-indigo-600 hover:text-indigo-700">
+              <UploadCloud className="w-4 h-4" />
+              <span>Upload Prescription</span>
+            </a>
+            <a href="#affiliate" className="flex items-center space-x-1 text-slate-600 hover:text-emerald-600">
               <Handshake className="w-4 h-4 text-emerald-600" />
               <span>Partner With Us</span>
             </a>
           </nav>
 
+          {/* Dedicated Customer Profile Login */}
           <div className="flex items-center space-x-3">
             <button
               onClick={() => { setAuthStep('MOBILE'); setIsAuthOpen(true); }}
@@ -263,11 +318,13 @@ export default function TestBeatMedicalPortal() {
           </div>
         </div>
 
+        {/* Mobile Navigation Menu */}
         {mobileMenuOpen && (
           <div className="lg:hidden border-t border-slate-100 bg-white px-5 pt-3 pb-6 space-y-3 shadow-xl">
             <a href="#compare" onClick={() => setMobileMenuOpen(false)} className="block text-sm font-bold text-slate-800 py-1">Compare Labs Live</a>
-            <a href="#clinical-governance" onClick={() => setMobileMenuOpen(false)} className="block text-sm font-bold text-slate-800 py-1">Cold-Chain Assurance</a>
-            <a href="#affiliate" onClick={() => setMobileMenuOpen(false)} className="block text-sm font-bold text-slate-800 py-1">Affiliate Partner Network</a>
+            <a href="#packages" onClick={() => setMobileMenuOpen(false)} className="block text-sm font-bold text-slate-800 py-1">Health Packages</a>
+            <a href="#prescription" onClick={() => setMobileMenuOpen(false)} className="block text-sm font-bold text-slate-800 py-1">Upload Prescription</a>
+            <a href="#affiliate" onClick={() => setMobileMenuOpen(false)} className="block text-sm font-bold text-slate-800 py-1">Partner With Us</a>
             <button
               onClick={() => { setMobileMenuOpen(false); setIsAuthOpen(true); }}
               className="w-full mt-2 py-3 bg-sky-600 text-white rounded-xl text-sm font-bold shadow-md"
@@ -278,13 +335,13 @@ export default function TestBeatMedicalPortal() {
         )}
       </header>
 
-      {/* 3. HERO */}
+      {/* 3. HERO SECTION */}
       <section className="bg-gradient-to-b from-sky-50 to-white pt-12 pb-14 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto">
             <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-sky-100 text-sky-800 text-xs font-bold mb-4">
               <Sparkles className="w-4 h-4 text-sky-600" />
-              <span>Transparent Multi-Lab Aggregator • Up to 70% Savings</span>
+              <span>India&apos;s Multi-Lab Diagnostic Aggregator • Up to 70% Savings</span>
             </div>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-tight">
               One Blood Sample. <br />
@@ -293,10 +350,11 @@ export default function TestBeatMedicalPortal() {
               </span>
             </h1>
             <p className="text-slate-600 text-sm sm:text-base mt-4 max-w-2xl mx-auto font-medium">
-              Select your tests, compare verified NABL & CAP accredited laboratory networks side-by-side, and book cold-chain phlebotomy at your doorstep.
+              Select multiple blood tests or full body health packages. Compare accredited diagnostic partners instantly to get the highest parameter depth at the most honest price.
             </p>
           </div>
 
+          {/* Quick Metrics */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mt-10">
             <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm text-center">
               <p className="text-2xl font-black text-slate-900">100%</p>
@@ -312,19 +370,23 @@ export default function TestBeatMedicalPortal() {
             </div>
             <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm text-center">
               <p className="text-2xl font-black text-slate-900">4°C Monitored</p>
-              <p className="text-xs font-semibold text-slate-500">Cold Chain Specimen Vials</p>
+              <p className="text-xs font-semibold text-slate-500">Cold-Chain Specimen Vials</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 4. MULTI-TEST SEARCH & SELECTOR */}
+      {/* 4. MULTI-TEST SEARCH & LAB COMPARISON ENGINE */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14" id="compare">
         <div className="text-center max-w-2xl mx-auto mb-8">
-          <h2 className="text-3xl font-black text-slate-900 tracking-tight">Step 1: Select Your Tests or Organs</h2>
-          <p className="text-slate-500 text-sm mt-1">Pick multiple individual biomarkers to activate real-time lab price matching.</p>
+          <span className="text-xs font-black text-sky-700 bg-sky-100 px-3 py-1 rounded-full uppercase tracking-wider">
+            Biomarker Search Engine
+          </span>
+          <h2 className="text-3xl font-black text-slate-900 tracking-tight mt-2">Select Your Tests or Organ Panels</h2>
+          <p className="text-slate-500 text-sm mt-1">Select one or more tests below to automatically calculate multi-lab prices.</p>
         </div>
 
+        {/* Organ / Category Tabs */}
         <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
           {['All', 'Full Body', 'Heart', 'Diabetes', 'Thyroid', 'Liver', 'Kidney', 'Vitamins'].map(category => (
             <button
@@ -341,6 +403,7 @@ export default function TestBeatMedicalPortal() {
           ))}
         </div>
 
+        {/* Search Bar */}
         <div className="max-w-2xl mx-auto mb-8 relative">
           <div className="relative flex items-center bg-white border-2 border-slate-200 focus-within:border-sky-600 rounded-2xl p-2 shadow-sm">
             <Search className="w-5 h-5 text-sky-600 ml-3 flex-shrink-0" />
@@ -359,6 +422,7 @@ export default function TestBeatMedicalPortal() {
           </div>
         </div>
 
+        {/* Selectable Test Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {filteredCatalog.map(test => {
             const isSelected = selectedTests.some(t => t.id === test.id);
@@ -394,7 +458,7 @@ export default function TestBeatMedicalPortal() {
           })}
         </div>
 
-        {/* Selected Summary Pill Bar */}
+        {/* Selected Test Summary Bar */}
         <div className="max-w-4xl mx-auto bg-slate-900 text-white rounded-2xl p-4 mb-14 shadow-lg flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 rounded-xl bg-sky-600 flex items-center justify-center font-bold text-white">
@@ -413,13 +477,13 @@ export default function TestBeatMedicalPortal() {
               </button>
             )}
             <a href="#lab-matrix" className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black rounded-xl text-xs flex items-center space-x-1.5 transition-all">
-              <span>View Compared Prices</span>
+              <span>View Lab Comparison</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </a>
           </div>
         </div>
 
-        {/* 5. MULTI-LAB COMPARISON MATRIX */}
+        {/* Comparative Quotations Cards */}
         <div id="lab-matrix" className="pt-4">
           <div className="text-center max-w-2xl mx-auto mb-8">
             <span className="text-xs font-black text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full uppercase tracking-wider">
@@ -428,7 +492,7 @@ export default function TestBeatMedicalPortal() {
             <h3 className="text-2xl sm:text-3xl font-black text-slate-900 mt-2">
               Select Your Preferred Diagnostic Partner
             </h3>
-            <p className="text-slate-500 text-xs sm:text-sm mt-1">Algorithm automatically ranks the lab with maximum parameter depth per rupee spent.</p>
+            <p className="text-slate-500 text-xs sm:text-sm mt-1">Our algorithm calculates the best value lab based on parameter coverage and honest pricing.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -517,47 +581,88 @@ export default function TestBeatMedicalPortal() {
         </div>
       </section>
 
-      {/* 6. CLINICAL GOVERNANCE */}
-      <section className="bg-slate-900 text-white py-16 px-4 sm:px-6 lg:px-8" id="clinical-governance">
+      {/* 5. POPULAR HEALTH PACKAGES SECTION */}
+      <section className="bg-slate-100/70 border-t border-slate-200/80 py-16 px-4 sm:px-6 lg:px-8" id="packages">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="text-xs font-bold text-sky-400 uppercase tracking-widest bg-slate-800 px-3 py-1 rounded-full border border-slate-700">
-              Diagnostic Quality Assurance
+            <span className="text-xs font-extrabold text-sky-700 uppercase tracking-widest bg-sky-100 px-3 py-1 rounded-full">
+              Full Body Screening
             </span>
-            <h2 className="text-3xl sm:text-4xl font-black mt-3">Why Doctors & Patients Trust Us</h2>
-            <p className="text-slate-400 text-sm mt-2">Zero compromise on cold-chain specimen handling, sample barcodes, and accuracy.</p>
+            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight mt-3">
+              Curated Preventive Health Packages
+            </h2>
+            <p className="text-slate-600 text-sm mt-2">Comprehensive health checkup plans designed for families, working professionals, and seniors.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-slate-800 border border-slate-700 rounded-3xl p-7">
-              <Activity className="w-10 h-10 text-sky-400 mb-4" />
-              <h3 className="text-lg font-bold mb-2">2°C - 8°C Cold Chain Transport</h3>
-              <p className="text-slate-400 text-xs leading-relaxed">
-                Biomarkers degrade rapidly at ambient room temperatures. Our phlebotomists deploy certified gel-pack insulated boxes that maintain laboratory thermal standards until arrival at the testing hub.
-              </p>
-            </div>
+            {CURATED_PACKAGES.map((pkg) => (
+              <div key={pkg.id} className="bg-white rounded-3xl p-7 border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-lg transition-all">
+                <div>
+                  <span className="text-[10px] font-black text-sky-700 bg-sky-50 px-2.5 py-1 rounded-full uppercase tracking-wider">
+                    {pkg.subtitle}
+                  </span>
+                  <h3 className="text-xl font-black text-slate-900 mt-3">{pkg.title}</h3>
+                  <p className="text-xs text-slate-500 font-semibold mb-4">Includes {pkg.parameters} Vital Biomarkers</p>
 
-            <div className="bg-slate-800 border border-slate-700 rounded-3xl p-7">
-              <Microscope className="w-10 h-10 text-teal-400 mb-4" />
-              <h3 className="text-lg font-bold mb-2">100% NABL & CAP Accredited Labs</h3>
-              <p className="text-slate-400 text-xs leading-relaxed">
-                We never route samples to unaccredited local collection centres. Every partner laboratory adheres to ISO 15189 standards with daily internal quality controls.
-              </p>
-            </div>
+                  <div className="space-y-2 border-t border-b border-slate-100 py-4 mb-6">
+                    {pkg.features.map((feat, i) => (
+                      <div key={i} className="flex items-center text-xs text-slate-700">
+                        <Check className="w-4 h-4 text-emerald-500 mr-2 flex-shrink-0" />
+                        <span>{feat}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
-            <div className="bg-slate-800 border border-slate-700 rounded-3xl p-7">
-              <ShieldCheck className="w-10 h-10 text-emerald-400 mb-4" />
-              <h3 className="text-lg font-bold mb-2">Smart AI Report Interpretation</h3>
-              <p className="text-slate-400 text-xs leading-relaxed">
-                Beyond raw numbers, TestBeat generates a patient-friendly visual summary highlighting out-of-range parameters, chronological trend comparisons, and dietary flags for your physician.
-              </p>
-            </div>
+                <div>
+                  <div className="flex items-baseline space-x-2 mb-4">
+                    <span className="text-3xl font-black text-slate-900">₹{pkg.price}</span>
+                    <span className="text-sm line-through text-slate-400">₹{pkg.mrp}</span>
+                    <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">
+                      {pkg.discount}
+                    </span>
+                  </div>
+
+                  <button 
+                    onClick={() => alert(`Package ${pkg.title} selected! Proceeding to slot selection.`)}
+                    className="w-full py-3.5 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl text-sm transition-all"
+                  >
+                    Book Package Now
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* 7. AFFILIATE / PARTNER NETWORK */}
-      <section id="affiliate" className="bg-slate-50 py-16 px-4 sm:px-6 lg:px-8 border-b border-slate-200">
+      {/* 6. UPLOAD PRESCRIPTION ASSISTANCE */}
+      <section className="bg-white border-t border-slate-200 py-16 px-4 sm:px-6 lg:px-8" id="prescription">
+        <div className="max-w-4xl mx-auto bg-gradient-to-r from-slate-900 to-sky-950 rounded-3xl p-8 sm:p-12 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="max-w-md">
+            <span className="text-xs font-bold text-sky-400 uppercase tracking-widest bg-slate-800 px-3 py-1 rounded-full border border-slate-700">
+              Prescription Assistance
+            </span>
+            <h2 className="text-3xl font-black mt-4">Have a Doctor&apos;s Prescription?</h2>
+            <p className="text-slate-300 text-sm mt-2">
+              Don&apos;t know which tests to choose? Upload your doctor&apos;s prescription slip. Our clinical coordinator will extract the tests and match the best lab rates for you.
+            </p>
+          </div>
+          <div className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl text-center w-full sm:w-auto">
+            <UploadCloud className="w-10 h-10 text-sky-400 mx-auto mb-2" />
+            <p className="text-xs font-bold text-slate-200 mb-4">PNG, JPG or PDF up to 10MB</p>
+            <button 
+              onClick={() => alert('Prescription upload dialog opened')}
+              className="px-6 py-3 bg-white text-slate-950 font-bold rounded-xl text-sm shadow hover:bg-slate-100 transition-all"
+            >
+              Upload Prescription Now
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* 7. AFFILIATE / PARTNER NETWORK SECTION */}
+      <section id="affiliate" className="bg-slate-50 py-16 px-4 sm:px-6 lg:px-8 border-t border-slate-200">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
             <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold mb-3 shadow-sm">
@@ -681,7 +786,7 @@ export default function TestBeatMedicalPortal() {
                 </li>
                 <li><a href="#affiliate" className="hover:text-white">Doctor & Clinic Integrations</a></li>
                 <li><a href="#affiliate" className="hover:text-white">Franchise Collection Points</a></li>
-                <li><a href="#clinical-governance" className="hover:text-white">Cold-Chain Protocol</a></li>
+                <li><a href="#prescription" className="hover:text-white">Prescription Direct Desk</a></li>
               </ul>
             </div>
 
