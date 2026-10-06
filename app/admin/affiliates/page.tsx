@@ -2,257 +2,302 @@
 
 export const dynamic = 'force-dynamic';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
+  Building2, 
   BadgePercent, 
-  UserPlus, 
+  Wallet, 
+  CheckCircle2, 
+  XCircle, 
+  RefreshCw, 
+  Send, 
   Copy, 
   Check, 
-  Building2, 
-  DollarSign 
+  ShieldCheck, 
+  Clock 
 } from 'lucide-react';
 
-interface Affiliate {
-  id: number;
-  name: string;
-  type: string;
-  phone: string;
-  code: string;
-  commissionRate: string;
-  totalReferrals: number;
-  unpaidPayout: number;
-}
-
-export default function AdminAffiliatesPage() {
+export default function AdminAffiliateKYCDesk() {
+  const [partners, setPartners] = useState<any[]>([]);
+  const [payouts, setPayouts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'partners' | 'payouts'>('partners');
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
-  const [affiliates, setAffiliates] = useState<Affiliate[]>([
-    {
-      id: 1,
-      name: 'Dr. R.K. Verma Clinic',
-      type: 'Local Clinic / GP',
-      phone: '9811223344',
-      code: 'DOC_VERMA',
-      commissionRate: '15%',
-      totalReferrals: 18,
-      unpaidPayout: 2450
-    },
-    {
-      id: 2,
-      name: 'Apollo Pharmacy Greater Noida Sec-4',
-      type: 'Retail Pharmacy',
-      phone: '9877665544',
-      code: 'APOLLO_GN',
-      commissionRate: '10%',
-      totalReferrals: 34,
-      unpaidPayout: 4200
-    },
-    {
-      id: 3,
-      name: 'CareWell Diagnostic Center',
-      type: 'Sample Collection Point',
-      phone: '9988776655',
-      code: 'CARE_GN',
-      commissionRate: '12%',
-      totalReferrals: 12,
-      unpaidPayout: 1680
-    }
-  ]);
-
-  const [partnerName, setPartnerName] = useState('');
-  const [partnerPhone, setPartnerPhone] = useState('');
-  const [partnerType, setPartnerType] = useState('Doctor / Clinic');
-  const [partnerRate, setPartnerRate] = useState('15');
-
-  const handleCopyLink = (code: string) => {
-    if (typeof window !== 'undefined' && typeof navigator !== 'undefined' && navigator.clipboard) {
-      navigator.clipboard.writeText(`https://testbeat.in/?ref=${code}`);
-      setCopiedCode(code);
-      setTimeout(() => setCopiedCode(null), 3000);
+  const fetchAffiliateData = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/admin/affiliates/manage').catch(() => null);
+      if (res && res.ok) {
+        const data = await res.json();
+        setPartners(data.partners || []);
+        setPayouts(data.payouts || []);
+      }
+    } catch (e) {
+      console.warn(e);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleCreateAffiliate = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!partnerName || !partnerPhone) return;
+  useEffect(() => {
+    fetchAffiliateData();
+  }, []);
 
-    const generatedCode = partnerName.slice(0, 4).toUpperCase().replace(/\s/g, '') + '_' + Math.floor(100 + Math.random() * 900);
-    const newAffiliate: Affiliate = {
-      id: Date.now(),
-      name: partnerName,
-      type: partnerType,
-      phone: partnerPhone,
-      code: generatedCode,
-      commissionRate: `${partnerRate}%`,
-      totalReferrals: 0,
-      unpaidPayout: 0
-    };
+  const updatePartnerKYC = async (id: number, status: 'VERIFIED' | 'REJECTED', rate: number) => {
+    try {
+      const res = await fetch('/api/admin/affiliates/manage', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, kycStatus: status, commissionRate: rate })
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert(`Affiliate status updated to ${status}`);
+        fetchAffiliateData();
+      }
+    } catch (e) {
+      alert('Failed to update KYC');
+    }
+  };
 
-    setAffiliates([newAffiliate, ...affiliates]);
-    setPartnerName('');
-    setPartnerPhone('');
+  const processPayout = async (payoutId: number) => {
+    try {
+      const res = await fetch('/api/admin/affiliates/manage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ payoutId, action: 'MARK_PAID' })
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert('Payout marked as paid and deducted from partner wallet.');
+        fetchAffiliateData();
+      }
+    } catch (e) {
+      alert('Failed to process payout');
+    }
+  };
+
+  const handleCopy = (code: string) => {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(`https://testbeat.in/?ref=${code}`);
+      setCopiedCode(code);
+      setTimeout(() => setCopiedCode(null), 2500);
+    }
   };
 
   return (
     <div className="space-y-6 font-sans">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900">Affiliate & Referral Network 🤝</h1>
+          <h1 className="text-2xl font-black text-slate-900">Affiliate KYC, Commission & Payouts 🤝</h1>
           <p className="text-xs text-slate-500 font-bold mt-1">
-            Doctors, Local Clinics & Pharmacy B2B Commission Engine
+            Verify Doctor/Clinic documents, customize commission rate & approve wallet withdrawals
           </p>
         </div>
+
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 bg-white p-1 rounded-2xl border border-slate-200">
+            <button
+              onClick={() => setActiveTab('partners')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+                activeTab === 'partners' ? 'bg-[#00A896] text-white shadow-xs' : 'text-slate-500'
+              }`}
+            >
+              Affiliate Partners ({partners.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('payouts')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+                activeTab === 'payouts' ? 'bg-[#00A896] text-white shadow-xs' : 'text-slate-500'
+              }`}
+            >
+              Withdrawal Requests ({payouts.filter(p => p.status === 'REQUESTED').length})
+            </button>
+          </div>
+          <button
+            onClick={fetchAffiliateData}
+            className="p-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 cursor-pointer shadow-2xs"
+          >
+            <RefreshCw size={15} className={loading ? 'animate-spin' : ''} />
+          </button>
+        </div>
       </div>
 
+      {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
-          <span className="text-[11px] font-bold text-slate-400 uppercase">Active B2B Affiliates</span>
+          <span className="text-[11px] font-bold text-slate-400 uppercase">Verified Partners</span>
           <div className="flex items-center justify-between mt-2">
-            <span className="text-2xl font-black text-slate-900">{affiliates.length}</span>
-            <Building2 className="text-[#00A896]" size={20} />
-          </div>
-        </div>
-
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
-          <span className="text-[11px] font-bold text-slate-400 uppercase">Referred Test Bookings</span>
-          <div className="flex items-center justify-between mt-2">
-            <span className="text-2xl font-black text-blue-600">
-              {affiliates.reduce((sum, a) => sum + a.totalReferrals, 0)}
+            <span className="text-2xl font-black text-slate-900">
+              {partners.filter(p => p.kyc_status === 'VERIFIED').length}
             </span>
-            <BadgePercent className="text-blue-500" size={20} />
+            <ShieldCheck className="text-[#00A896]" size={20} />
           </div>
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
-          <span className="text-[11px] font-bold text-slate-400 uppercase">Pending Commission Payouts</span>
+          <span className="text-[11px] font-bold text-slate-400 uppercase">Pending KYC Reviews</span>
+          <div className="flex items-center justify-between mt-2">
+            <span className="text-2xl font-black text-amber-600">
+              {partners.filter(p => p.kyc_status === 'PENDING').length}
+            </span>
+            <Clock className="text-amber-500" size={20} />
+          </div>
+        </div>
+
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
+          <span className="text-[11px] font-bold text-slate-400 uppercase">Pending Payout Amount</span>
           <div className="flex items-center justify-between mt-2">
             <span className="text-2xl font-black text-emerald-600">
-              ₹{affiliates.reduce((sum, a) => sum + a.unpaidPayout, 0)}
+              ₹{payouts.filter(p => p.status === 'REQUESTED').reduce((s, p) => s + Number(p.amount || 0), 0)}
             </span>
-            <DollarSign className="text-emerald-500" size={20} />
+            <Wallet className="text-emerald-500" size={20} />
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-4 bg-white rounded-3xl p-6 border border-slate-200 shadow-2xs h-fit">
-          <h2 className="text-xs font-black text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-            <UserPlus size={16} className="text-[#00A896]" />
-            Onboard Clinic or Doctor Partner
-          </h2>
-
-          <form onSubmit={handleCreateAffiliate} className="space-y-3 text-xs font-bold">
-            <div>
-              <label className="text-slate-700 block mb-1">Partner / Clinic Name</label>
-              <input
-                type="text"
-                required
-                placeholder="e.g. Dr. Gupta Clinic"
-                value={partnerName}
-                onChange={(e) => setPartnerName(e.target.value)}
-                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-[#00A896]"
-              />
-            </div>
-
-            <div>
-              <label className="text-slate-700 block mb-1">Contact Phone</label>
-              <input
-                type="tel"
-                required
-                placeholder="10-digit mobile number"
-                value={partnerPhone}
-                onChange={(e) => setPartnerPhone(e.target.value)}
-                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-[#00A896]"
-              />
-            </div>
-
-            <div>
-              <label className="text-slate-700 block mb-1">Partner Type</label>
-              <select
-                value={partnerType}
-                onChange={(e) => setPartnerType(e.target.value)}
-                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none text-[#0F1E36]"
-              >
-                <option value="Doctor / Clinic">Doctor / Clinic</option>
-                <option value="Pharmacy / Chemist">Retail Pharmacy</option>
-                <option value="Society Health Ambassador">Resident Welfare (RWA)</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="text-slate-700 block mb-1">Commission Share (%)</label>
-              <input
-                type="number"
-                required
-                value={partnerRate}
-                onChange={(e) => setPartnerRate(e.target.value)}
-                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none font-mono"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full py-3 bg-[#00A896] hover:bg-[#008f80] text-white rounded-xl shadow-md transition font-black text-xs cursor-pointer mt-2"
-            >
-              Generate Referral Link & Code
-            </button>
-          </form>
-        </div>
-
-        <div className="lg:col-span-8 bg-white rounded-3xl border border-slate-200 shadow-2xs overflow-hidden">
+      {/* Tab 1: Partners List & KYC */}
+      {activeTab === 'partners' && (
+        <div className="bg-white rounded-3xl border border-slate-200 shadow-2xs overflow-hidden">
           <div className="p-4 border-b border-slate-100 font-black text-xs uppercase text-slate-800">
-            Registered Referral Partners ({affiliates.length})
+            Registered B2B Partner Directory
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-black uppercase text-[10px]">
+                  <th className="py-3 px-4">Partner Details</th>
+                  <th className="py-3 px-4">Referral Code</th>
+                  <th className="py-3 px-4">PAN & UPI Info</th>
+                  <th className="py-3 px-4">Commission</th>
+                  <th className="py-3 px-4">Wallet Balance</th>
+                  <th className="py-3 px-4">KYC Status</th>
+                  <th className="py-3 px-4 text-center">Verify Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 font-semibold text-slate-700">
+                {partners.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="py-8 text-center text-slate-400">
+                      No affiliate partners registered yet.
+                    </td>
+                  </tr>
+                ) : (
+                  partners.map((p) => (
+                    <tr key={p.id} className="hover:bg-slate-50/80">
+                      <td className="py-3.5 px-4">
+                        <span className="font-bold text-slate-900 block">{p.full_name}</span>
+                        <span className="text-[11px] text-slate-500">{p.organization_name} • {p.city}</span>
+                        <span className="text-[10px] text-slate-400 block font-mono">+91 {p.phone}</span>
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <span className="font-mono font-bold text-[#00A896] block">{p.referral_code}</span>
+                        <button
+                          onClick={() => handleCopy(p.referral_code)}
+                          className="text-[10px] text-slate-400 hover:text-slate-700 font-bold inline-flex items-center gap-1 cursor-pointer mt-0.5"
+                        >
+                          {copiedCode === p.referral_code ? <Check size={10} className="text-emerald-600" /> : <Copy size={10} />}
+                          <span>Copy Link</span>
+                        </button>
+                      </td>
+                      <td className="py-3.5 px-4 font-mono text-[11px]">
+                        <div>PAN: {p.pan_number || 'N/A'}</div>
+                        <div className="text-emerald-700">UPI: {p.upi_id || 'N/A'}</div>
+                      </td>
+                      <td className="py-3.5 px-4 font-black text-slate-900">{p.commission_rate}%</td>
+                      <td className="py-3.5 px-4 font-black text-emerald-600">₹{p.wallet_balance || 0}</td>
+                      <td className="py-3.5 px-4">
+                        {p.kyc_status === 'VERIFIED' ? (
+                          <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black px-2 py-0.5 rounded-full">
+                            VERIFIED
+                          </span>
+                        ) : (
+                          <span className="bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-black px-2 py-0.5 rounded-full">
+                            PENDING
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-3.5 px-4 text-center">
+                        {p.kyc_status === 'PENDING' ? (
+                          <div className="flex items-center justify-center gap-1">
+                            <button
+                              onClick={() => updatePartnerKYC(p.id, 'VERIFIED', Number(p.commission_rate) || 15)}
+                              className="px-2.5 py-1 bg-emerald-600 text-white rounded-lg text-[10px] font-black hover:bg-emerald-700 cursor-pointer"
+                            >
+                              Approve
+                            </button>
+                            <button
+                              onClick={() => updatePartnerKYC(p.id, 'REJECTED', 0)}
+                              className="px-2 py-1 bg-rose-50 text-rose-700 rounded-lg text-[10px] font-black hover:bg-rose-100 cursor-pointer"
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        ) : (
+                          <span className="text-[11px] text-slate-400 font-bold">Approved</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* Tab 2: Withdrawal Requests */}
+      {activeTab === 'payouts' && (
+        <div className="bg-white rounded-3xl border border-slate-200 shadow-2xs overflow-hidden">
+          <div className="p-4 border-b border-slate-100 font-black text-xs uppercase text-slate-800">
+            Affiliate Commission Withdrawal Queue
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-black uppercase text-[10px]">
                   <th className="py-3 px-4">Partner</th>
-                  <th className="py-3 px-4">Referral Code</th>
-                  <th className="py-3 px-4">Commission</th>
-                  <th className="py-3 px-4">Orders</th>
-                  <th className="py-3 px-4">Payable</th>
-                  <th className="py-3 px-4 text-center">Share Link</th>
+                  <th className="py-3 px-4">Requested Amount</th>
+                  <th className="py-3 px-4">Payout Destination</th>
+                  <th className="py-3 px-4">Status</th>
+                  <th className="py-3 px-4 text-center">Transfer Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 font-semibold text-slate-700">
-                {affiliates.map((a) => (
-                  <tr key={a.id} className="hover:bg-slate-50/80">
-                    <td className="py-3.5 px-4">
-                      <span className="font-bold text-slate-900 block">{a.name}</span>
-                      <span className="text-[10px] text-slate-400">{a.type}</span>
-                    </td>
-                    <td className="py-3.5 px-4 font-mono font-bold text-[#00A896]">
-                      {a.code}
-                    </td>
-                    <td className="py-3.5 px-4 font-bold">{a.commissionRate}</td>
-                    <td className="py-3.5 px-4 font-bold text-blue-600">{a.totalReferrals}</td>
-                    <td className="py-3.5 px-4 font-black text-emerald-600">₹{a.unpaidPayout}</td>
-                    <td className="py-3.5 px-4 text-center">
-                      <button
-                        onClick={() => handleCopyLink(a.code)}
-                        className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg text-[10px] font-bold inline-flex items-center gap-1 cursor-pointer transition"
-                      >
-                        {copiedCode === a.code ? (
-                          <>
-                            <Check size={11} className="text-emerald-600" />
-                            <span className="text-emerald-700">Copied</span>
-                          </>
-                        ) : (
-                          <>
-                            <Copy size={11} />
-                            <span>Copy Link</span>
-                          </>
-                        )}
-                      </button>
+                {payouts.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="py-8 text-center text-slate-400">
+                      No withdrawal requests in queue.
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  payouts.map((w) => (
+                    <tr key={w.id} className="hover:bg-slate-50/80">
+                      <td className="py-3.5 px-4 font-bold text-slate-900">{w.full_name}</td>
+                      <td className="py-3.5 px-4 font-black text-emerald-600">₹{w.amount}</td>
+                      <td className="py-3.5 px-4 font-mono text-[11px]">{w.payout_details || 'UPI'}</td>
+                      <td className="py-3.5 px-4">
+                        <span className="bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full text-[10px] font-black">
+                          {w.status}
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4 text-center">
+                        <button
+                          onClick={() => processPayout(w.id)}
+                          className="px-3 py-1.5 bg-[#00A896] hover:bg-[#008f80] text-white rounded-xl text-[10px] font-black cursor-pointer shadow-xs"
+                        >
+                          Mark Transferred
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
