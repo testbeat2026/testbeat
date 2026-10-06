@@ -1,42 +1,36 @@
 import { NextResponse } from 'next/server';
-import { activeOtpStore } from '@/lib/otpStore';
-import { query } from '@/lib/db';
 
 export async function POST(req: Request) {
   try {
-    const { phone, otp } = await req.json();
-    if (!phone || !otp) {
-      return NextResponse.json({ success: false, error: 'Phone and OTP required' }, { status: 400 });
+    const { mobile, otp } = await req.json();
+
+    if (!mobile || !otp) {
+      return NextResponse.json({ error: 'Mobile and OTP are required' }, { status: 400 });
     }
 
-    const storedData = activeOtpStore[phone];
-    if (!storedData) {
-      return NextResponse.json({ success: false, error: 'No active OTP found. Please request new OTP.' }, { status: 400 });
-    }
+    const formattedMobile = mobile.startsWith('91') ? mobile : `91${mobile}`;
+    const authKey = process.env.MSG91_AUTH_KEY;
 
-    if (Date.now() > storedData.expiresAt) {
-      delete activeOtpStore[phone];
-      return NextResponse.json({ success: false, error: 'OTP expired. Please try again.' }, { status: 400 });
-    }
-
-    if (storedData.otp !== otp.trim()) {
-      return NextResponse.json({ success: false, error: 'Galat OTP enter kiya hai. Kripya sahi code dalein.' }, { status: 400 });
-    }
-
-    delete activeOtpStore[phone];
-
-    // Ensure customer exists in Neon
-    await query(
-      `INSERT INTO customers (id, name, phone) VALUES ($1, $2, $3) ON CONFLICT (phone) DO NOTHING`,
-      [`CUST-${phone}`, 'Patient User', phone]
+    // MSG91 Verify OTP API call
+    const res = await fetch(
+      `https://control.msg91.com/api/v5/otp/verify?otp=${otp}&mobile=${formattedMobile}`,
+      {
+        method: 'GET',
+        headers: {
+          authkey: authKey!,
+        },
+      }
     );
 
-    return NextResponse.json({
-      success: true,
-      message: 'Verified successfully',
-      customer: { phone, name: 'Patient User' }
-    });
+    const data = await res.json();
+
+    if (data.type === 'success' || data.message === 'OTP verified success') {
+      // Yahan user ko database me find/create karein aur session/JWT set karein
+      return NextResponse.json({ success: true, message: 'OTP verified successfully' });
+    } else {
+      return NextResponse.json({ error: data.message || 'Invalid or expired OTP' }, { status: 400 });
+    }
   } catch (err: any) {
-    return NextResponse.json({ success: false, error: 'Verification failed' }, { status: 500 });
+    return NextResponse.json({ error: err.message || 'Verification failed' }, { status: 500 });
   }
 }
