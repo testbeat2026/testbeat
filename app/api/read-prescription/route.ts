@@ -1,26 +1,26 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(req: Request) {
+export const dynamic = 'force-dynamic';
+
+export async function POST(req: NextRequest) {
   try {
-    const { imageBase64 } = await req.json();
+    const body = await req.json();
+    const imageBase64 = body?.imageBase64;
 
     if (!imageBase64) {
-      return NextResponse.json({ error: 'Prescription image is required' }, status: 400);
+      return NextResponse.json({ error: 'Prescription image is required' }, { status: 400 });
     }
 
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
-      return NextResponse.json({ error: 'AI API Key is not configured on server' }, status: 500);
+      return NextResponse.json({ error: 'AI API Key is not configured on server' }, { status: 500 });
     }
 
-    // Clean base64 data string
-    const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, '');
+    const cleanBase64 = typeof imageBase64 === 'string' 
+      ? imageBase64.replace(/^data:image\/\w+;base64,/, '') 
+      : '';
 
-    // Robust prompt for handwritten medical prescriptions
-    const systemPrompt = `You are an expert clinical laboratory pathologist. Carefully analyze this handwritten doctor prescription slip. 
-Identify and extract ALL medical diagnostic tests, blood tests, pathology tests, or lab investigations prescribed (e.g. CBC, Hemogram, Thyroid/TSH, HbA1c, Blood Sugar, LFT, KFT/Creatinine, Lipid Profile, Vitamin D, Vitamin B12, Urine Routine, Calcium, Iron, ESR).
-Return the result strictly as a valid JSON array of test names as strings, for example: ["Complete Blood Count (CBC)", "Thyroid Profile Total", "HbA1c"].
-If no lab investigations or diagnostic blood tests are found, return []. Do not include markdown code block syntax, backticks, or explanatory text. Return ONLY the raw JSON array.`;
+    const systemPrompt = 'You are an expert clinical laboratory pathologist. Carefully read this handwritten doctor prescription. Extract ONLY medical diagnostic tests prescribed (e.g. CBC, Thyroid/TSH, HbA1c, Blood Sugar, LFT, KFT, Lipid Profile, Vitamin D, Vitamin B12, Urine Routine, Calcium, Iron, ESR). Return strictly a raw JSON array of strings, for example: ["Complete Blood Count (CBC)", "Thyroid Profile Total", "HbA1c"]. If no diagnostic tests are written, return []. Do not add markdown backticks.';
 
     const res = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
@@ -50,8 +50,8 @@ If no lab investigations or diagnostic blood tests are found, return []. Do not 
     );
 
     const data = await res.json();
-    
-    if (data.error) {
+
+    if (data?.error) {
       return NextResponse.json({ error: data.error.message || 'AI Vision processing error' }, status: 500);
     }
 
@@ -62,7 +62,6 @@ If no lab investigations or diagnostic blood tests are found, return []. Do not 
     try {
       extractedTests = JSON.parse(cleanedJson);
     } catch {
-      // Fallback regex match if array formatting has slight irregularities
       const matches = cleanedJson.match(/"([^"]+)"/g);
       if (matches) {
         extractedTests = matches.map((m: string) => m.replace(/"/g, ''));
@@ -70,7 +69,7 @@ If no lab investigations or diagnostic blood tests are found, return []. Do not 
     }
 
     return NextResponse.json({ success: true, tests: extractedTests });
-  } catch (error: any) {
+  } catch {
     return NextResponse.json(
       { error: 'Handwriting could not be read clearly. Please upload a clear photo or select tests manually.' },
       { status: 500 }
