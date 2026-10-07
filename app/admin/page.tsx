@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { 
   LayoutDashboard, 
@@ -16,19 +16,12 @@ import {
   ExternalLink, 
   LogOut, 
   CheckCircle2, 
-  Clock, 
-  AlertCircle, 
   Send, 
-  Download, 
   Plus, 
-  Check, 
-  MessageSquare,
   TrendingUp,
   FileCheck2,
   RefreshCw,
-  PhoneCall,
-  Activity,
-  Layers
+  MessageSquare
 } from 'lucide-react';
 
 export default function SuperAdminDashboard() {
@@ -50,7 +43,7 @@ export default function SuperAdminDashboard() {
   const [activeModalOrder, setActiveModalOrder] = useState<typeof bookingsList[0] | null>(null);
   const [actionSuccess, setActionSuccess] = useState<string>('');
 
-  // Filtered list based on clicked distribution
+  // Filtered list based on clicked distribution using useMemo
   const displayedOrders = useMemo(() => {
     if (activeLabFilter === 'ALL') return bookingsList;
     return bookingsList.filter(b => b.lab.toLowerCase().includes(activeLabFilter.toLowerCase()));
@@ -61,6 +54,63 @@ export default function SuperAdminDashboard() {
     setActionSuccess(`Order ${id} status updated to: ${newStatus}`);
     setTimeout(() => setActionSuccess(''), 3000);
     setActiveModalOrder(null);
+  };
+
+  const [visitorsList] = useState([
+    { id: 'V-101', contact: '+91 98112 77011', location: 'Noida (201301)', ip: '27.59.71.180', landing: '/packages', time: 'Just now', score: 'High Intent' },
+    { id: 'V-102', contact: '+91 98711 00214', location: 'Greater Noida (201310)', ip: '103.21.54.90', landing: '/book-test', time: '2 mins ago', score: 'Phone Captured' },
+    { id: 'V-103', contact: 'Anonymous Viewer', location: 'Faridabad (121001)', ip: '49.36.12.10', landing: '/compare', time: '5 mins ago', score: 'Browsing' },
+    { id: 'V-104', contact: '+91 99100 33219', location: 'Delhi (110075)', ip: '182.72.10.22', landing: '/partner', time: '11 mins ago', score: 'Doctor Lead' }
+  ]);
+
+  const [usersList, setUsersList] = useState([
+    { id: 'U-1', name: 'Shubhranshu Kumar', mobile: '+91 76669 53705', role: 'SUPER ADMIN', status: 'Active' },
+    { id: 'U-2', name: 'Dr. Neeraj Mathur', mobile: '+91 98110 44210', role: 'LAB OPS MANAGER', status: 'Active' },
+    { id: 'U-3', name: 'Pooja Rani', mobile: '+91 98711 55219', role: 'FINANCE & AUDIT', status: 'Active' },
+    { id: 'U-4', name: 'Sunil Phlebo Lead', mobile: '+91 99109 22014', role: 'COLLECTION AGENT', status: 'Active' }
+  ]);
+  const [newUserModal, setNewUserModal] = useState(false);
+  const [newUserForm, setNewUserForm] = useState({ name: '', mobile: '', role: 'LAB OPS MANAGER' });
+
+  const [affiliates] = useState([
+    { id: 'AFF-001', name: 'Dr. R.K. Sharma Clinic', contact: '+91 98112 00192', city: 'Greater Noida', refCode: 'TB-DOC-RK', commission: 20, wallet: 4850, totalBookings: 34 },
+    { id: 'AFF-002', name: 'Sanjivani Medical Store', contact: '+91 98711 99201', city: 'Faridabad', refCode: 'TB-MED-SANJ', commission: 15, wallet: 2900, totalBookings: 18 }
+  ]);
+  const [selectedStandeePartner] = useState(affiliates[0]);
+
+  const [apiHub] = useState({
+    redcliffe: { enabled: true, endpoint: 'https://api.redcliffelifesciences.com/v1', key: 'RL_PROD_JWT_9921' },
+    drlal: { enabled: true, endpoint: 'https://partner-api.lalpathlabs.com/prod', key: 'LP_REF_NO_441' },
+    thyrocare: { enabled: true, endpoint: 'https://xml.thyrocare.com/api', key: 'TC_LIVE_KEY_882910' },
+    healthians: { enabled: false, endpoint: 'https://api.healthians.com/partner/v2', key: 'HN_AUTH_TOKEN_77218' }
+  });
+  const [apiSaveStatus, setApiSaveStatus] = useState(false);
+
+  const [siteSettings, setSiteSettings] = useState({
+    headerLogoUrl: '/logo.png',
+    footerLogoUrl: '/logo-white.png',
+    helplineNumber: '+91 83688 87011',
+    whatsappNumber: '918368887011'
+  });
+  const [settingsSaved, setSettingsSaved] = useState(false);
+
+  const handleAutoDispatch = () => {
+    setActionSuccess('Automated Dispatch Triggered: WhatsApp Verified PDF & SMS download link sent to patient!');
+    setTimeout(() => setActionSuccess(''), 3000);
+  };
+
+  const handleAddUser = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newUserForm.name || !newUserForm.mobile) return;
+    setUsersList([...usersList, {
+      id: `U-${usersList.length + 1}`,
+      name: newUserForm.name,
+      mobile: newUserForm.mobile,
+      role: newUserForm.role,
+      status: 'Active'
+    }]);
+    setNewUserModal(false);
+    setNewUserForm({ name: '', mobile: '', role: 'LAB OPS MANAGER' });
   };
 
   return (
@@ -196,10 +246,10 @@ export default function SuperAdminDashboard() {
         </div>
       </aside>
 
-      {/* ================= MAIN DASHBOARD BODY ================= */}
+      {/* ================= MAIN CONTENT ================= */}
       <main className="flex-1 flex flex-col h-screen overflow-y-auto">
 
-        {/* Top Header Bar */}
+        {/* Top Header */}
         <header className="h-20 bg-white border-b border-slate-200 px-8 flex items-center justify-between sticky top-0 z-10 flex-shrink-0">
           <div className="relative w-96">
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
@@ -235,11 +285,11 @@ export default function SuperAdminDashboard() {
           </div>
         </header>
 
-        {/* Body Container */}
+        {/* Dynamic Section Views */}
         <div className="p-8 space-y-8 flex-1">
 
           {actionSuccess && (
-            <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center justify-between text-xs text-emerald-800 animate-in fade-in">
+            <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center justify-between text-xs text-emerald-800">
               <span className="flex items-center font-bold">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 mr-2" />
                 {actionSuccess}
@@ -248,11 +298,10 @@ export default function SuperAdminDashboard() {
             </div>
           )}
 
-          {/* ================= 1. COMPLETE DETAILED DASHBOARD (SCREENSHOT MATCHED) ================= */}
+          {/* ================= 1. COMPLETE DETAILED DASHBOARD ================= */}
           {activeSection === 'dashboard' && (
             <div className="space-y-8">
               
-              {/* Title & Operations Telemetry */}
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
                   <h2 className="text-2xl font-black text-slate-900">Welcome back, Admin 👋</h2>
@@ -269,7 +318,6 @@ export default function SuperAdminDashboard() {
               {/* 4 Clickable Metric Overview Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 
-                {/* 1. Orders */}
                 <div 
                   onClick={() => setActiveSection('bookings')}
                   className="bg-white border border-slate-200 hover:border-[#032C64] rounded-2xl p-5 shadow-xs transition-all cursor-pointer group"
@@ -289,7 +337,6 @@ export default function SuperAdminDashboard() {
                   </span>
                 </div>
 
-                {/* 2. Collections */}
                 <div 
                   onClick={() => setActiveSection('finance')}
                   className="bg-white border border-slate-200 hover:border-emerald-600 rounded-2xl p-5 shadow-xs transition-all cursor-pointer group"
@@ -309,7 +356,6 @@ export default function SuperAdminDashboard() {
                   </span>
                 </div>
 
-                {/* 3. Prescriptions Uploaded */}
                 <div 
                   onClick={() => {
                     setActiveLabFilter('ALL');
@@ -333,7 +379,6 @@ export default function SuperAdminDashboard() {
                   </span>
                 </div>
 
-                {/* 4. Visitors & Leads */}
                 <div 
                   onClick={() => setActiveSection('visitors')}
                   className="bg-white border border-slate-200 hover:border-purple-600 rounded-2xl p-5 shadow-xs transition-all cursor-pointer group"
@@ -355,10 +400,9 @@ export default function SuperAdminDashboard() {
 
               </div>
 
-              {/* Middle Row: Multi-Lab Distribution & Sample Status Circular Overview */}
+              {/* Middle Row: Multi-Lab Distribution & Sample Status Overview */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
                 
-                {/* Multi-Lab Load Distribution Bar (Interactive click-to-filter) */}
                 <div className="lg:col-span-8 bg-white border border-slate-200 rounded-3xl p-6 shadow-xs flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between mb-1">
@@ -373,7 +417,6 @@ export default function SuperAdminDashboard() {
 
                     <div className="space-y-4 text-xs font-bold">
                       
-                      {/* Redcliffe Bar */}
                       <div 
                         onClick={() => setActiveLabFilter(activeLabFilter === 'Redcliffe' ? 'ALL' : 'Redcliffe')}
                         className={`p-2.5 rounded-2xl border transition-all cursor-pointer ${activeLabFilter === 'Redcliffe' ? 'border-[#032C64] bg-blue-50/50 shadow-xs' : 'border-slate-100 hover:border-slate-200'}`}
@@ -390,7 +433,6 @@ export default function SuperAdminDashboard() {
                         </div>
                       </div>
 
-                      {/* Dr Lal PathLabs Bar */}
                       <div 
                         onClick={() => setActiveLabFilter(activeLabFilter === 'Dr Lal' ? 'ALL' : 'Dr Lal')}
                         className={`p-2.5 rounded-2xl border transition-all cursor-pointer ${activeLabFilter === 'Dr Lal' ? 'border-amber-500 bg-amber-50/50 shadow-xs' : 'border-slate-100 hover:border-slate-200'}`}
@@ -407,7 +449,6 @@ export default function SuperAdminDashboard() {
                         </div>
                       </div>
 
-                      {/* Thyrocare & Healthians Bar */}
                       <div 
                         onClick={() => setActiveLabFilter(activeLabFilter === 'Thyrocare' ? 'ALL' : 'Thyrocare')}
                         className={`p-2.5 rounded-2xl border transition-all cursor-pointer ${activeLabFilter === 'Thyrocare' ? 'border-emerald-600 bg-emerald-50/50 shadow-xs' : 'border-slate-100 hover:border-slate-200'}`}
@@ -437,7 +478,6 @@ export default function SuperAdminDashboard() {
                   )}
                 </div>
 
-                {/* Sample Status Overview (Circular Ring Graphic from Screenshot) */}
                 <div className="lg:col-span-4 bg-white border border-slate-200 rounded-3xl p-6 shadow-xs flex flex-col justify-between text-center">
                   <div>
                     <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-1">
@@ -445,47 +485,11 @@ export default function SuperAdminDashboard() {
                     </h3>
                     <p className="text-xs text-slate-400 mb-6">Phlebotomy and lab lifecycle.</p>
 
-                    {/* Donut Progress Graphic */}
                     <div className="relative w-36 h-36 mx-auto mb-6 flex items-center justify-center">
                       <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                        <path
-                          className="text-slate-100"
-                          strokeWidth="3.8"
-                          stroke="currentColor"
-                          fill="none"
-                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                        />
-                        <path
-                          className="text-[#032C64]"
-                          strokeDasharray="60, 100"
-                          strokeWidth="3.8"
-                          strokeLinecap="round"
-                          stroke="currentColor"
-                          fill="none"
-                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                        />
-                        <path
-                          className="text-[#FDAE61]"
-                          strokeDasharray="25, 100"
-                          strokeDashoffset="-60"
-                          strokeWidth="3.8"
-                          strokeLinecap="round"
-                          stroke="currentColor"
-                          fill="none"
-                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                        />
-                        <path
-                          className="text-emerald-500"
-                          strokeDasharray="15, 100"
-                          strokeDashoffset="-85"
-                          strokeWidth="3.8"
-                          strokeLinecap="round"
-                          stroke="currentColor"
-                          fill="none"
-                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                        />
+                        <path className="text-slate-100" strokeWidth="3.8" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <path className="text-[#032C64]" strokeDasharray="60, 100" strokeWidth="3.8" strokeLinecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                       </svg>
-                      
                       <div className="absolute inset-0 flex flex-col items-center justify-center">
                         <span className="text-2xl font-black text-slate-900">{bookingsList.length}</span>
                         <span className="text-[9px] font-bold uppercase text-slate-400">Total Orders</span>
@@ -493,31 +497,19 @@ export default function SuperAdminDashboard() {
                     </div>
 
                     <div className="grid grid-cols-3 gap-2 text-center text-xs border-t border-slate-100 pt-3">
-                      <div>
-                        <span className="block font-black text-slate-800">0</span>
-                        <span className="text-[10px] text-slate-400 font-bold">Paid</span>
-                      </div>
-                      <div>
-                        <span className="block font-black text-amber-600">5</span>
-                        <span className="text-[10px] text-slate-400 font-bold">Pending</span>
-                      </div>
-                      <div>
-                        <span className="block font-black text-blue-600">5</span>
-                        <span className="text-[10px] text-slate-400 font-bold">Parcha</span>
-                      </div>
+                      <div><span className="block font-black text-slate-800">0</span><span className="text-[10px] text-slate-400 font-bold">Paid</span></div>
+                      <div><span className="block font-black text-amber-600">5</span><span className="text-[10px] text-slate-400 font-bold">Pending</span></div>
+                      <div><span className="block font-black text-blue-600">5</span><span className="text-[10px] text-slate-400 font-bold">Parcha</span></div>
                     </div>
                   </div>
 
-                  <button
-                    onClick={() => setActiveSection('bookings')}
-                    className="w-full mt-4 py-2 bg-slate-50 hover:bg-slate-100 text-[#032C64] rounded-xl text-xs font-black transition-all"
-                  >
+                  <button onClick={() => setActiveSection('bookings')} className="w-full mt-4 py-2 bg-slate-50 hover:bg-slate-100 text-[#032C64] rounded-xl text-xs font-black transition-all">
                     View All Status Filters →
                   </button>
                 </div>
               </div>
 
-              {/* Bottom Row: LIVE FEED: LATEST CUSTOMER BOOKINGS (Screenshot Matched Table) */}
+              {/* Live Feed Table */}
               <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
@@ -587,16 +579,12 @@ export default function SuperAdminDashboard() {
             </div>
           )}
 
-          {/* Fallback to other sections when clicked from sidebar */}
           {activeSection !== 'dashboard' && (
             <div className="bg-white p-8 rounded-3xl border border-slate-200 text-center space-y-3">
               <h3 className="text-xl font-black text-[#032C64] uppercase">{activeSection} Module</h3>
               <p className="text-xs text-slate-500">Navigation active. Click Dashboard in sidebar to return to telemetry overview.</p>
-              <button 
-                onClick={() => setActiveSection('dashboard')}
-                className="px-4 py-2 bg-[#032C64] text-white rounded-xl text-xs font-bold"
-              >
-                Back to Full Dashboard View
+              <button onClick={() => setActiveSection('dashboard')} className="px-4 py-2 bg-[#032C64] text-white rounded-xl text-xs font-bold">
+                Back to Dashboard View
               </button>
             </div>
           )}
@@ -604,7 +592,7 @@ export default function SuperAdminDashboard() {
         </div>
       </main>
 
-      {/* ================= ORDER ACTION MODAL (Click any order to manage) ================= */}
+      {/* Order Action Modal */}
       {activeModalOrder && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
           <div className="bg-white w-full max-w-lg rounded-3xl p-6 shadow-2xl border border-slate-200">
@@ -620,22 +608,10 @@ export default function SuperAdminDashboard() {
 
             <div className="space-y-3 text-xs mb-6">
               <div className="p-3 bg-slate-50 rounded-xl space-y-1.5">
-                <div className="flex justify-between">
-                  <span className="text-slate-500 font-bold">Patient Name:</span>
-                  <span className="font-extrabold text-slate-900">{activeModalOrder.patient}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500 font-bold">Phone Number:</span>
-                  <span className="font-bold text-[#032C64]">{activeModalOrder.phone}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500 font-bold">Diagnostic Test:</span>
-                  <span className="font-semibold text-slate-700">{activeModalOrder.test}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500 font-bold">Total Bill:</span>
-                  <span className="font-black text-emerald-700">₹{activeModalOrder.amount.toFixed(2)}</span>
-                </div>
+                <div className="flex justify-between"><span className="text-slate-500 font-bold">Patient Name:</span><span className="font-extrabold text-slate-900">{activeModalOrder.patient}</span></div>
+                <div className="flex justify-between"><span className="text-slate-500 font-bold">Phone Number:</span><span className="font-bold text-[#032C64]">{activeModalOrder.phone}</span></div>
+                <div className="flex justify-between"><span className="text-slate-500 font-bold">Diagnostic Test:</span><span className="font-semibold text-slate-700">{activeModalOrder.test}</span></div>
+                <div className="flex justify-between"><span className="text-slate-500 font-bold">Total Bill:</span><span className="font-black text-emerald-700">₹{activeModalOrder.amount.toFixed(2)}</span></div>
               </div>
 
               <div>
