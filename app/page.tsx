@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { 
   ShieldCheck, 
   MapPin, 
@@ -39,21 +39,33 @@ import {
   AlertCircle,
   LocateFixed,
   BookOpen,
-  ChevronDown
+  ChevronDown,
+  Building2,
+  FileCheck2,
+  SlidersHorizontal,
+  Home
 } from 'lucide-react';
 
 // Brand Colors Definition (Locked with TestBeat Logo):
 // Primary Navy: #012C63 | Accent Teal: #039487 | Alert Coral: #F44236
 
+// 23 Serviceable States & Districts from Redcliffe Serviceability PIN code list 2026nn.xlsx
 const SERVICEABLE_LOCATIONS = [
-  { state: 'Uttar Pradesh', cities: ['Greater Noida', 'Noida', 'Ghaziabad', 'Lucknow', 'Varanasi', 'Kanpur', 'Prayagraj', 'Ballia', 'Agra', 'Meerut', 'Bareilly', 'Gorakhpur'] },
-  { state: 'Delhi NCR', cities: ['New Delhi', 'South Delhi', 'Dwarka', 'Rohini', 'Gurugram', 'Faridabad'] },
-  { state: 'Maharashtra', cities: ['Mumbai', 'Pune', 'Nagpur', 'Thane', 'Nashik', 'Navi Mumbai', 'Aurangabad'] },
+  { state: 'Uttar Pradesh', cities: ['Gautambuddha Nagar (Greater Noida)', 'Noida', 'Ghaziabad', 'Lucknow', 'Varanasi', 'Kanpur', 'Prayagraj', 'Ballia', 'Agra', 'Meerut', 'Saharanpur', 'Mathura', 'Bareilly', 'Gorakhpur'] },
+  { state: 'Delhi', cities: ['New Delhi', 'South West Delhi', 'North West Delhi', 'West Delhi', 'Dwarka', 'Rohini', 'Connaught Place'] },
+  { state: 'Haryana', cities: ['Gurugram', 'Faridabad', 'Panchkula', 'Rohtak', 'Karnal', 'Panipat', 'Sonipat'] },
+  { state: 'Maharashtra', cities: ['Mumbai Suburban', 'Mumbai City', 'Thane', 'Pune', 'Nashik', 'Nagpur', 'Navi Mumbai', 'Aurangabad'] },
   { state: 'Karnataka', cities: ['Bengaluru Urban', 'Bengaluru Rural', 'Mysuru', 'Mangaluru', 'Hubballi'] },
-  { state: 'Bihar', cities: ['Patna', 'Gaya', 'Muzaffarpur', 'Bhagalpur', 'Darbhanga', 'Purnia'] },
-  { state: 'Telangana & AP', cities: ['Hyderabad', 'Secunderabad', 'Warangal', 'Visakhapatnam', 'Vijayawada'] },
-  { state: 'West Bengal', cities: ['Kolkata', 'Howrah', 'Siliguri', 'Durgapur', 'Asansol'] },
-  { state: 'Rajasthan', cities: ['Jaipur', 'Jodhpur', 'Udaipur', 'Kota', 'Ajmer'] }
+  { state: 'Bihar', cities: ['Patna', 'Muzaffarpur', 'Gopalganj', 'Gaya', 'Bhagalpur', 'Samastipur', 'Aurangabad', 'Darbhanga'] },
+  { state: 'Telangana', cities: ['Hyderabad', 'Medchal Malkajgiri', 'Rangareddy', 'Sangareddy', 'Warangal'] },
+  { state: 'West Bengal', cities: ['Kolkata', 'Howrah', 'Hooghly', 'Paschim Bardhaman', 'Siliguri'] },
+  { state: 'Rajasthan', cities: ['Jaipur', 'Jodhpur', 'Udaipur', 'Bikaner', 'Ajmer', 'Kota'] },
+  { state: 'Gujarat', cities: ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Gandhinagar'] },
+  { state: 'Punjab', cities: ['Amritsar', 'Ludhiana', 'Jalandhar', 'Bathinda', 'Hoshiarpur', 'Mohali'] },
+  { state: 'Madhya Pradesh', cities: ['Indore', 'Bhopal', 'Gwalior', 'Jabalpur', 'Ujjain'] },
+  { state: 'Jharkhand', cities: ['Ranchi', 'Dhanbad', 'East Singhbhum', 'Deoghar'] },
+  { state: 'Uttarakhand', cities: ['Dehradun', 'Haridwar', 'Rishikesh'] },
+  { state: 'Andhra Pradesh', cities: ['Visakhapatnam', 'Guntur', 'Krishna', 'Vijayawada'] }
 ];
 
 const CLINICAL_CATEGORIES = [
@@ -70,6 +82,7 @@ const CLINICAL_CATEGORIES = [
 interface TestItem {
   id: string;
   name: string;
+  code: string;
   category: string;
   parametersCount: number;
   fastingRequired: boolean;
@@ -79,36 +92,20 @@ interface TestItem {
   offerPrice: number;
 }
 
-interface FeaturedTestItem extends TestItem {
-  featuredLab: string;
-  labBadge: string;
-}
-
+// Data extracted directly from Pricing (Individual & Packages)_TestBeat.xlsx
 const TESTS_CATALOG: TestItem[] = [
-  { id: 't1', name: 'Complete Blood Count (CBC with ESR - 28 Params)', category: 'full-body', parametersCount: 28, fastingRequired: false, sampleType: 'EDTA Blood', description: 'Screening for anemia, platelets, white blood cells & latent infections.', mrp: 450, offerPrice: 199 },
-  { id: 't2', name: 'Thyroid Profile Total (T3, T4, TSH)', category: 'thyroid', parametersCount: 3, fastingRequired: true, sampleType: 'Serum', description: 'Gold standard test for thyroid gland hormone synthesis and metabolism.', mrp: 650, offerPrice: 249 },
-  { id: 't3', name: 'HbA1c Glycated Hemoglobin Test', category: 'diabetes', parametersCount: 2, fastingRequired: false, sampleType: 'Whole Blood', description: 'Evaluates 3-month average blood glucose control with eAG values.', mrp: 550, offerPrice: 249 },
-  { id: 't4', name: 'Lipid Profile Comprehensive (Cardiac Risk)', category: 'heart', parametersCount: 8, fastingRequired: true, sampleType: 'Serum', description: 'HDL, LDL, VLDL, Total Cholesterol and Triglycerides ratio.', mrp: 850, offerPrice: 349 },
-  { id: 't5', name: 'Liver Function Test (LFT 12 Parameters)', category: 'liver', parametersCount: 12, fastingRequired: false, sampleType: 'Serum', description: 'Checks liver enzymes (SGOT, SGPT), Bilirubin & total protein levels.', mrp: 750, offerPrice: 299 },
-  { id: 't6', name: 'Kidney Function Test (KFT with Electrolytes)', category: 'kidney', parametersCount: 11, fastingRequired: false, sampleType: 'Serum', description: 'Screens Renal clearance, Serum Creatinine, Uric Acid & Electrolytes.', mrp: 950, offerPrice: 349 },
-  { id: 't7', name: 'Vitamin D 25-Hydroxy (Bone & Immunity)', category: 'vitamins', parametersCount: 1, fastingRequired: false, sampleType: 'Serum', description: 'Detects vitamin D deficiency causing joint fatigue and weak bone density.', mrp: 1400, offerPrice: 499 },
-  { id: 't8', name: 'Vitamin B12 Active (Cyanocobalamin)', category: 'vitamins', parametersCount: 1, fastingRequired: true, sampleType: 'Serum', description: 'Critical biomarker for nerve function, neurological health & energy levels.', mrp: 1100, offerPrice: 449 }
-];
-
-const FEATURED_LAB_TESTS: FeaturedTestItem[] = [
-  { id: 'ft-1', name: 'Robotic Thyroid Ultra-Sensitive Panel', category: 'thyroid', parametersCount: 3, fastingRequired: true, sampleType: 'Serum', description: 'Processed on centralized chemiluminescence automated tracks.', mrp: 700, offerPrice: 220, featuredLab: 'Thyrocare Technologies', labBadge: 'Robotics Partner' },
-  { id: 'ft-2', name: 'Smart Cardiac Risk Lipid Profiler', category: 'heart', parametersCount: 9, fastingRequired: true, sampleType: 'Serum', description: 'Evaluates atherogenic index & LDL/HDL ratio with cold-chain gel verification.', mrp: 900, offerPrice: 320, featuredLab: 'Healthians Network', labBadge: '4°C Verified' },
-  { id: 'ft-3', name: 'AI Precision HbA1c Glycemic Marker', category: 'diabetes', parametersCount: 2, fastingRequired: false, sampleType: 'Whole Blood', description: 'HPLC gold-standard methodology with AI glycemic trend forecasting.', mrp: 600, offerPrice: 239, featuredLab: 'Redcliffe Lifetech', labBadge: 'AI Verified' },
-  { id: 'ft-4', name: 'National Reference Liver Enzymes Assay', category: 'liver', parametersCount: 12, fastingRequired: false, sampleType: 'Serum', description: 'Dual pathologist sign-off on SGOT, SGPT and total protein ratios.', mrp: 850, offerPrice: 340, featuredLab: 'Dr. Lal PathLabs Partner', labBadge: 'Reference Standard' }
-];
-
-const HEALTH_WELLNESS_BLOGS = [
-  { slug: 'cbc-test-guide', title: 'Complete Blood Count (CBC): Normal Ranges & Infection Signals', reads: '4 min read', category: 'Biomarkers' },
-  { slug: 'fasting-blood-sugar-vs-hba1c', title: 'Fasting Blood Sugar vs HbA1c: Which is More Accurate for Diabetes?', reads: '5 min read', category: 'Diabetes' },
-  { slug: 'vitamin-d-deficiency-symptoms', title: 'Silent Vitamin D & B12 Deficiency Symptoms in Working Adults', reads: '6 min read', category: 'Nutrition' },
-  { slug: 'lipid-profile-heart-health', title: 'Understanding Good HDL vs Bad LDL: How to Read Your Lipid Report', reads: '5 min read', category: 'Cardiology' },
-  { slug: 'thyroid-fasting-protocols', title: 'Why Morning Fasting & Pill Timing Matters Before a Thyroid Test', reads: '3 min read', category: 'Endocrine' },
-  { slug: 'kidney-kft-creatinine-facts', title: 'Serum Creatinine & eGFR: Early Warning Indicators of Renal Strain', reads: '5 min read', category: 'Renal Care' }
+  { id: 't1', name: 'Complete Blood Count (CBC) Test', code: 'HM007', category: 'full-body', parametersCount: 28, fastingRequired: false, sampleType: 'EDTA Blood', description: 'Screening for anemia, platelets, white blood cells & latent infections.', mrp: 450, offerPrice: 299 },
+  { id: 't2', name: 'Thyroid Profile Total (T3, T4, TSH)', code: 'BC063', category: 'thyroid', parametersCount: 3, fastingRequired: true, sampleType: 'Serum', description: 'Gold standard test for thyroid gland hormone synthesis and metabolic rate.', mrp: 650, offerPrice: 429 },
+  { id: 't3', name: 'HBA1C Test', code: 'BC035', category: 'diabetes', parametersCount: 2, fastingRequired: false, sampleType: 'Whole Blood', description: 'Evaluates 3-month average blood glucose control with eAG values.', mrp: 550, offerPrice: 349 },
+  { id: 't4', name: 'Lipid Profile Test', code: 'BC471', category: 'heart', parametersCount: 8, fastingRequired: true, sampleType: 'Serum', description: 'HDL, LDL, VLDL, Total Cholesterol and Triglycerides cardiovascular risk.', mrp: 850, offerPrice: 399 },
+  { id: 't5', name: 'Liver Function Test (LFT)', code: 'PL94', category: 'liver', parametersCount: 12, fastingRequired: false, sampleType: 'Serum', description: 'Checks liver enzymes (SGOT, SGPT), Bilirubin & total protein levels.', mrp: 750, offerPrice: 399 },
+  { id: 't6', name: 'Kidney Function Test (KFT)', code: 'BC360', category: 'kidney', parametersCount: 11, fastingRequired: false, sampleType: 'Serum', description: 'Screens Renal clearance, Serum Creatinine, Uric Acid & Electrolytes.', mrp: 950, offerPrice: 399 },
+  { id: 't7', name: 'Vitamin D Test (25-Hydroxy)', code: 'BC075', category: 'vitamins', parametersCount: 1, fastingRequired: false, sampleType: 'Serum', description: 'Detects vitamin D deficiency causing joint fatigue and weak bone density.', mrp: 1400, offerPrice: 499 },
+  { id: 't8', name: 'Vitamin B12 Test', code: 'BC074', category: 'vitamins', parametersCount: 1, fastingRequired: true, sampleType: 'Serum', description: 'Critical biomarker for nerve function, neurological health & energy levels.', mrp: 1100, offerPrice: 649 },
+  { id: 't9', name: 'Blood Sugar Fasting', code: 'BC023', category: 'diabetes', parametersCount: 1, fastingRequired: true, sampleType: 'Fluoride Plasma', description: '10-12 hours fasting glucose level evaluation.', mrp: 150, offerPrice: 69 },
+  { id: 't10', name: 'Blood Sugar Post Prandial (PP)', code: 'BC033', category: 'diabetes', parametersCount: 1, fastingRequired: false, sampleType: 'Fluoride Plasma', description: '2 hours post-meal glucose absorption test.', mrp: 150, offerPrice: 69 },
+  { id: 't11', name: 'Urine Routine & Microscopic Examination Test', code: 'CP012', category: 'full-body', parametersCount: 22, fastingRequired: false, sampleType: 'Urine', description: 'Evaluates urinary tract infections, protein leakage & renal casts.', mrp: 300, offerPrice: 119 },
+  { id: 't12', name: 'Complete Hemogram (CBC & ESR)', code: 'HM013', category: 'full-body', parametersCount: 29, fastingRequired: false, sampleType: 'EDTA Blood', description: 'CBC with automated Erythrocyte Sedimentation Rate.', mrp: 600, offerPrice: 449 }
 ];
 
 const PACKAGES_LIST = [
@@ -232,7 +229,7 @@ export default function TestBeatPortal() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [useWalletBalance, setUseWalletBalance] = useState(true);
 
-  // Order Success Modal State
+  // Order Confirmation Modal State
   const [confirmedOrder, setConfirmedOrder] = useState<OrderConfirmationData | null>(null);
 
   // User Dropdown & Customer Panel Modals
@@ -303,7 +300,7 @@ export default function TestBeatPortal() {
   const [locationSearchInput, setLocationSearchInput] = useState('');
   const [isDetectingLocation, setIsDetectingLocation] = useState(false);
 
-  // Dedicated Partner With Us Modal States (Removed from Homepage body)
+  // Dedicated Partner With Us Modal States
   const [isPartnerModalOpen, setIsPartnerModalOpen] = useState(false);
   const [affiliateSubmitted, setAffiliateSubmitted] = useState(false);
   const [affiliateData, setAffiliateData] = useState({
@@ -316,7 +313,9 @@ export default function TestBeatPortal() {
   // Full Cities Directory Modal State
   const [isCitiesDirectoryOpen, setIsCitiesDirectoryOpen] = useState(false);
 
-  // Dynamic Total Count of Cities across India
+  // Side Drawer Menu for Desktop & Mobile
+  const [isDrawerMenuOpen, setIsDrawerMenuOpen] = useState(false);
+
   const totalCitiesCount = useMemo(() => {
     return SERVICEABLE_LOCATIONS.reduce((acc, curr) => acc + curr.cities.length, 0);
   }, []);
@@ -381,7 +380,6 @@ export default function TestBeatPortal() {
     setIsDetectingLocation(true);
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        // Fallback realistic reverse lookup resolution
         setTimeout(() => {
           setIsDetectingLocation(false);
           const detected = `Greater Noida (201310)`;
@@ -397,7 +395,7 @@ export default function TestBeatPortal() {
     );
   };
 
-  // TestBeat AI Vision Prescription Reader Handler
+  // TestBeat AI Vision Prescription Reader Handler (Robust Extraction)
   const handleRxFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -445,6 +443,7 @@ export default function TestBeatPortal() {
             }
           });
 
+          // Auto-select matched tests into cart & aggregator
           if (matchedCatalogTests.length > 0) {
             setSelectedTests(prev => {
               const merged = [...prev];
@@ -569,13 +568,13 @@ export default function TestBeatPortal() {
     setTimeout(() => {
       setIsPartnerModalOpen(false);
       setAffiliateSubmitted(false);
-    }, 2800);
+    }, 2500);
   };
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800 antialiased selection:bg-[#039487] selection:text-white">
 
-      {/* 1. TOP PAN-INDIA TRUST & HELPLINE BAR (Updated Contrast & Dynamic Cities Count) */}
+      {/* 1. TOP PAN-INDIA TRUST & HELPLINE BAR (Updated Contrast & Dynamic City Count) */}
       <div className="bg-[#012C63] text-slate-200 text-xs py-2 px-4 border-b border-[#0c3b65]">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center space-x-4 overflow-x-auto text-[11px] sm:text-xs">
@@ -593,13 +592,12 @@ export default function TestBeatPortal() {
           </div>
 
           <div className="flex items-center space-x-5 text-xs">
-            {/* Dynamic City Count in Top Bar */}
             <button 
               onClick={() => setIsLocationModalOpen(true)}
               className="flex items-center text-slate-200 hover:text-white font-medium transition-colors"
             >
               <MapPin className="w-3.5 h-3.5 mr-1 text-[#F44236]" />
-              <span>Pan-India ({totalCitiesCount}+ Cities Covered)</span>
+              <span>Pan-India ({totalCitiesCount}+ Cities & 2,100+ PINs)</span>
             </button>
             <a href="tel:+918368887011" className="flex items-center text-teal-300 font-bold hover:underline">
               <PhoneCall className="w-3.5 h-3.5 mr-1" /> +91 83688 87011
@@ -608,11 +606,11 @@ export default function TestBeatPortal() {
         </div>
       </div>
 
-      {/* 2. MAIN NAVBAR WITH LOCATION AUTO-DETECT, PARTNER MENU & PROFILE DROPDOWN */}
+      {/* 2. MAIN NAVBAR WITH HAMBURGER DRAWER TRIGGER FOR BOTH DESKTOP & MOBILE */}
       <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           
-          {/* Official Brand Logo */}
+          {/* Logo & Location Indicator */}
           <div className="flex items-center space-x-4">
             <a href="#" className="flex items-center space-x-3 group">
               <div className="w-11 h-11 rounded-2xl bg-[#012C63] flex items-center justify-center p-1.5 shadow-md shadow-[#012C63]/20 group-hover:scale-105 transition-transform">
@@ -636,11 +634,10 @@ export default function TestBeatPortal() {
               </div>
             </a>
 
-            {/* Live Location Selector Button with Pincode Display */}
+            {/* Pincode & City Selection Trigger */}
             <button
               onClick={() => setIsLocationModalOpen(true)}
               className="hidden md:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-[#012C63] transition-colors"
-              title="Change Delivery Location"
             >
               <MapPin className="w-3.5 h-3.5 text-[#F44236]" />
               <span className="truncate max-w-[150px]">{currentSelectedLocation}</span>
@@ -648,7 +645,7 @@ export default function TestBeatPortal() {
             </button>
           </div>
 
-          {/* Genuine Diagnostic Navigation (Partner With Us opens clean modal) */}
+          {/* Genuine Diagnostic Navigation (Partner With Us Removed from Header Bar) */}
           <nav className="hidden lg:flex items-center space-x-7 text-sm font-bold text-slate-700">
             <a href="#compare" className="flex items-center space-x-1.5 text-[#039487] hover:text-[#012C63] transition-colors">
               <FlaskConical className="w-4 h-4" />
@@ -659,27 +656,20 @@ export default function TestBeatPortal() {
               <Package className="w-4 h-4 text-slate-400" />
               <span>Health Packages</span>
             </a>
-            <a href="#featured-tests" className="flex items-center space-x-1.5 hover:text-[#012C63] transition-colors">
-              <Award className="w-4 h-4 text-amber-500" />
-              <span>Featured Tests</span>
+            <a href="#habits" className="flex items-center space-x-1.5 hover:text-[#012C63] transition-colors">
+              <Activity className="w-4 h-4 text-slate-400" />
+              <span>Tests by Risk</span>
             </a>
-            <button
-              onClick={() => setIsPartnerModalOpen(true)}
-              className="flex items-center space-x-1 text-slate-600 hover:text-emerald-700 transition-colors"
-            >
-              <Handshake className="w-4 h-4 text-emerald-600" />
-              <span>Partner With Us</span>
-            </button>
-            <a href="#blogs" className="flex items-center space-x-1 hover:text-[#012C63] transition-colors">
-              <BookOpen className="w-4 h-4 text-slate-400" />
-              <span>Health Blogs</span>
+            <a href="#compare" className="flex items-center space-x-1.5 hover:text-[#012C63] transition-colors">
+              <Microscope className="w-4 h-4 text-slate-400" />
+              <span>All Blood Tests</span>
             </a>
           </nav>
 
-          {/* Cart & ONLY USER ICON BUTTON */}
-          <div className="flex items-center space-x-4">
+          {/* Right Header: Cart, User Icon & Side 3-Line Hamburger Drawer for Desktop + Mobile */}
+          <div className="flex items-center space-x-3.5">
             
-            {/* Functional Working Cart Button */}
+            {/* Shopping Cart Button */}
             <button
               onClick={() => setIsCartOpen(true)}
               className="relative p-2 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors"
@@ -693,7 +683,7 @@ export default function TestBeatPortal() {
               )}
             </button>
 
-            {/* ONLY USER ICON BUTTON */}
+            {/* User Profile Icon */}
             <div className="relative">
               <button
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
@@ -702,7 +692,6 @@ export default function TestBeatPortal() {
                 <User className="w-5 h-5" />
               </button>
 
-              {/* IMAGE-MATCHED DROPDOWN MENU */}
               {userDropdownOpen && (
                 <div className="absolute right-0 mt-3 w-64 bg-white rounded-2xl shadow-2xl border border-slate-200 py-3 z-50 animate-in fade-in zoom-in-95">
                   <div className="px-4 pb-2 border-b border-slate-100">
@@ -783,57 +772,127 @@ export default function TestBeatPortal() {
               )}
             </div>
 
+            {/* Desktop & Mobile 3-Line Menu Trigger Button */}
             <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100"
+              onClick={() => setIsDrawerMenuOpen(true)}
+              className="p-2.5 rounded-xl border border-slate-200 text-[#012C63] hover:bg-slate-100 transition-colors shadow-2xs"
+              title="Open Navigation Menu"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              <Menu className="w-5 h-5 stroke-[2.5]" />
             </button>
           </div>
         </div>
-
-        {/* Mobile Navigation */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-slate-100 bg-white px-5 pt-3 pb-6 space-y-3 shadow-xl">
-            <button 
-              onClick={() => { setMobileMenuOpen(false); setIsLocationModalOpen(true); }}
-              className="w-full text-left py-1 text-sm font-bold text-[#012C63] flex items-center space-x-1"
-            >
-              <MapPin className="w-4 h-4 text-[#F44236]" />
-              <span>Location: {currentSelectedLocation}</span>
-            </button>
-            <a href="#compare" onClick={() => setMobileMenuOpen(false)} className="block text-sm font-bold text-slate-800 py-1">Compare Labs Live</a>
-            <a href="#packages" onClick={() => setMobileMenuOpen(false)} className="block text-sm font-bold text-slate-800 py-1">Health Packages</a>
-            <a href="#featured-tests" onClick={() => setMobileMenuOpen(false)} className="block text-sm font-bold text-slate-800 py-1">Featured Tests</a>
-            <button
-              onClick={() => { setMobileMenuOpen(false); setIsPartnerModalOpen(true); }}
-              className="block w-full text-left text-sm font-bold text-emerald-700 py-1"
-            >
-              Partner With Us
-            </button>
-            <button
-              onClick={() => { setMobileMenuOpen(false); setIsRxOpen(true); }}
-              className="block text-sm font-bold text-[#039487] py-1"
-            >
-              Upload Doctor Prescription
-            </button>
-            <button
-              onClick={() => { setMobileMenuOpen(false); setIsAuthOpen(true); }}
-              className="w-full mt-2 py-3 bg-[#012C63] text-white rounded-xl text-sm font-bold shadow-md"
-            >
-              Patient Sign In / Register
-            </button>
-          </div>
-        )}
       </header>
 
-      {/* 3. HERO SECTION WITH INSTANT SEARCH DROPDOWN & LIVE COMPARISON INTEGRATION */}
+      {/* 3-LINE SIDE DRAWER MENU (AVAILABLE ON BOTH DESKTOP & MOBILE WITH ICONS) */}
+      {isDrawerMenuOpen && (
+        <div className="fixed inset-0 z-50 overflow-hidden bg-slate-950/70 backdrop-blur-xs flex justify-end">
+          <div className="bg-white w-full max-w-sm h-full flex flex-col shadow-2xl animate-in slide-in-from-right duration-300">
+            
+            <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-[#012C63] text-white">
+              <div className="flex items-center space-x-2">
+                <SlidersHorizontal className="w-5 h-5 text-teal-300" />
+                <h3 className="text-base font-black">TestBeat Navigation</h3>
+              </div>
+              <button 
+                onClick={() => setIsDrawerMenuOpen(false)}
+                className="p-1 rounded-full text-white/80 hover:text-white hover:bg-white/10"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-5 space-y-2 text-sm font-bold text-slate-700">
+              <a 
+                href="#" 
+                onClick={() => setIsDrawerMenuOpen(false)}
+                className="flex items-center space-x-3 p-3 rounded-2xl hover:bg-teal-50 hover:text-[#039487] transition-colors"
+              >
+                <Home className="w-5 h-5 text-[#012C63]" />
+                <span>Home Portal</span>
+              </a>
+
+              <a 
+                href="#compare" 
+                onClick={() => setIsDrawerMenuOpen(false)}
+                className="flex items-center space-x-3 p-3 rounded-2xl hover:bg-teal-50 hover:text-[#039487] transition-colors"
+              >
+                <FlaskConical className="w-5 h-5 text-[#039487]" />
+                <span>Compare Labs Live</span>
+              </a>
+
+              <a 
+                href="#packages" 
+                onClick={() => setIsDrawerMenuOpen(false)}
+                className="flex items-center space-x-3 p-3 rounded-2xl hover:bg-teal-50 hover:text-[#039487] transition-colors"
+              >
+                <Package className="w-5 h-5 text-indigo-600" />
+                <span>Full Body Health Packages</span>
+              </a>
+
+              <a 
+                href="#habits" 
+                onClick={() => setIsDrawerMenuOpen(false)}
+                className="flex items-center space-x-3 p-3 rounded-2xl hover:bg-teal-50 hover:text-[#039487] transition-colors"
+              >
+                <Activity className="w-5 h-5 text-rose-500" />
+                <span>Tests by Health Risks</span>
+              </a>
+
+              <button 
+                onClick={() => { setIsDrawerMenuOpen(false); setIsRxOpen(true); }}
+                className="w-full flex items-center space-x-3 p-3 rounded-2xl hover:bg-teal-50 hover:text-[#039487] transition-colors text-left"
+              >
+                <UploadCloud className="w-5 h-5 text-amber-500" />
+                <span>Upload Doctor Prescription</span>
+              </button>
+
+              <button 
+                onClick={() => { setIsDrawerMenuOpen(false); setIsLocationModalOpen(true); }}
+                className="w-full flex items-center space-x-3 p-3 rounded-2xl hover:bg-teal-50 hover:text-[#039487] transition-colors text-left"
+              >
+                <MapPin className="w-5 h-5 text-[#F44236]" />
+                <span>Serviceable Cities ({totalCitiesCount}+)</span>
+              </button>
+
+              <button 
+                onClick={() => { setIsDrawerMenuOpen(false); setIsPartnerModalOpen(true); }}
+                className="w-full flex items-center space-x-3 p-3 rounded-2xl hover:bg-emerald-50 text-emerald-800 transition-colors text-left"
+              >
+                <Handshake className="w-5 h-5 text-emerald-600" />
+                <span>Partner With Us (Doctors & Clinics)</span>
+              </button>
+
+              <a 
+                href="https://wa.me/918368887011"
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center space-x-3 p-3 rounded-2xl hover:bg-emerald-50 text-emerald-700 transition-colors"
+              >
+                <PhoneCall className="w-5 h-5 text-emerald-600" />
+                <span>Customer Care (+91 83688 87011)</span>
+              </a>
+            </div>
+
+            <div className="p-5 border-t border-slate-100 bg-slate-50">
+              <button
+                onClick={() => { setIsDrawerMenuOpen(false); setIsAuthOpen(true); }}
+                className="w-full py-3 bg-[#012C63] text-white rounded-xl text-xs font-black uppercase tracking-wider shadow"
+              >
+                {isLoggedIn ? 'Access Patient Portal' : 'Patient Sign In / Register'}
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* 3. HERO SECTION WITH ANIMATED & DECORATED TESTBEAT AI PRESCRIPTION READER */}
       <section className="bg-gradient-to-b from-teal-50/50 via-white to-slate-50 pt-10 pb-12 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
-            {/* Left Column: Headline & Multi-Search */}
             <div className="lg:col-span-8">
               <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-teal-100 text-[#012C63] text-xs font-bold mb-4 shadow-xs">
                 <Sparkles className="w-4 h-4 text-[#039487]" />
@@ -846,10 +905,10 @@ export default function TestBeatPortal() {
                 </span>
               </h1>
               <p className="text-slate-600 text-sm sm:text-base mt-3 max-w-2xl font-medium">
-                Search tests or select biomarkers below. Real-time rate comparisons appear instantly across Thyrocare, Healthians, Redcliffe & Dr. Lal PathLabs.
+                Choose tests from Thyrocare, Healthians, Redcliffe & Dr. Lal PathLabs. Enjoy free doorstep sample pickup with 2°C - 8°C cold-chain tracking.
               </p>
 
-              {/* Instant Search Bar with Live Suggestions Dropdown (Item 4) */}
+              {/* Main Search Input */}
               <div className="mt-6 relative max-w-xl">
                 <div className="relative flex items-center bg-white border-2 border-slate-200 focus-within:border-[#039487] rounded-2xl p-2 shadow-lg shadow-teal-600/5 transition-all">
                   <Search className="w-5 h-5 text-[#039487] ml-3 flex-shrink-0" />
@@ -868,11 +927,11 @@ export default function TestBeatPortal() {
                   )}
                 </div>
 
-                {/* Live Search Instant Selection Dropdown */}
+                {/* Instant Search Suggestions Dropdown */}
                 {isSearchFocused && (
                   <div className="absolute left-0 right-0 top-full mt-2 bg-white rounded-2xl border border-slate-200 shadow-2xl p-3 z-30 max-h-72 overflow-y-auto">
                     <div className="flex items-center justify-between pb-2 border-b border-slate-100 text-[11px] font-bold text-slate-400">
-                      <span>MATCHING BIOMARKERS ({filteredCatalog.length})</span>
+                      <span>MATCHING TESTS FROM PRICING DIRECTORY ({filteredCatalog.length})</span>
                       <button onClick={() => setIsSearchFocused(false)} className="text-rose-500 hover:underline">Close</button>
                     </div>
                     <div className="divide-y divide-slate-100 mt-1">
@@ -890,7 +949,7 @@ export default function TestBeatPortal() {
                           >
                             <div>
                               <p className="font-extrabold text-xs text-slate-900">{test.name}</p>
-                              <p className="text-[10px] text-slate-500">{test.parametersCount} Parameters • {test.category}</p>
+                              <p className="text-[10px] text-slate-500">{test.code} • {test.parametersCount} Parameters</p>
                             </div>
                             <div className="flex items-center space-x-2">
                               <span className="font-black text-xs text-[#012C63]">₹{test.offerPrice}</span>
@@ -927,7 +986,6 @@ export default function TestBeatPortal() {
             <div className="lg:col-span-4">
               <div className="relative rounded-3xl p-6 text-white shadow-2xl border border-teal-500/30 overflow-hidden bg-gradient-to-br from-[#012C63] via-[#09356d] to-[#011c40] group">
                 
-                {/* Animated Scanner Laser Beam Effect */}
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#039487]/15 to-transparent h-20 -translate-y-full group-hover:translate-y-[280px] transition-transform duration-1000 ease-in-out pointer-events-none"></div>
                 <div className="absolute top-0 right-0 -mr-8 -mt-8 w-28 h-28 bg-[#039487]/25 rounded-full blur-2xl pointer-events-none"></div>
 
@@ -996,7 +1054,6 @@ export default function TestBeatPortal() {
           <p className="text-slate-500 text-xs sm:text-sm mt-1">Select an organ category or individual biomarker to calculate multi-lab prices.</p>
         </div>
 
-        {/* Category Selector Tabs */}
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 mb-8">
           {CLINICAL_CATEGORIES.map(cat => {
             const Icon = cat.icon;
@@ -1018,7 +1075,6 @@ export default function TestBeatPortal() {
           })}
         </div>
 
-        {/* Selectable Test Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {filteredCatalog.map(test => {
             const isSelected = selectedTests.some(t => t.id === test.id);
@@ -1261,75 +1317,17 @@ export default function TestBeatPortal() {
         </div>
       </section>
 
-      {/* 7. FEATURED LAB TESTS SECTION (Admin Curated Partner Lab Tests - Item 5) */}
-      <section className="bg-white py-16 px-4 sm:px-6 lg:px-8 border-b border-slate-200" id="featured-tests">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-wrap items-center justify-between gap-4 mb-10">
-            <div>
-              <span className="text-xs font-black text-[#039487] bg-teal-50 border border-teal-200 px-3 py-1 rounded-full uppercase tracking-wider">
-                Partner Lab Spotlights
-              </span>
-              <h2 className="text-3xl font-black text-slate-900 mt-2">
-                Featured Diagnostic Tests by Accredited Labs
-              </h2>
-              <p className="text-slate-500 text-xs sm:text-sm mt-1">
-                Curated high-precision individual pathology assays verified by specialized laboratory partners.
-              </p>
-            </div>
-            <a href="#compare" className="text-xs font-bold text-[#039487] hover:underline flex items-center">
-              <span>View All 1500+ Tests</span>
-              <ChevronRight className="w-4 h-4 ml-0.5" />
-            </a>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {FEATURED_LAB_TESTS.map((test) => (
-              <div key={test.id} className="bg-slate-50/70 border border-slate-200 rounded-3xl p-6 flex flex-col justify-between hover:shadow-md transition-all">
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-[10px] font-black uppercase text-[#012C63] bg-teal-100 px-2 py-0.5 rounded">
-                      {test.labBadge}
-                    </span>
-                    <span className="text-[11px] font-bold text-slate-500">{test.parametersCount} Params</span>
-                  </div>
-
-                  <h4 className="font-extrabold text-slate-900 text-sm leading-snug">{test.name}</h4>
-                  <p className="text-[11px] text-teal-800 font-bold mt-1">Partner: {test.featuredLab}</p>
-                  <p className="text-xs text-slate-500 mt-2 leading-relaxed">{test.description}</p>
-                </div>
-
-                <div className="mt-5 pt-4 border-t border-slate-200">
-                  <div className="flex items-baseline space-x-2 mb-3">
-                    <span className="text-2xl font-black text-[#012C63]">₹{test.offerPrice}</span>
-                    <span className="text-xs line-through text-slate-400">₹{test.mrp}</span>
-                  </div>
-                  <button
-                    onClick={() => {
-                      toggleTest(test);
-                      setIsCartOpen(true);
-                    }}
-                    className="w-full py-2.5 bg-[#012C63] hover:bg-[#0c3b65] text-white rounded-xl text-xs font-bold transition-all shadow-sm"
-                  >
-                    + Book with {test.featuredLab.split(' ')[0]}
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 8. FOOTER WITH SERVICEABLE STATES, CITIES & HEALTH BLOG DIRECTORY (Items 7 & 8) */}
+      {/* 8. FOOTER WITH SERVICEABLE STATES, CITIES & HEALTH BLOG DIRECTORY */}
       <footer className="bg-[#012C63] text-slate-300 text-xs border-t border-[#0c3b65]">
         
-        {/* Top Part of Footer: Serviceable States & Cities (Item 7) */}
+        {/* Serviceable Locations Directory */}
         <div className="border-b border-[#0c3b65]/80 py-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
               <div>
                 <h3 className="text-base font-black text-white flex items-center">
                   <MapPin className="w-4 h-4 text-[#F44236] mr-1.5" />
-                  Serviceable States & Cities Across India ({totalCitiesCount}+ Locations)
+                  Serviceable States & Cities Across India ({totalCitiesCount}+ Locations & 2,100+ Pincodes)
                 </h3>
                 <p className="text-[11px] text-slate-400 mt-0.5">
                   Phlebotomist doorstep sample pickup network with cold-chain gel bags across northern and central hubs.
@@ -1368,33 +1366,7 @@ export default function TestBeatPortal() {
           </div>
         </div>
 
-        {/* Middle Part of Footer: Diagnostic Blogs & Educational SEO Hub (Item 8) */}
-        <div className="border-b border-[#0c3b65]/80 py-10 px-4 sm:px-6 lg:px-8" id="blogs">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex items-center space-x-2 mb-5">
-              <BookOpen className="w-4 h-4 text-[#039487]" />
-              <h3 className="text-sm font-black text-white uppercase tracking-wider">Health Wellness Diagnostic Blogs & Guides</h3>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
-              {HEALTH_WELLNESS_BLOGS.map((blog, idx) => (
-                <div key={idx} className="p-3.5 rounded-2xl bg-white/5 border border-white/10 hover:border-teal-400/40 transition-colors">
-                  <span className="text-[10px] font-black uppercase text-teal-300 bg-teal-900/60 px-2 py-0.5 rounded">
-                    {blog.category}
-                  </span>
-                  <h4 className="font-bold text-white text-xs mt-1.5 leading-snug">{blog.title}</h4>
-                  <div className="flex items-center justify-between text-[10px] text-slate-400 mt-3 pt-2 border-t border-white/5">
-                    <span>{blog.reads}</span>
-                    <button onClick={() => alert(`Opening Blog: "${blog.title}"`)} className="text-teal-300 font-bold hover:underline">
-                      Read Guide →
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Part of Footer: Corporate Details & Brand Identity */}
+        {/* Corporate Details */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div className="space-y-3 md:col-span-2">
@@ -1448,7 +1420,7 @@ export default function TestBeatPortal() {
         </div>
       </footer>
 
-      {/* ================= MODAL: LOCATION SELECTOR & AUTO-DETECT (Item 3) ================= */}
+      {/* ================= MODAL: LOCATION SELECTOR & AUTO-DETECT ================= */}
       {isLocationModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
           <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl p-6 relative border border-slate-100 max-h-[85vh] overflow-y-auto">
@@ -1458,11 +1430,10 @@ export default function TestBeatPortal() {
 
             <div className="flex items-center space-x-2 text-[#039487] mb-1">
               <MapPin className="w-5 h-5 text-[#F44236]" />
-              <h3 className="text-lg font-black text-slate-900">Choose Sample Collection Location</h3>
+              <h3 className="text-lg font-black text-slate-900">Choose Collection Location</h3>
             </div>
-            <p className="text-xs text-slate-500 mb-4">Select your city or detect live GPS location for phlebotomist arrival.</p>
+            <p className="text-xs text-slate-500 mb-4">Select your city or detect live GPS location for doorstep sample collection.</p>
 
-            {/* GPS Auto-Detect Button */}
             <button
               onClick={handleDetectLocation}
               disabled={isDetectingLocation}
@@ -1472,7 +1443,6 @@ export default function TestBeatPortal() {
               <span>{isDetectingLocation ? 'Detecting GPS Pincode...' : 'Detect My Current Location (GPS)'}</span>
             </button>
 
-            {/* Manual Location Search */}
             <div className="relative mb-4">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
               <input
@@ -1484,7 +1454,6 @@ export default function TestBeatPortal() {
               />
             </div>
 
-            {/* City Selection List */}
             <div className="space-y-1 text-xs max-h-56 overflow-y-auto divide-y divide-slate-100">
               {SERVICEABLE_LOCATIONS.flatMap(s => s.cities)
                 .filter(c => c.toLowerCase().includes(locationSearchInput.toLowerCase()))
@@ -1507,7 +1476,7 @@ export default function TestBeatPortal() {
         </div>
       )}
 
-      {/* ================= MODAL: DEDICATED PARTNER WITH US APPLICATION (Item 6) ================= */}
+      {/* ================= MODAL: DEDICATED PARTNER WITH US APPLICATION ================= */}
       {isPartnerModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
           <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl p-7 relative border border-slate-100 max-h-[90vh] overflow-y-auto">
@@ -1599,7 +1568,7 @@ export default function TestBeatPortal() {
         </div>
       )}
 
-      {/* ================= MODAL: COMPLETE CITIES DIRECTORY DRAWER (Item 7) ================= */}
+      {/* ================= MODAL: COMPLETE CITIES DIRECTORY DRAWER ================= */}
       {isCitiesDirectoryOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
           <div className="bg-white w-full max-w-3xl rounded-3xl shadow-2xl p-6 sm:p-8 relative border border-slate-100 max-h-[85vh] overflow-y-auto">
@@ -1819,7 +1788,7 @@ export default function TestBeatPortal() {
         </div>
       )}
 
-      {/* ================= MODAL: CUSTOMER ACCOUNT PANELS (PROFILE / ORDERS / SUBSCRIPTIONS / WALLET / FAMILY) ================= */}
+      {/* ================= MODAL: CUSTOMER ACCOUNT PANELS ================= */}
       {activeAccountView && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
           <div className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl p-6 sm:p-8 relative border border-slate-100 max-h-[90vh] overflow-y-auto">
@@ -2394,6 +2363,7 @@ export default function TestBeatPortal() {
               </div>
             )}
 
+            {/* Results Feedback & Unmatched Tests Notice */}
             {rxDetectedPrescriptions.length > 0 && !rxScanning && (
               <div className="mb-4 space-y-2">
                 <div className="p-3 bg-teal-50 border border-teal-200 rounded-xl text-xs">
