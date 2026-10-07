@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       return NextResponse.json(
-        { error: 'API Key is missing. Please set GEMINI_API_KEY in your Vercel Environment Variables.' },
+        { error: 'API Key missing in Vercel. Please set GEMINI_API_KEY in Environment Variables.' },
         { status: 500 }
       );
     }
@@ -28,24 +28,23 @@ export async function POST(req: Request) {
 
     const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, '').trim();
 
-    const promptText = `You are an expert clinical laboratory pathologist. Carefully examine this handwritten doctor prescription.
+    const promptText = `You are an expert Indian clinical pathologist. Carefully examine this handwritten doctor prescription.
 Extract ALL prescribed diagnostic tests, blood tests, and lab investigations (e.g., CBC, Thyroid/TSH, HbA1c, Fasting Blood Sugar, LFT, KFT, Creatinine, Lipid Profile, Vitamin D, Vitamin B12, Urine Routine, Calcium, Iron, ESR).
 Return the result strictly as a raw JSON array of strings containing standard test names, for example: ["Complete Blood Count (CBC) Test", "Thyroid Profile Total (T3, T4, TSH)", "HBA1C Test"].
 If no diagnostic tests are written, return []. Do not include markdown formatting or backticks. Return ONLY the raw JSON array.`;
 
-    // Multi-model endpoints to prevent "model not found" errors
     const endpointsToTry = [
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent',
       'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
       'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent',
       'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent'
     ];
 
-    let lastErrorMessage = 'Failed to analyze prescription image.';
+    let lastError = 'Failed to analyze prescription';
 
-    for (const url of endpointsToTry) {
+    for (const endpoint of endpointsToTry) {
       try {
-        const res = await fetch(`${url}?key=${apiKey}`, {
+        const res = await fetch(`${endpoint}?key=${apiKey}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -72,7 +71,7 @@ If no diagnostic tests are written, return []. Do not include markdown formattin
         const data = await res.json();
 
         if (data?.candidates?.[0]?.content?.parts?.[0]?.text) {
-          const rawText: string = data.candidates[0].content.parts[0].text;
+          const rawText = data.candidates[0].content.parts[0].text;
           const cleanedJson = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
 
           let extractedTests: string[] = [];
@@ -87,14 +86,14 @@ If no diagnostic tests are written, return []. Do not include markdown formattin
 
           return NextResponse.json({ success: true, tests: extractedTests });
         } else if (data?.error?.message) {
-          lastErrorMessage = data.error.message;
+          lastError = data.error.message;
         }
       } catch (err: unknown) {
-        lastErrorMessage = err instanceof Error ? err.message : 'API call failed';
+        lastError = err instanceof Error ? err.message : 'Network request failed';
       }
     }
 
-    return NextResponse.json({ error: lastErrorMessage }, status: 500);
+    return NextResponse.json({ error: lastError }, status: 500);
   } catch {
     return NextResponse.json(
       { error: 'Handwriting could not be read clearly. Please upload a clear photo or select tests manually.' },
