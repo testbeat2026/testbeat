@@ -36,7 +36,9 @@ import {
   Trash2,
   ShoppingCart,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  FileText,
+  Printer
 } from 'lucide-react';
 
 // Brand Colors Definition (Locked with TestBeat Logo):
@@ -172,6 +174,15 @@ interface FamilyMember {
   gender: 'Male' | 'Female' | 'Other';
 }
 
+interface OrderConfirmationData {
+  bookingId: string;
+  patientName: string;
+  amountPaid: number;
+  address: string;
+  testCount: number;
+  scheduledTime: string;
+}
+
 export default function TestBeatPortal() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState('all');
@@ -186,6 +197,9 @@ export default function TestBeatPortal() {
   // Cart Drawer State & Working Checkout
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [useWalletBalance, setUseWalletBalance] = useState(true);
+
+  // Modern Order Success Modal State (Replaces native browser alert)
+  const [confirmedOrder, setConfirmedOrder] = useState<OrderConfirmationData | null>(null);
 
   // User Dropdown & Customer Panel Modals
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
@@ -356,7 +370,6 @@ export default function TestBeatPortal() {
             }
           });
 
-          // Auto-select matched tests into cart & aggregator
           if (matchedCatalogTests.length > 0) {
             setSelectedTests(prev => {
               const merged = [...prev];
@@ -453,15 +466,27 @@ export default function TestBeatPortal() {
     alert(`${created.name} (${created.relation}) added successfully!`);
   };
 
-  // Checkout Action
+  // Modern Checkout Handler (Launches sleek Order Confirmation Modal)
   const handleProceedCheckout = () => {
     if (selectedTests.length === 0) return alert('Please select at least 1 test to checkout');
+    
+    const charged = finalPayable;
     if (useWalletBalance && walletBalance > 0) {
       const deduction = Math.min(walletBalance, cartSubtotal);
       setWalletBalance(prev => Math.max(0, prev - deduction));
     }
+
+    const orderData: OrderConfirmationData = {
+      bookingId: `#TB-${Math.floor(100000 + Math.random() * 900000)}`,
+      patientName: profileData.name,
+      amountPaid: charged,
+      address: profileData.address,
+      testCount: selectedTests.length,
+      scheduledTime: 'Tomorrow Morning (07:00 AM - 08:00 AM)'
+    };
+
     setIsCartOpen(false);
-    alert(`Order Placed Successfully!\n\nBooking ID: #TB-${Math.floor(100000 + Math.random() * 900000)}\nPatient: ${profileData.name}\nAmount Paid: ₹${finalPayable}\nAddress: ${profileData.address}\n\nPhlebotomist will arrive tomorrow morning between 07:00 AM - 08:00 AM for home sample collection.`);
+    setConfirmedOrder(orderData);
   };
 
   return (
@@ -561,7 +586,7 @@ export default function TestBeatPortal() {
               )}
             </button>
 
-            {/* ONLY USER ICON BUTTON (Image matched trigger) */}
+            {/* ONLY USER ICON BUTTON */}
             <div className="relative">
               <button
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
@@ -1340,6 +1365,89 @@ export default function TestBeatPortal() {
                 </button>
               </div>
             )}
+
+          </div>
+        </div>
+      )}
+
+      {/* ================= MODAL: ORDER CONFIRMED MODAL (REPLACES NATIVE BLACK POPUP) ================= */}
+      {confirmedOrder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl p-7 relative border border-slate-100 animate-in zoom-in-95 duration-200 text-center">
+            
+            {/* Animated Green Badge */}
+            <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 ring-8 ring-emerald-50">
+              <Check className="w-8 h-8 text-emerald-600 stroke-[3]" />
+            </div>
+
+            <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full inline-block mb-2">
+              Appointment Scheduled
+            </span>
+
+            <h3 className="text-2xl font-black text-slate-900">Order Placed Successfully!</h3>
+            <p className="text-slate-500 text-xs mt-1 mb-6">
+              Your certified home sample collection appointment is confirmed.
+            </p>
+
+            {/* Receipt Summary Card */}
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-left text-xs space-y-2.5 mb-6">
+              <div className="flex justify-between pb-2 border-b border-slate-200">
+                <span className="text-slate-500 font-semibold">Booking Reference ID:</span>
+                <span className="font-black text-[#012C63]">{confirmedOrder.bookingId}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500 font-semibold">Patient Name:</span>
+                <span className="font-bold text-slate-900">{confirmedOrder.patientName}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500 font-semibold">Scheduled Slot:</span>
+                <span className="font-bold text-emerald-700">{confirmedOrder.scheduledTime}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500 font-semibold">Biomarkers Included:</span>
+                <span className="font-bold text-slate-900">{confirmedOrder.testCount} Tests Selected</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500 font-semibold">Home Pickup Address:</span>
+                <span className="font-semibold text-slate-800 truncate max-w-[200px]" title={confirmedOrder.address}>{confirmedOrder.address}</span>
+              </div>
+              <div className="flex justify-between pt-2 border-t border-slate-200 font-black text-sm">
+                <span className="text-slate-900">Total Amount Paid:</span>
+                <span className="text-[#039487]">₹{confirmedOrder.amountPaid}</span>
+              </div>
+            </div>
+
+            {/* Phlebotomist Protocol Notice */}
+            <div className="bg-teal-50/70 border border-teal-200 rounded-xl p-3 text-[11px] text-teal-900 text-left mb-6 flex items-start space-x-2">
+              <ShieldCheck className="w-4 h-4 text-[#039487] flex-shrink-0 mt-0.5" />
+              <p>
+                Phlebotomist will arrive with barcoded single-use vacutainers and a 2°C - 8°C cold-chain bag. Digital PDF reports will be sent within 24 hours.
+              </p>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="space-y-2">
+              <button
+                onClick={() => {
+                  setConfirmedOrder(null);
+                  setActiveAccountView('orders');
+                }}
+                className="w-full py-3 bg-[#012C63] hover:bg-[#0c3b65] text-white rounded-xl text-xs font-black uppercase tracking-wider shadow-md transition-all flex items-center justify-center space-x-2"
+              >
+                <span>Track in My Orders</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+
+              <button
+                onClick={() => {
+                  setConfirmedOrder(null);
+                  setSelectedTests([]);
+                }}
+                className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all"
+              >
+                Done / Back to Home
+              </button>
+            </div>
 
           </div>
         </div>
