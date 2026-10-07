@@ -19,7 +19,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // Dynamic MIME-type detection (PNG, JPEG, WEBP)
     let mimeType = 'image/jpeg';
     if (imageBase64.startsWith('data:image/png')) {
       mimeType = 'image/png';
@@ -27,7 +26,6 @@ export async function POST(req: Request) {
       mimeType = 'image/webp';
     }
 
-    // Clean base64 string
     const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, '').trim();
 
     const promptText = `You are an expert Indian clinical pathologist. Carefully examine this handwritten doctor prescription slip.
@@ -35,7 +33,6 @@ Extract ALL prescribed diagnostic pathology tests, blood tests, and lab investig
 Return the result strictly as a valid JSON array of test names as strings, for example: ["Complete Blood Count (CBC) Test", "Thyroid Profile Total (T3, T4, TSH)", "HBA1C Test"].
 If no diagnostic tests are written, return []. Do not include markdown formatting or backticks. Return ONLY the raw JSON array.`;
 
-    // Google Gemini REST API with exact protobuf schema
     const res = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
       {
