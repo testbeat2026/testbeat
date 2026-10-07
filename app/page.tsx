@@ -37,14 +37,17 @@ import {
   ShoppingCart,
   Loader2,
   AlertCircle,
-  FileText,
-  Printer
+  Building2,
+  ChevronDown,
+  Star,
+  MessageCircle,
+  BookOpen
 } from 'lucide-react';
 
 // Brand Colors Definition (Locked with TestBeat Logo):
 // Primary Navy: #012C63 | Accent Teal: #039487 | Alert Coral: #F44236
 
-// Exact Data from Redcliffe Serviceability PIN code list 2026nn.xlsx (23 States, 110+ Districts, 2,107 Pincodes)
+// 23 Serviceable States & Districts from Redcliffe Serviceability PIN code list 2026nn.xlsx (2,107 Pincodes)
 const SERVICEABLE_LOCATIONS = [
   { state: 'Uttar Pradesh', cities: ['Gautambuddha Nagar (Greater Noida)', 'Noida', 'Ghaziabad', 'Lucknow', 'Varanasi', 'Kanpur', 'Prayagraj', 'Ballia', 'Agra', 'Meerut', 'Saharanpur', 'Mathura', 'Bareilly', 'Gorakhpur'] },
   { state: 'Delhi', cities: ['New Delhi', 'South West Delhi', 'North West Delhi', 'West Delhi', 'Dwarka', 'Rohini', 'Connaught Place'] },
@@ -87,7 +90,12 @@ interface TestItem {
   offerPrice: number;
 }
 
-// Exact Pathology Tests Mapped from Pricing (Individual & Packages)_TestBeat.xlsx
+interface FeaturedTestItem extends TestItem {
+  featuredLab: string;
+  labBadge: string;
+}
+
+// Tests catalog mapped directly from Pricing (Individual & Packages)_TestBeat.xlsx
 const TESTS_CATALOG: TestItem[] = [
   { id: 't1', name: 'Complete Blood Count (CBC) Test', code: 'HM007', category: 'full-body', parametersCount: 28, fastingRequired: false, sampleType: 'EDTA Blood', description: 'Screening for anemia, platelets, white blood cells & latent infections.', mrp: 450, offerPrice: 299 },
   { id: 't2', name: 'Thyroid Profile Total (T3, T4, TSH)', code: 'BC063', category: 'thyroid', parametersCount: 3, fastingRequired: true, sampleType: 'Serum', description: 'Gold standard test for thyroid gland hormone synthesis and metabolism.', mrp: 650, offerPrice: 429 },
@@ -100,7 +108,15 @@ const TESTS_CATALOG: TestItem[] = [
   { id: 't9', name: 'Blood Sugar Fasting', code: 'BC023', category: 'diabetes', parametersCount: 1, fastingRequired: true, sampleType: 'Fluoride Plasma', description: '10-12 hours fasting glucose level evaluation.', mrp: 150, offerPrice: 69 },
   { id: 't10', name: 'Blood Sugar Post Prandial (PP)', code: 'BC033', category: 'diabetes', parametersCount: 1, fastingRequired: false, sampleType: 'Fluoride Plasma', description: 'Post-meal glucose level evaluation.', mrp: 150, offerPrice: 69 },
   { id: 't11', name: 'Urine Routine & Microscopic Examination Test', code: 'CP012', category: 'full-body', parametersCount: 22, fastingRequired: false, sampleType: 'Urine', description: 'Evaluates urinary tract infection (UTI), kidney health & protein leak.', mrp: 300, offerPrice: 119 },
-  { id: 't12', name: 'Complete Hemogram (CBC & ESR)', code: 'HM013', category: 'full-body', parametersCount: 29, fastingRequired: false, sampleType: 'EDTA Blood', description: 'Complete Blood Count with automated ESR sedimentation rate.', mrp: 600, offerPrice: 449 }
+  { id: 't12', name: 'Complete Hemogram (CBC & ESR)', code: 'HM013', category: 'full-body', parametersCount: 29, fastingRequired: false, sampleType: 'EDTA Blood', description: 'CBC with automated ESR sedimentation rate.', mrp: 600, offerPrice: 449 }
+];
+
+// Featured Lab Tests Section Data (from Pricing Excel)
+const FEATURED_LAB_TESTS: FeaturedTestItem[] = [
+  { id: 'ft-1', name: 'Robotic Thyroid Ultra-Sensitive Panel', code: 'BC063', category: 'thyroid', parametersCount: 3, fastingRequired: true, sampleType: 'Serum', description: 'Processed on centralized chemiluminescence automated tracks.', mrp: 700, offerPrice: 220, featuredLab: 'Thyrocare Technologies', labBadge: 'Robotics Partner' },
+  { id: 'ft-2', name: 'Smart Cardiac Risk Lipid Profiler', code: 'BC471', category: 'heart', parametersCount: 9, fastingRequired: true, sampleType: 'Serum', description: 'Evaluates atherogenic index & LDL/HDL ratio with cold-chain gel verification.', mrp: 900, offerPrice: 320, featuredLab: 'Healthians Network', labBadge: '4°C Verified' },
+  { id: 'ft-3', name: 'AI Precision HbA1c Glycemic Marker', code: 'BC035', category: 'diabetes', parametersCount: 2, fastingRequired: false, sampleType: 'Whole Blood', description: 'HPLC gold-standard methodology with AI glycemic trend forecasting.', mrp: 600, offerPrice: 239, featuredLab: 'Redcliffe Lifetech', labBadge: 'AI Verified' },
+  { id: 'ft-4', name: 'National Reference Liver Enzymes Assay', code: 'PL94', category: 'liver', parametersCount: 12, fastingRequired: false, sampleType: 'Serum', description: 'Dual pathologist sign-off on SGOT, SGPT and total protein ratios.', mrp: 850, offerPrice: 340, featuredLab: 'Dr. Lal PathLabs Partner', labBadge: 'Reference Standard' }
 ];
 
 const PACKAGES_LIST = [
@@ -211,6 +227,7 @@ interface OrderConfirmationData {
 export default function TestBeatPortal() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
   
   const [selectedTests, setSelectedTests] = useState<TestItem[]>([
     TESTS_CATALOG[0],
@@ -601,7 +618,7 @@ export default function TestBeatPortal() {
             </button>
           </div>
 
-          {/* Genuine Diagnostic Navigation (Point 2: Partner With Us REMOVED from header bar) */}
+          {/* Genuine Diagnostic Navigation */}
           <nav className="hidden lg:flex items-center space-x-8 text-sm font-bold text-slate-700">
             <a href="#compare" className="flex items-center space-x-1.5 text-[#039487] hover:text-[#012C63] transition-colors">
               <FlaskConical className="w-4 h-4" />
@@ -622,7 +639,7 @@ export default function TestBeatPortal() {
             </a>
           </nav>
 
-          {/* Cart & ONLY USER ICON BUTTON + 3-LINE MENU FOR BOTH DESKTOP & MOBILE (Point 3) */}
+          {/* Cart & ONLY USER ICON BUTTON + 3-LINE MENU FOR BOTH DESKTOP & MOBILE */}
           <div className="flex items-center space-x-3.5">
             
             {/* Functional Working Cart Button */}
@@ -785,6 +802,15 @@ export default function TestBeatPortal() {
               >
                 <Activity className="w-5 h-5 text-rose-500" />
                 <span>Tests by Health Risks</span>
+              </a>
+
+              <a 
+                href="#featured-tests" 
+                onClick={() => setIsDrawerMenuOpen(false)}
+                className="flex items-center space-x-3 p-3 rounded-2xl hover:bg-teal-50 hover:text-[#039487] transition-colors"
+              >
+                <Award className="w-5 h-5 text-amber-500" />
+                <span>Featured Tests</span>
               </a>
 
               <button 
@@ -1232,8 +1258,66 @@ export default function TestBeatPortal() {
         </div>
       </section>
 
-      {/* 7. AFFILIATE / B2B PARTNER NETWORK (Preserved exactly) */}
-      <section id="affiliate" className="bg-white py-16 px-4 sm:px-6 lg:px-8 border-b border-slate-200">
+      {/* 7. FEATURED LAB TESTS SECTION */}
+      <section className="bg-white py-16 px-4 sm:px-6 lg:px-8 border-b border-slate-200" id="featured-tests">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-wrap items-center justify-between gap-4 mb-10">
+            <div>
+              <span className="text-xs font-black text-[#039487] bg-teal-50 border border-teal-200 px-3 py-1 rounded-full uppercase tracking-wider">
+                Partner Lab Spotlights
+              </span>
+              <h2 className="text-3xl font-black text-slate-900 mt-2">
+                Featured Diagnostic Tests by Accredited Labs
+              </h2>
+              <p className="text-slate-500 text-xs sm:text-sm mt-1">
+                Curated high-precision individual pathology assays verified by specialized laboratory partners.
+              </p>
+            </div>
+            <a href="#compare" className="text-xs font-bold text-[#039487] hover:underline flex items-center">
+              <span>View All Tests</span>
+              <ChevronRight className="w-4 h-4 ml-0.5" />
+            </a>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {FEATURED_LAB_TESTS.map((test) => (
+              <div key={test.id} className="bg-slate-50/70 border border-slate-200 rounded-3xl p-6 flex flex-col justify-between hover:shadow-md transition-all">
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-[10px] font-black uppercase text-[#012C63] bg-teal-100 px-2 py-0.5 rounded">
+                      {test.labBadge}
+                    </span>
+                    <span className="text-[11px] font-bold text-slate-500">{test.parametersCount} Params</span>
+                  </div>
+
+                  <h4 className="font-extrabold text-slate-900 text-sm leading-snug">{test.name}</h4>
+                  <p className="text-[11px] text-teal-800 font-bold mt-1">Partner: {test.featuredLab}</p>
+                  <p className="text-xs text-slate-500 mt-2 leading-relaxed">{test.description}</p>
+                </div>
+
+                <div className="mt-5 pt-4 border-t border-slate-200">
+                  <div className="flex items-baseline space-x-2 mb-3">
+                    <span className="text-2xl font-black text-[#012C63]">₹{test.offerPrice}</span>
+                    <span className="text-xs line-through text-slate-400">₹{test.mrp}</span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      toggleTest(test);
+                      setIsCartOpen(true);
+                    }}
+                    className="w-full py-2.5 bg-[#012C63] hover:bg-[#0c3b65] text-white rounded-xl text-xs font-bold transition-all shadow-sm"
+                  >
+                    + Book with {test.featuredLab.split(' ')[0]}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 8. AFFILIATE / B2B PARTNER NETWORK (Preserved) */}
+      <section id="affiliate" className="bg-slate-50 py-16 px-4 sm:px-6 lg:px-8 border-b border-slate-200">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
             <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-teal-100 text-[#012C63] text-xs font-bold mb-3 shadow-xs">
@@ -1259,7 +1343,7 @@ export default function TestBeatPortal() {
           ) : (
             <form 
               onSubmit={(e) => { e.preventDefault(); setAffiliateSubmitted(true); }}
-              className="bg-slate-50 border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-4 max-w-2xl mx-auto shadow-sm"
+              className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-4 max-w-2xl mx-auto shadow-sm"
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
@@ -1270,7 +1354,7 @@ export default function TestBeatPortal() {
                     value={affiliateData.name}
                     onChange={(e) => setAffiliateData({ ...affiliateData, name: e.target.value })}
                     placeholder="Dr. / Clinic Name" 
-                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold focus:outline-none focus:border-[#039487]"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold focus:outline-none focus:border-[#039487]"
                   />
                 </div>
                 <div>
@@ -1282,7 +1366,7 @@ export default function TestBeatPortal() {
                     value={affiliateData.phone}
                     onChange={(e) => setAffiliateData({ ...affiliateData, phone: e.target.value.replace(/\D/g, '') })}
                     placeholder="10-digit number" 
-                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold focus:outline-none focus:border-[#039487]"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold focus:outline-none focus:border-[#039487]"
                   />
                 </div>
               </div>
@@ -1296,7 +1380,7 @@ export default function TestBeatPortal() {
                     value={affiliateData.city}
                     onChange={(e) => setAffiliateData({ ...affiliateData, city: e.target.value })}
                     placeholder="e.g. Greater Noida, Delhi, Lucknow" 
-                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold focus:outline-none focus:border-[#039487]"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold focus:outline-none focus:border-[#039487]"
                   />
                 </div>
                 <div>
@@ -1304,7 +1388,7 @@ export default function TestBeatPortal() {
                   <select 
                     value={affiliateData.category}
                     onChange={(e) => setAffiliateData({ ...affiliateData, category: e.target.value })}
-                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold focus:outline-none focus:border-[#039487]"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold focus:outline-none focus:border-[#039487]"
                   >
                     <option>Doctor / Private Clinic</option>
                     <option>Local Collection Centre / Pathology Lab</option>
@@ -1326,58 +1410,11 @@ export default function TestBeatPortal() {
         </div>
       </section>
 
-      {/* 8. FOOTER WITH SERVICEABLE STATES, CITIES & DIRECTORY */}
+      {/* 9. FOOTER WITH LOGO AND SITEMAP */}
       <footer className="bg-[#012C63] text-slate-300 text-xs border-t border-[#0c3b65]">
-        
-        {/* Serviceable Locations Directory */}
-        <div className="border-b border-[#0c3b65]/80 py-12 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-              <div>
-                <h3 className="text-base font-black text-white flex items-center">
-                  <MapPin className="w-4 h-4 text-[#F44236] mr-1.5" />
-                  Serviceable States & Cities Across India ({totalCitiesCount}+ Locations & 2,100+ Pincodes)
-                </h3>
-                <p className="text-[11px] text-slate-400 mt-0.5">
-                  Phlebotomist doorstep sample pickup network with cold-chain gel bags across northern and central hubs.
-                </p>
-              </div>
-              <button
-                onClick={() => setIsLocationModalOpen(true)}
-                className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-teal-300 text-xs font-bold transition-colors"
-              >
-                Change Location & Pincode →
-              </button>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4 text-[11px]">
-              {SERVICEABLE_LOCATIONS.map((loc, idx) => (
-                <div key={idx} className="space-y-1">
-                  <p className="font-extrabold text-teal-300 text-xs">{loc.state}</p>
-                  <ul className="space-y-0.5 text-slate-300">
-                    {loc.cities.slice(0, 4).map((city, cIdx) => (
-                      <li key={cIdx}>
-                        <button 
-                          onClick={() => {
-                            setCurrentSelectedLocation(`${city}`);
-                            alert(`Location updated to ${city}. Doorstep sample collection active.`);
-                          }} 
-                          className="hover:text-white transition-colors text-left"
-                        >
-                          {city}
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Corporate Details */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
+            
             <div className="space-y-3 md:col-span-2">
               <div className="flex items-center space-x-2">
                 <span className="text-2xl font-black text-white">Test</span>
@@ -1422,7 +1459,7 @@ export default function TestBeatPortal() {
             </div>
           </div>
 
-          <div className="pt-6 border-t border-[#0c3b65] flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400 gap-3">
+          <div className="pt-8 border-t border-[#0c3b65] flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400 gap-3">
             <p>© 2026 TestBeat Health Technologies Pvt Ltd. All rights reserved.</p>
             <p>Pan-India Medical Diagnostic Platform.</p>
           </div>
@@ -1667,7 +1704,7 @@ export default function TestBeatPortal() {
               onClick={() => setActiveAccountView(null)}
               className="absolute top-5 right-5 p-1.5 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100"
             >
-              <X className="w-4 h-4" />
+              <X className="w-5 h-5" />
             </button>
 
             <div className="flex items-center space-x-2 border-b border-slate-100 pb-4 overflow-x-auto text-xs font-black mb-6">
@@ -2209,7 +2246,6 @@ export default function TestBeatPortal() {
               Upload prescription image or PDF. TestBeat AI will read the doctor&apos;s handwriting and automatically select prescribed diagnostic tests into your cart.
             </p>
 
-            {/* Hidden native input */}
             <input 
               type="file" 
               ref={rxFileInputRef}
@@ -2218,7 +2254,6 @@ export default function TestBeatPortal() {
               onChange={handleRxFileChange}
             />
 
-            {/* Scanning / Loading UI */}
             {rxScanning ? (
               <div className="border-2 border-dashed border-[#039487] rounded-2xl p-8 text-center bg-teal-50/50 mb-4 animate-pulse">
                 <Loader2 className="w-10 h-10 text-[#039487] mx-auto mb-3 animate-spin" />
@@ -2253,7 +2288,6 @@ export default function TestBeatPortal() {
                   </div>
                 </div>
 
-                {/* Specific Unmatched Warning Note with Manual Option */}
                 {rxUnmatchedTests.length > 0 && (
                   <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900">
                     <div className="flex items-start space-x-2">
