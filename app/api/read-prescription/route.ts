@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       return NextResponse.json(
-        { error: 'API Key is missing. Please set GEMINI_API_KEY in Vercel Environment Variables.' },
+        { error: 'API Key is missing. Please set GEMINI_API_KEY in your Vercel Environment Variables.' },
         { status: 500 }
       );
     }
@@ -28,14 +28,14 @@ export async function POST(req: Request) {
 
     const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, '').trim();
 
-    const promptText = `You are an expert clinical laboratory pathologist. Carefully examine this handwritten doctor prescription slip.
-Extract ALL prescribed diagnostic pathology tests, blood tests, and lab investigations (e.g. CBC, Hemogram, Thyroid/TSH, HbA1c, Fasting Blood Sugar, LFT, KFT, Creatinine, Lipid Profile, Vitamin D, Vitamin B12, Urine Routine, Calcium, Iron, ESR).
-Return the result strictly as a valid raw JSON array of strings containing standard test names, for example: ["Complete Blood Count (CBC) Test", "Thyroid Profile Total (T3, T4, TSH)", "HBA1C Test"].
+    const promptText = `You are an expert clinical laboratory pathologist. Carefully examine this handwritten doctor prescription.
+Extract ALL prescribed diagnostic tests, blood tests, and lab investigations (e.g., CBC, Thyroid/TSH, HbA1c, Fasting Blood Sugar, LFT, KFT, Creatinine, Lipid Profile, Vitamin D, Vitamin B12, Urine Routine, Calcium, Iron, ESR).
+Return the result strictly as a raw JSON array of strings containing standard test names, for example: ["Complete Blood Count (CBC) Test", "Thyroid Profile Total (T3, T4, TSH)", "HBA1C Test"].
 If no diagnostic tests are written, return []. Do not include markdown formatting or backticks. Return ONLY the raw JSON array.`;
 
     const endpointsToTry = [
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent',
       'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent',
       'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
       'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent'
     ];
