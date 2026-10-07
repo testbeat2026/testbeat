@@ -34,22 +34,12 @@ import {
   UserCheck,
   Plus,
   Trash2,
-  ShoppingCart,
-  Loader2,
-  AlertCircle,
-  LocateFixed,
-  BookOpen,
-  ChevronDown,
-  Building2,
-  FileCheck2,
-  SlidersHorizontal,
-  Home
+  ShoppingCart
 } from 'lucide-react';
 
 // Brand Colors Definition (Locked with TestBeat Logo):
 // Primary Navy: #012C63 | Accent Teal: #039487 | Alert Coral: #F44236
 
-// 23 Serviceable States & Districts from Redcliffe Serviceability PIN code list 2026nn.xlsx
 const SERVICEABLE_LOCATIONS = [
   { state: 'Uttar Pradesh', cities: ['Gautambuddha Nagar (Greater Noida)', 'Noida', 'Ghaziabad', 'Lucknow', 'Varanasi', 'Kanpur', 'Prayagraj', 'Ballia', 'Agra', 'Meerut', 'Saharanpur', 'Mathura', 'Bareilly', 'Gorakhpur'] },
   { state: 'Delhi', cities: ['New Delhi', 'South West Delhi', 'North West Delhi', 'West Delhi', 'Dwarka', 'Rohini', 'Connaught Place'] },
@@ -82,7 +72,6 @@ const CLINICAL_CATEGORIES = [
 interface TestItem {
   id: string;
   name: string;
-  code: string;
   category: string;
   parametersCount: number;
   fastingRequired: boolean;
@@ -92,20 +81,15 @@ interface TestItem {
   offerPrice: number;
 }
 
-// Data extracted directly from Pricing (Individual & Packages)_TestBeat.xlsx
 const TESTS_CATALOG: TestItem[] = [
-  { id: 't1', name: 'Complete Blood Count (CBC) Test', code: 'HM007', category: 'full-body', parametersCount: 28, fastingRequired: false, sampleType: 'EDTA Blood', description: 'Screening for anemia, platelets, white blood cells & latent infections.', mrp: 450, offerPrice: 299 },
-  { id: 't2', name: 'Thyroid Profile Total (T3, T4, TSH)', code: 'BC063', category: 'thyroid', parametersCount: 3, fastingRequired: true, sampleType: 'Serum', description: 'Gold standard test for thyroid gland hormone synthesis and metabolic rate.', mrp: 650, offerPrice: 429 },
-  { id: 't3', name: 'HBA1C Test', code: 'BC035', category: 'diabetes', parametersCount: 2, fastingRequired: false, sampleType: 'Whole Blood', description: 'Evaluates 3-month average blood glucose control with eAG values.', mrp: 550, offerPrice: 349 },
-  { id: 't4', name: 'Lipid Profile Test', code: 'BC471', category: 'heart', parametersCount: 8, fastingRequired: true, sampleType: 'Serum', description: 'HDL, LDL, VLDL, Total Cholesterol and Triglycerides cardiovascular risk.', mrp: 850, offerPrice: 399 },
-  { id: 't5', name: 'Liver Function Test (LFT)', code: 'PL94', category: 'liver', parametersCount: 12, fastingRequired: false, sampleType: 'Serum', description: 'Checks liver enzymes (SGOT, SGPT), Bilirubin & total protein levels.', mrp: 750, offerPrice: 399 },
-  { id: 't6', name: 'Kidney Function Test (KFT)', code: 'BC360', category: 'kidney', parametersCount: 11, fastingRequired: false, sampleType: 'Serum', description: 'Screens Renal clearance, Serum Creatinine, Uric Acid & Electrolytes.', mrp: 950, offerPrice: 399 },
-  { id: 't7', name: 'Vitamin D Test (25-Hydroxy)', code: 'BC075', category: 'vitamins', parametersCount: 1, fastingRequired: false, sampleType: 'Serum', description: 'Detects vitamin D deficiency causing joint fatigue and weak bone density.', mrp: 1400, offerPrice: 499 },
-  { id: 't8', name: 'Vitamin B12 Test', code: 'BC074', category: 'vitamins', parametersCount: 1, fastingRequired: true, sampleType: 'Serum', description: 'Critical biomarker for nerve function, neurological health & energy levels.', mrp: 1100, offerPrice: 649 },
-  { id: 't9', name: 'Blood Sugar Fasting', code: 'BC023', category: 'diabetes', parametersCount: 1, fastingRequired: true, sampleType: 'Fluoride Plasma', description: '10-12 hours fasting glucose level evaluation.', mrp: 150, offerPrice: 69 },
-  { id: 't10', name: 'Blood Sugar Post Prandial (PP)', code: 'BC033', category: 'diabetes', parametersCount: 1, fastingRequired: false, sampleType: 'Fluoride Plasma', description: '2 hours post-meal glucose absorption test.', mrp: 150, offerPrice: 69 },
-  { id: 't11', name: 'Urine Routine & Microscopic Examination Test', code: 'CP012', category: 'full-body', parametersCount: 22, fastingRequired: false, sampleType: 'Urine', description: 'Evaluates urinary tract infections, protein leakage & renal casts.', mrp: 300, offerPrice: 119 },
-  { id: 't12', name: 'Complete Hemogram (CBC & ESR)', code: 'HM013', category: 'full-body', parametersCount: 29, fastingRequired: false, sampleType: 'EDTA Blood', description: 'CBC with automated Erythrocyte Sedimentation Rate.', mrp: 600, offerPrice: 449 }
+  { id: 't1', name: 'Complete Blood Count (CBC with ESR - 28 Params)', category: 'full-body', parametersCount: 28, fastingRequired: false, sampleType: 'EDTA Blood', description: 'Screening for anemia, platelets, white blood cells & latent infections.', mrp: 450, offerPrice: 199 },
+  { id: 't2', name: 'Thyroid Profile Total (T3, T4, TSH)', category: 'thyroid', parametersCount: 3, fastingRequired: true, sampleType: 'Serum', description: 'Gold standard test for thyroid gland hormone synthesis and metabolism.', mrp: 650, offerPrice: 249 },
+  { id: 't3', name: 'HbA1c Glycated Hemoglobin Test', category: 'diabetes', parametersCount: 2, fastingRequired: false, sampleType: 'Whole Blood', description: 'Evaluates 3-month average blood glucose control with eAG values.', mrp: 550, offerPrice: 249 },
+  { id: 't4', name: 'Lipid Profile Comprehensive (Cardiac Risk)', category: 'heart', parametersCount: 8, fastingRequired: true, sampleType: 'Serum', description: 'HDL, LDL, VLDL, Total Cholesterol and Triglycerides ratio.', mrp: 850, offerPrice: 349 },
+  { id: 't5', name: 'Liver Function Test (LFT 12 Parameters)', category: 'liver', parametersCount: 12, fastingRequired: false, sampleType: 'Serum', description: 'Checks liver enzymes (SGOT, SGPT), Bilirubin & total protein levels.', mrp: 750, offerPrice: 299 },
+  { id: 't6', name: 'Kidney Function Test (KFT with Electrolytes)', category: 'kidney', parametersCount: 11, fastingRequired: false, sampleType: 'Serum', description: 'Screens Renal clearance, Serum Creatinine, Uric Acid & Electrolytes.', mrp: 950, offerPrice: 349 },
+  { id: 't7', name: 'Vitamin D 25-Hydroxy (Bone & Immunity)', category: 'vitamins', parametersCount: 1, fastingRequired: false, sampleType: 'Serum', description: 'Detects vitamin D deficiency causing joint fatigue and weak bone density.', mrp: 1400, offerPrice: 499 },
+  { id: 't8', name: 'Vitamin B12 Active (Cyanocobalamin)', category: 'vitamins', parametersCount: 1, fastingRequired: true, sampleType: 'Serum', description: 'Critical biomarker for nerve function, neurological health & energy levels.', mrp: 1100, offerPrice: 449 }
 ];
 
 const PACKAGES_LIST = [
@@ -214,7 +198,6 @@ interface OrderConfirmationData {
 }
 
 export default function TestBeatPortal() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -310,10 +293,7 @@ export default function TestBeatPortal() {
     category: 'Doctor / Clinic'
   });
 
-  // Full Cities Directory Modal State
-  const [isCitiesDirectoryOpen, setIsCitiesDirectoryOpen] = useState(false);
-
-  // Side Drawer Menu for Desktop & Mobile
+  // Side Drawer Menu for Both Desktop & Mobile
   const [isDrawerMenuOpen, setIsDrawerMenuOpen] = useState(false);
 
   const totalCitiesCount = useMemo(() => {
@@ -379,23 +359,23 @@ export default function TestBeatPortal() {
     }
     setIsDetectingLocation(true);
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      () => {
         setTimeout(() => {
           setIsDetectingLocation(false);
-          const detected = `Greater Noida (201310)`;
+          const detected = 'Greater Noida (201310)';
           setCurrentSelectedLocation(detected);
           setProfileData(prev => ({ ...prev, city: 'Greater Noida', pincode: '201310' }));
           setIsLocationModalOpen(false);
         }, 800);
       },
-      (error) => {
+      () => {
         setIsDetectingLocation(false);
         alert('Could not access live GPS location. Please choose your city manually from the list.');
       }
     );
   };
 
-  // TestBeat AI Vision Prescription Reader Handler (Robust Extraction)
+  // TestBeat AI Vision Prescription Reader Handler
   const handleRxFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -443,7 +423,6 @@ export default function TestBeatPortal() {
             }
           });
 
-          // Auto-select matched tests into cart & aggregator
           if (matchedCatalogTests.length > 0) {
             setSelectedTests(prev => {
               const merged = [...prev];
@@ -465,7 +444,7 @@ export default function TestBeatPortal() {
         } else {
           alert(data.error || 'Doctor handwriting was unclear. Please upload a brighter photo or select tests manually.');
         }
-      } catch (err) {
+      } catch {
         alert('Could not process prescription image right now. Please select tests manually.');
       } finally {
         setRxScanning(false);
@@ -574,7 +553,7 @@ export default function TestBeatPortal() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800 antialiased selection:bg-[#039487] selection:text-white">
 
-      {/* 1. TOP PAN-INDIA TRUST & HELPLINE BAR (Updated Contrast & Dynamic City Count) */}
+      {/* 1. TOP PAN-INDIA TRUST & HELPLINE BAR */}
       <div className="bg-[#012C63] text-slate-200 text-xs py-2 px-4 border-b border-[#0c3b65]">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center space-x-4 overflow-x-auto text-[11px] sm:text-xs">
@@ -606,11 +585,11 @@ export default function TestBeatPortal() {
         </div>
       </div>
 
-      {/* 2. MAIN NAVBAR WITH HAMBURGER DRAWER TRIGGER FOR BOTH DESKTOP & MOBILE */}
+      {/* 2. MAIN NAVBAR WITH 3-LINE DRAWER TRIGGER (DESKTOP & MOBILE) */}
       <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           
-          {/* Logo & Location Indicator */}
+          {/* Official Brand Logo */}
           <div className="flex items-center space-x-4">
             <a href="#" className="flex items-center space-x-3 group">
               <div className="w-11 h-11 rounded-2xl bg-[#012C63] flex items-center justify-center p-1.5 shadow-md shadow-[#012C63]/20 group-hover:scale-105 transition-transform">
@@ -641,11 +620,11 @@ export default function TestBeatPortal() {
             >
               <MapPin className="w-3.5 h-3.5 text-[#F44236]" />
               <span className="truncate max-w-[150px]">{currentSelectedLocation}</span>
-              <ChevronDown className="w-3 h-3 text-slate-400" />
+              <span className="text-slate-400 text-[10px]">▼</span>
             </button>
           </div>
 
-          {/* Genuine Diagnostic Navigation (Partner With Us Removed from Header Bar) */}
+          {/* Genuine Diagnostic Navigation */}
           <nav className="hidden lg:flex items-center space-x-7 text-sm font-bold text-slate-700">
             <a href="#compare" className="flex items-center space-x-1.5 text-[#039487] hover:text-[#012C63] transition-colors">
               <FlaskConical className="w-4 h-4" />
@@ -666,10 +645,9 @@ export default function TestBeatPortal() {
             </a>
           </nav>
 
-          {/* Right Header: Cart, User Icon & Side 3-Line Hamburger Drawer for Desktop + Mobile */}
+          {/* Right Header Icons */}
           <div className="flex items-center space-x-3.5">
             
-            {/* Shopping Cart Button */}
             <button
               onClick={() => setIsCartOpen(true)}
               className="relative p-2 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors"
@@ -683,7 +661,7 @@ export default function TestBeatPortal() {
               )}
             </button>
 
-            {/* User Profile Icon */}
+            {/* ONLY USER ICON BUTTON */}
             <div className="relative">
               <button
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
@@ -775,10 +753,10 @@ export default function TestBeatPortal() {
             {/* Desktop & Mobile 3-Line Menu Trigger Button */}
             <button
               onClick={() => setIsDrawerMenuOpen(true)}
-              className="p-2.5 rounded-xl border border-slate-200 text-[#012C63] hover:bg-slate-100 transition-colors shadow-2xs"
+              className="p-2 rounded-xl border border-slate-200 text-[#012C63] hover:bg-slate-100 transition-colors"
               title="Open Navigation Menu"
             >
-              <Menu className="w-5 h-5 stroke-[2.5]" />
+              <Menu className="w-5 h-5" />
             </button>
           </div>
         </div>
@@ -791,7 +769,7 @@ export default function TestBeatPortal() {
             
             <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-[#012C63] text-white">
               <div className="flex items-center space-x-2">
-                <SlidersHorizontal className="w-5 h-5 text-teal-300" />
+                <Menu className="w-5 h-5 text-teal-300" />
                 <h3 className="text-base font-black">TestBeat Navigation</h3>
               </div>
               <button 
@@ -808,8 +786,8 @@ export default function TestBeatPortal() {
                 onClick={() => setIsDrawerMenuOpen(false)}
                 className="flex items-center space-x-3 p-3 rounded-2xl hover:bg-teal-50 hover:text-[#039487] transition-colors"
               >
-                <Home className="w-5 h-5 text-[#012C63]" />
-                <span>Home Portal</span>
+                <FlaskConical className="w-5 h-5 text-[#012C63]" />
+                <span>Diagnostic Home</span>
               </a>
 
               <a 
@@ -860,7 +838,7 @@ export default function TestBeatPortal() {
                 className="w-full flex items-center space-x-3 p-3 rounded-2xl hover:bg-emerald-50 text-emerald-800 transition-colors text-left"
               >
                 <Handshake className="w-5 h-5 text-emerald-600" />
-                <span>Partner With Us (Doctors & Clinics)</span>
+                <span>Partner With Us (B2B Program)</span>
               </button>
 
               <a 
@@ -893,6 +871,7 @@ export default function TestBeatPortal() {
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
+            {/* Left Column: Headline & Multi-Search */}
             <div className="lg:col-span-8">
               <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-teal-100 text-[#012C63] text-xs font-bold mb-4 shadow-xs">
                 <Sparkles className="w-4 h-4 text-[#039487]" />
@@ -908,7 +887,7 @@ export default function TestBeatPortal() {
                 Choose tests from Thyrocare, Healthians, Redcliffe & Dr. Lal PathLabs. Enjoy free doorstep sample pickup with 2°C - 8°C cold-chain tracking.
               </p>
 
-              {/* Main Search Input */}
+              {/* Instant Search Bar */}
               <div className="mt-6 relative max-w-xl">
                 <div className="relative flex items-center bg-white border-2 border-slate-200 focus-within:border-[#039487] rounded-2xl p-2 shadow-lg shadow-teal-600/5 transition-all">
                   <Search className="w-5 h-5 text-[#039487] ml-3 flex-shrink-0" />
@@ -949,7 +928,7 @@ export default function TestBeatPortal() {
                           >
                             <div>
                               <p className="font-extrabold text-xs text-slate-900">{test.name}</p>
-                              <p className="text-[10px] text-slate-500">{test.code} • {test.parametersCount} Parameters</p>
+                              <p className="text-[10px] text-slate-500">{test.parametersCount} Parameters • {test.category}</p>
                             </div>
                             <div className="flex items-center space-x-2">
                               <span className="font-black text-xs text-[#012C63]">₹{test.offerPrice}</span>
@@ -1317,7 +1296,7 @@ export default function TestBeatPortal() {
         </div>
       </section>
 
-      {/* 8. FOOTER WITH SERVICEABLE STATES, CITIES & HEALTH BLOG DIRECTORY */}
+      {/* 7. FOOTER WITH SERVICEABLE STATES, CITIES & DIRECTORY */}
       <footer className="bg-[#012C63] text-slate-300 text-xs border-t border-[#0c3b65]">
         
         {/* Serviceable Locations Directory */}
@@ -1334,10 +1313,10 @@ export default function TestBeatPortal() {
                 </p>
               </div>
               <button
-                onClick={() => setIsCitiesDirectoryOpen(true)}
+                onClick={() => setIsLocationModalOpen(true)}
                 className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-teal-300 text-xs font-bold transition-colors"
               >
-                View Full City & Pincode Directory →
+                Change Location & Pincode →
               </button>
             </div>
 
@@ -1439,7 +1418,7 @@ export default function TestBeatPortal() {
               disabled={isDetectingLocation}
               className="w-full py-3 mb-4 bg-teal-50 hover:bg-teal-100 border border-teal-200 text-[#012C63] font-bold text-xs rounded-2xl flex items-center justify-center space-x-2 transition-colors"
             >
-              <LocateFixed className={`w-4 h-4 text-[#039487] ${isDetectingLocation ? 'animate-spin' : ''}`} />
+              <MapPin className="w-4 h-4 text-[#039487]" />
               <span>{isDetectingLocation ? 'Detecting GPS Pincode...' : 'Detect My Current Location (GPS)'}</span>
             </button>
 
@@ -1564,43 +1543,6 @@ export default function TestBeatPortal() {
                 </button>
               </form>
             )}
-          </div>
-        </div>
-      )}
-
-      {/* ================= MODAL: COMPLETE CITIES DIRECTORY DRAWER ================= */}
-      {isCitiesDirectoryOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
-          <div className="bg-white w-full max-w-3xl rounded-3xl shadow-2xl p-6 sm:p-8 relative border border-slate-100 max-h-[85vh] overflow-y-auto">
-            <button onClick={() => setIsCitiesDirectoryOpen(false)} className="absolute top-5 right-5 p-1.5 rounded-full text-slate-400 hover:text-slate-600">
-              <X className="w-5 h-5" />
-            </button>
-
-            <h3 className="text-xl font-black text-slate-900 mb-1">Pan-India Diagnostic Network Directory</h3>
-            <p className="text-xs text-slate-500 mb-6">Complete list of serviceable cities with doorstep cold-chain phlebotomy coverage.</p>
-
-            <div className="space-y-6">
-              {SERVICEABLE_LOCATIONS.map((loc, sIdx) => (
-                <div key={sIdx} className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                  <h4 className="font-extrabold text-sm text-[#012C63] mb-2">{loc.state}</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {loc.cities.map((city, cIdx) => (
-                      <span 
-                        key={cIdx} 
-                        onClick={() => {
-                          setCurrentSelectedLocation(city);
-                          setIsCitiesDirectoryOpen(false);
-                          alert(`Location set to ${city}.`);
-                        }}
-                        className="bg-white border border-slate-200 hover:border-[#039487] text-slate-700 hover:text-[#039487] cursor-pointer text-xs font-semibold px-3 py-1 rounded-xl transition-colors"
-                      >
-                        {city}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       )}
@@ -2313,7 +2255,7 @@ export default function TestBeatPortal() {
         </div>
       )}
 
-      {/* ================= MODAL: TESTBEAT AI PRESCRIPTION SCANNER ================= */}
+      {/* ================= MODAL: TESTBEAT AI PRESCRIPTION SCANNER (NO GEMINI BRANDING) ================= */}
       {isRxOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
           <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl p-6 relative border border-slate-100 max-h-[90vh] overflow-y-auto">
