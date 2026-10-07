@@ -41,8 +41,49 @@ import {
   BookOpen 
 } from 'lucide-react';
 
-// Brand Colors Definition (Locked with TestBeat Logo):
-// Primary Navy: #012C63 | Accent Teal: #039487 | Alert Coral: #F44236
+// Brand Colors Definition (Locked with New TestBeat Logo):
+// Primary Navy: #032C64 | Accent Spectrum: #D73027, #F46D43, #FDAE61, #FEE090, #E0F3F8, #ABD9E9, #74ADD1, #4575B4
+
+// In-Code Pixel-Perfect SVG Component of New TestBeat Brand Logo
+const TestBeatLogo = ({ className = "h-9 w-auto", darkBg = false }: { className?: string; darkBg?: boolean }) => {
+  const textColor = darkBg ? "#FFFFFF" : "#032C64";
+  return (
+    <svg viewBox="0 0 420 110" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Tilted Test Tube Icon forming the letter 'T' */}
+      <g transform="translate(10, 8) rotate(-15 35 35)">
+        <rect x="18" y="8" width="46" height="14" rx="7" fill={textColor} />
+        <rect x="28" y="18" width="26" height="52" rx="13" stroke={textColor} strokeWidth="5.5" fill="none" />
+        {/* ECG pulse inside tube */}
+        <path d="M34 46L38 46L41 40L44 52L47 46L50 46" stroke="#4575B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+        {/* Droplet */}
+        <path d="M41 57C41 57 37 62 37 65C37 67.2 38.8 69 41 69C43.2 69 45 67.2 45 65C45 62 41 57 41 57Z" fill="#D73027" />
+      </g>
+      
+      {/* "TestBeat" Typography */}
+      <text x="68" y="65" fill={textColor} fontFamily="system-ui, -apple-system, sans-serif" fontWeight="900" fontSize="56" letterSpacing="-1.5">
+        TestBeat
+      </text>
+
+      {/* Heart Pulse Icon at the end of text */}
+      <g transform="translate(325, 34) scale(0.95)">
+        <path d="M16 6C11.5 0.5 2 3.5 2 12C2 18 10 24 16 28C22 24 30 18 30 12C30 3.5 20.5 0.5 16 6Z" stroke={textColor} strokeWidth="3.5" fill="none" />
+        <path d="M7 13L11 13L13 9L17 19L20 13L24 13" stroke="#D73027" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      </g>
+
+      {/* 8-Step Spectrum Stripe under the Logo */}
+      <g transform="translate(10, 84)">
+        <rect x="0" y="0" width="44" height="6.5" rx="3.2" fill="#D73027" />
+        <rect x="44" y="0" width="44" height="6.5" fill="#F46D43" />
+        <rect x="88" y="0" width="44" height="6.5" fill="#FDAE61" />
+        <rect x="132" y="0" width="44" height="6.5" fill="#FEE090" />
+        <rect x="176" y="0" width="44" height="6.5" fill="#E0F3F8" />
+        <rect x="220" y="0" width="44" height="6.5" fill="#ABD9E9" />
+        <rect x="264" y="0" width="44" height="6.5" fill="#74ADD1" />
+        <rect x="308" y="0" width="44" height="6.5" rx="3.2" fill="#4575B4" />
+      </g>
+    </svg>
+  );
+};
 
 interface PincodeEntry {
   city: string;
@@ -87,14 +128,14 @@ const SERVICEABLE_LOCATIONS_DATA: PincodeEntry[] = [
 
 // Point 4: Decorated categories with unique gradient & borders
 const CLINICAL_CATEGORIES = [
-  { id: 'all', name: 'All Tests', icon: FlaskConical, color: 'from-[#012C63] to-[#039487]', textLight: 'text-teal-800', bgLight: 'bg-teal-50/70', border: 'border-teal-200' },
-  { id: 'full-body', name: 'Full Body Checkup', icon: Package, color: 'from-blue-600 to-indigo-700', textLight: 'text-indigo-800', bgLight: 'bg-indigo-50/70', border: 'border-indigo-200' },
-  { id: 'diabetes', name: 'Diabetes Screen', icon: Droplet, color: 'from-sky-500 to-blue-600', textLight: 'text-sky-800', bgLight: 'bg-sky-50/70', border: 'border-sky-200' },
-  { id: 'thyroid', name: 'Thyroid Care', icon: Zap, color: 'from-amber-500 to-orange-600', textLight: 'text-amber-800', bgLight: 'bg-amber-50/70', border: 'border-amber-200' },
-  { id: 'heart', name: 'Heart & Lipid', icon: Heart, color: 'from-rose-500 to-red-600', textLight: 'text-rose-800', bgLight: 'bg-rose-50/70', border: 'border-rose-200' },
-  { id: 'liver', name: 'Liver Health', icon: Activity, color: 'from-emerald-500 to-teal-700', textLight: 'text-emerald-800', bgLight: 'bg-emerald-50/70', border: 'border-emerald-200' },
-  { id: 'kidney', name: 'Kidney (Renal)', icon: Activity, color: 'from-cyan-500 to-blue-700', textLight: 'text-cyan-800', bgLight: 'bg-cyan-50/70', border: 'border-cyan-200' },
-  { id: 'vitamins', name: 'Vitamins & Iron', icon: Sparkles, color: 'from-violet-500 to-purple-700', textLight: 'text-purple-800', bgLight: 'bg-purple-50/70', border: 'border-purple-200' }
+  { id: 'all', name: 'All Tests', icon: FlaskConical, color: 'from-[#032C64] to-[#4575B4]', textLight: 'text-blue-900', bgLight: 'bg-blue-50/70', border: 'border-blue-200' },
+  { id: 'full-body', name: 'Full Body Checkup', icon: Package, color: 'from-blue-600 to-indigo-700', textLight: 'text-indigo-900', bgLight: 'bg-indigo-50/70', border: 'border-indigo-200' },
+  { id: 'diabetes', name: 'Diabetes Screen', icon: Droplet, color: 'from-sky-500 to-blue-600', textLight: 'text-sky-900', bgLight: 'bg-sky-50/70', border: 'border-sky-200' },
+  { id: 'thyroid', name: 'Thyroid Care', icon: Zap, color: 'from-amber-500 to-orange-600', textLight: 'text-amber-900', bgLight: 'bg-amber-50/70', border: 'border-amber-200' },
+  { id: 'heart', name: 'Heart & Lipid', icon: Heart, color: 'from-rose-500 to-red-600', textLight: 'text-rose-900', bgLight: 'bg-rose-50/70', border: 'border-rose-200' },
+  { id: 'liver', name: 'Liver Health', icon: Activity, color: 'from-emerald-500 to-teal-700', textLight: 'text-emerald-900', bgLight: 'bg-emerald-50/70', border: 'border-emerald-200' },
+  { id: 'kidney', name: 'Kidney (Renal)', icon: Activity, color: 'from-cyan-500 to-blue-700', textLight: 'text-cyan-900', bgLight: 'bg-cyan-50/70', border: 'border-cyan-200' },
+  { id: 'vitamins', name: 'Vitamins & Iron', icon: Sparkles, color: 'from-violet-500 to-purple-700', textLight: 'text-purple-900', bgLight: 'bg-purple-50/70', border: 'border-purple-200' }
 ];
 
 interface TestItem {
@@ -329,7 +370,7 @@ export default function TestBeatPortal() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   
-  // Point 7: Initially empty selection (No pre-selected tests)
+  // Point 7: Initially empty selection (Zero pre-selected tests)
   const [selectedTests, setSelectedTests] = useState<TestItem[]>([]);
   const [showCompareTable, setShowCompareTable] = useState(false);
 
@@ -704,10 +745,10 @@ export default function TestBeatPortal() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800 antialiased selection:bg-[#039487] selection:text-white">
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800 antialiased selection:bg-[#032C64] selection:text-white">
 
       {/* 1. TOP PAN-INDIA TRUST & HELPLINE BAR */}
-      <div className="bg-[#012C63] text-slate-200 text-xs py-2 px-4 border-b border-[#0c3b65]">
+      <div className="bg-[#032C64] text-slate-200 text-xs py-2 px-4 border-b border-[#0c3b65]">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center space-x-4 overflow-x-auto text-[11px] sm:text-xs">
             <span className="flex items-center text-emerald-300 font-extrabold tracking-wide">
@@ -728,7 +769,7 @@ export default function TestBeatPortal() {
               onClick={() => setIsLocationModalOpen(true)}
               className="flex items-center text-slate-200 hover:text-white transition-colors"
             >
-              <MapPin className="w-3.5 h-3.5 mr-1 text-[#F44236]" />
+              <MapPin className="w-3.5 h-3.5 mr-1 text-[#D73027]" />
               <span>Pan-India (23 States • 2,100+ PINs Covered)</span>
             </button>
             <a href="tel:+918368887011" className="flex items-center text-teal-300 font-bold hover:underline">
@@ -738,58 +779,41 @@ export default function TestBeatPortal() {
         </div>
       </div>
 
-      {/* 2. MAIN NAVBAR */}
+      {/* 2. MAIN NAVBAR WITH NEW OFFICIAL TESTBEAT LOGO */}
       <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           
           <div className="flex items-center space-x-4">
-            <a href="#" className="flex items-center space-x-3 group">
-              <div className="w-11 h-11 rounded-2xl bg-[#012C63] flex items-center justify-center p-1.5 shadow-md shadow-[#012C63]/20 group-hover:scale-105 transition-transform">
-                <svg viewBox="0 0 100 100" className="w-8 h-8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="25" y="15" width="50" height="12" rx="6" stroke="white" strokeWidth="6" />
-                  <path d="M35 27V65C35 73.2843 41.7157 80 50 80C58.2843 80 65 73.2843 65 65V27" stroke="white" strokeWidth="6" />
-                  <path d="M42 50L46 54L50 44L54 52L58 48" stroke="#039487" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M50 63C47.7909 63 46 64.7909 46 67C46 69.2091 47.7909 71 50 71C52.2091 71 54 69.2091 54 67C54 64.7909 52.2091 63 50 63Z" fill="#F44236" />
-                </svg>
-              </div>
-
-              <div>
-                <div className="flex items-baseline">
-                  <span className="text-2xl font-black tracking-tight text-[#012C63]">Test</span>
-                  <span className="text-2xl font-black tracking-tight text-[#039487]">Beat</span>
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#F44236] ml-1"></span>
-                </div>
-                <p className="text-[10px] font-bold text-slate-500 tracking-wider">
-                  Indias Trusted MultiLabs.Healthcare Platform
-                </p>
-              </div>
+            <a href="#" className="flex items-center group">
+              {/* Official Brand Logo */}
+              <TestBeatLogo className="h-10 w-auto group-hover:scale-105 transition-transform" />
             </a>
 
             <button
               onClick={() => setIsLocationModalOpen(true)}
-              className="hidden md:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-[#012C63] transition-colors"
+              className="hidden md:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-[#032C64] transition-colors"
             >
-              <MapPin className="w-3.5 h-3.5 text-[#F44236]" />
+              <MapPin className="w-3.5 h-3.5 text-[#D73027]" />
               <span className="truncate max-w-[170px]">{currentSelectedLocation}</span>
               <span className="text-slate-400 text-[10px]">▼</span>
             </button>
           </div>
 
           <nav className="hidden lg:flex items-center space-x-8 text-sm font-bold text-slate-700">
-            <a href="#compare" className="flex items-center space-x-1.5 text-[#039487] hover:text-[#012C63] transition-colors">
+            <a href="#compare" className="flex items-center space-x-1.5 text-[#4575B4] hover:text-[#032C64] transition-colors">
               <FlaskConical className="w-4 h-4" />
               <span>Compare Labs</span>
-              <span className="bg-teal-50 text-[#039487] border border-[#039487]/30 text-[10px] font-black px-1.5 py-0.5 rounded-full">Live</span>
+              <span className="bg-blue-50 text-[#4575B4] border border-[#4575B4]/30 text-[10px] font-black px-1.5 py-0.5 rounded-full">Live</span>
             </a>
-            <a href="#packages" className="flex items-center space-x-1.5 hover:text-[#012C63] transition-colors">
+            <a href="#packages" className="flex items-center space-x-1.5 hover:text-[#032C64] transition-colors">
               <Package className="w-4 h-4 text-slate-400" />
               <span>Health Packages</span>
             </a>
-            <a href="#habits" className="flex items-center space-x-1.5 hover:text-[#012C63] transition-colors">
+            <a href="#habits" className="flex items-center space-x-1.5 hover:text-[#032C64] transition-colors">
               <Activity className="w-4 h-4 text-slate-400" />
               <span>Tests by Risk</span>
             </a>
-            <a href="#featured-tests" className="flex items-center space-x-1.5 hover:text-[#012C63] transition-colors">
+            <a href="#featured-tests" className="flex items-center space-x-1.5 hover:text-[#032C64] transition-colors">
               <Award className="w-4 h-4 text-amber-500" />
               <span>Featured Tests</span>
             </a>
@@ -803,7 +827,7 @@ export default function TestBeatPortal() {
             >
               <ShoppingCart className="w-5 h-5" />
               {selectedTests.length > 0 && (
-                <span className="absolute -top-1 -right-1 bg-[#012C63] text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center animate-pulse">
+                <span className="absolute -top-1 -right-1 bg-[#032C64] text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center animate-pulse">
                   {selectedTests.length}
                 </span>
               )}
@@ -812,7 +836,7 @@ export default function TestBeatPortal() {
             <div className="relative">
               <button
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                className="w-10 h-10 rounded-full border-2 border-[#012C63] flex items-center justify-center text-[#012C63] hover:bg-teal-50 transition-all shadow-sm"
+                className="w-10 h-10 rounded-full border-2 border-[#032C64] flex items-center justify-center text-[#032C64] hover:bg-blue-50 transition-all shadow-sm"
               >
                 <User className="w-5 h-5" />
               </button>
@@ -822,7 +846,7 @@ export default function TestBeatPortal() {
                   <div className="px-4 pb-2 border-b border-slate-100">
                     <span className="text-[10px] font-black tracking-widest uppercase text-slate-400">ACCOUNT</span>
                     <div className="flex items-center space-x-2 mt-1">
-                      <div className="w-7 h-7 rounded-full bg-[#012C63] text-white text-xs font-bold flex items-center justify-center">
+                      <div className="w-7 h-7 rounded-full bg-[#032C64] text-white text-xs font-bold flex items-center justify-center">
                         {profileData.name.charAt(0).toUpperCase()}
                       </div>
                       <div className="truncate">
@@ -837,38 +861,38 @@ export default function TestBeatPortal() {
                   <div className="py-1 text-xs font-bold text-slate-700 divide-y divide-slate-50">
                     <button
                       onClick={() => { setActiveAccountView('profile'); setUserDropdownOpen(false); }}
-                      className="w-full flex items-center px-4 py-2.5 hover:bg-teal-50/50 hover:text-[#039487] transition-colors text-left"
+                      className="w-full flex items-center px-4 py-2.5 hover:bg-blue-50/50 hover:text-[#032C64] transition-colors text-left"
                     >
                       <UserCheck className="w-4 h-4 mr-2.5 text-slate-400" />
                       <span>My Profile</span>
                     </button>
                     <button
                       onClick={() => { setActiveAccountView('orders'); setUserDropdownOpen(false); }}
-                      className="w-full flex items-center px-4 py-2.5 hover:bg-teal-50/50 hover:text-[#039487] transition-colors text-left"
+                      className="w-full flex items-center px-4 py-2.5 hover:bg-blue-50/50 hover:text-[#032C64] transition-colors text-left"
                     >
                       <Package className="w-4 h-4 mr-2.5 text-slate-400" />
                       <span>My Orders</span>
                     </button>
                     <button
                       onClick={() => { setActiveAccountView('subscriptions'); setUserDropdownOpen(false); }}
-                      className="w-full flex items-center px-4 py-2.5 hover:bg-teal-50/50 hover:text-[#039487] transition-colors text-left"
+                      className="w-full flex items-center px-4 py-2.5 hover:bg-blue-50/50 hover:text-[#032C64] transition-colors text-left"
                     >
                       <Calendar className="w-4 h-4 mr-2.5 text-slate-400" />
                       <span>My Subscriptions</span>
                     </button>
                     <button
                       onClick={() => { setActiveAccountView('wallet'); setUserDropdownOpen(false); }}
-                      className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-teal-50/50 hover:text-[#039487] transition-colors text-left"
+                      className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-blue-50/50 hover:text-[#032C64] transition-colors text-left"
                     >
                       <div className="flex items-center">
                         <Wallet className="w-4 h-4 mr-2.5 text-slate-400" />
                         <span>Wallet Balance</span>
                       </div>
-                      <span className="text-xs font-black text-[#039487]">₹{walletBalance}</span>
+                      <span className="text-xs font-black text-[#4575B4]">₹{walletBalance}</span>
                     </button>
                     <button
                       onClick={() => { setActiveAccountView('family'); setUserDropdownOpen(false); }}
-                      className="w-full flex items-center px-4 py-2.5 hover:bg-teal-50/50 hover:text-[#039487] transition-colors text-left"
+                      className="w-full flex items-center px-4 py-2.5 hover:bg-blue-50/50 hover:text-[#032C64] transition-colors text-left"
                     >
                       <Users className="w-4 h-4 mr-2.5 text-slate-400" />
                       <span>Family Members</span>
@@ -888,7 +912,7 @@ export default function TestBeatPortal() {
                         }
                         setUserDropdownOpen(false);
                       }}
-                      className="w-full py-2 bg-[#012C63] hover:bg-[#0c3b65] text-white text-xs font-bold rounded-xl shadow transition-all"
+                      className="w-full py-2 bg-[#032C64] hover:bg-[#0c3b65] text-white text-xs font-bold rounded-xl shadow transition-all"
                     >
                       {isLoggedIn ? 'Logout Account' : 'Login / Sign Up'}
                     </button>
@@ -900,7 +924,7 @@ export default function TestBeatPortal() {
             {/* Desktop & Mobile 3-Line Menu Trigger */}
             <button
               onClick={() => setIsDrawerMenuOpen(true)}
-              className="p-2.5 rounded-xl border border-slate-200 text-[#012C63] hover:bg-slate-100 transition-colors shadow-2xs"
+              className="p-2.5 rounded-xl border border-slate-200 text-[#032C64] hover:bg-slate-100 transition-colors shadow-2xs"
               title="Open Navigation Menu"
             >
               <Menu className="w-5 h-5 stroke-[2.5]" />
@@ -914,7 +938,7 @@ export default function TestBeatPortal() {
         <div className="fixed inset-0 z-50 overflow-hidden bg-slate-950/70 backdrop-blur-xs flex justify-end">
           <div className="bg-white w-full max-w-sm h-full flex flex-col shadow-2xl animate-in slide-in-from-right duration-300">
             
-            <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-[#012C63] text-white">
+            <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-[#032C64] text-white">
               <div className="flex items-center space-x-2">
                 <Menu className="w-5 h-5 text-teal-300" />
                 <h3 className="text-base font-black">TestBeat Navigation</h3>
@@ -931,16 +955,16 @@ export default function TestBeatPortal() {
               <a 
                 href="#compare" 
                 onClick={() => setIsDrawerMenuOpen(false)}
-                className="flex items-center space-x-3 p-3 rounded-2xl hover:bg-teal-50 hover:text-[#039487] transition-colors"
+                className="flex items-center space-x-3 p-3 rounded-2xl hover:bg-blue-50 hover:text-[#032C64] transition-colors"
               >
-                <FlaskConical className="w-5 h-5 text-[#039487]" />
+                <FlaskConical className="w-5 h-5 text-[#4575B4]" />
                 <span>Compare Labs Live</span>
               </a>
 
               <a 
                 href="#packages" 
                 onClick={() => setIsDrawerMenuOpen(false)}
-                className="flex items-center space-x-3 p-3 rounded-2xl hover:bg-teal-50 hover:text-[#039487] transition-colors"
+                className="flex items-center space-x-3 p-3 rounded-2xl hover:bg-blue-50 hover:text-[#032C64] transition-colors"
               >
                 <Package className="w-5 h-5 text-indigo-600" />
                 <span>Health Packages</span>
@@ -949,7 +973,7 @@ export default function TestBeatPortal() {
               <a 
                 href="#habits" 
                 onClick={() => setIsDrawerMenuOpen(false)}
-                className="flex items-center space-x-3 p-3 rounded-2xl hover:bg-teal-50 hover:text-[#039487] transition-colors"
+                className="flex items-center space-x-3 p-3 rounded-2xl hover:bg-blue-50 hover:text-[#032C64] transition-colors"
               >
                 <Activity className="w-5 h-5 text-rose-500" />
                 <span>Tests by Health Risks</span>
@@ -958,7 +982,7 @@ export default function TestBeatPortal() {
               <a 
                 href="#featured-tests" 
                 onClick={() => setIsDrawerMenuOpen(false)}
-                className="flex items-center space-x-3 p-3 rounded-2xl hover:bg-teal-50 hover:text-[#039487] transition-colors"
+                className="flex items-center space-x-3 p-3 rounded-2xl hover:bg-blue-50 hover:text-[#032C64] transition-colors"
               >
                 <Award className="w-5 h-5 text-amber-500" />
                 <span>Featured Tests</span>
@@ -966,7 +990,7 @@ export default function TestBeatPortal() {
 
               <button 
                 onClick={() => { setIsDrawerMenuOpen(false); setIsRxOpen(true); }}
-                className="w-full flex items-center space-x-3 p-3 rounded-2xl hover:bg-teal-50 hover:text-[#039487] transition-colors text-left"
+                className="w-full flex items-center space-x-3 p-3 rounded-2xl hover:bg-blue-50 hover:text-[#032C64] transition-colors text-left"
               >
                 <UploadCloud className="w-5 h-5 text-amber-500" />
                 <span>Upload Doctor Prescription</span>
@@ -974,9 +998,9 @@ export default function TestBeatPortal() {
 
               <button 
                 onClick={() => { setIsDrawerMenuOpen(false); setIsLocationModalOpen(true); }}
-                className="w-full flex items-center space-x-3 p-3 rounded-2xl hover:bg-teal-50 hover:text-[#039487] transition-colors text-left"
+                className="w-full flex items-center space-x-3 p-3 rounded-2xl hover:bg-blue-50 hover:text-[#032C64] transition-colors text-left"
               >
-                <MapPin className="w-5 h-5 text-[#F44236]" />
+                <MapPin className="w-5 h-5 text-[#D73027]" />
                 <span>Serviceable Cities (23 States)</span>
               </button>
 
@@ -1002,7 +1026,7 @@ export default function TestBeatPortal() {
             <div className="p-5 border-t border-slate-100 bg-slate-50">
               <button
                 onClick={() => { setIsDrawerMenuOpen(false); setIsAuthOpen(true); }}
-                className="w-full py-3 bg-[#012C63] text-white rounded-xl text-xs font-black uppercase tracking-wider shadow"
+                className="w-full py-3 bg-[#032C64] text-white rounded-xl text-xs font-black uppercase tracking-wider shadow"
               >
                 {isLoggedIn ? 'Access Patient Portal' : 'Patient Sign In / Register'}
               </button>
@@ -1012,20 +1036,20 @@ export default function TestBeatPortal() {
         </div>
       )}
 
-      {/* 3. HERO SECTION WITH 100% ENGLISH COPY (Point 1) */}
-      <section className="bg-gradient-to-b from-teal-50/50 via-white to-slate-50 pt-10 pb-12 border-b border-slate-200">
+      {/* 3. HERO SECTION WITH 100% ENGLISH COPY */}
+      <section className="bg-gradient-to-b from-blue-50/50 via-white to-slate-50 pt-10 pb-12 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
             <div className="lg:col-span-8">
-              <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-teal-100 text-[#012C63] text-xs font-bold mb-4 shadow-xs">
-                <Sparkles className="w-4 h-4 text-[#039487]" />
+              <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-blue-100 text-[#032C64] text-xs font-bold mb-4 shadow-xs">
+                <Sparkles className="w-4 h-4 text-[#4575B4]" />
                 <span>India&apos;s Multi-Lab Aggregator • Up to 70% Real Savings</span>
               </div>
               <h1 className="text-3xl sm:text-5xl lg:text-5xl font-black text-slate-900 tracking-tight leading-tight">
                 Accredited Lab Tests at Home. <br />
-                <span className="text-[#039487]">
+                <span className="text-[#032C64]">
                   Compare Top Diagnostic Chains.
                 </span>
               </h1>
@@ -1035,8 +1059,8 @@ export default function TestBeatPortal() {
 
               {/* Point 3: Search bar - selecting tests adds inline chips without auto-scrolling down */}
               <div className="mt-6 relative max-w-xl">
-                <div className="relative flex items-center bg-white border-2 border-slate-200 focus-within:border-[#039487] rounded-2xl p-2 shadow-lg shadow-teal-600/5 transition-all">
-                  <Search className="w-5 h-5 text-[#039487] ml-3 flex-shrink-0" />
+                <div className="relative flex items-center bg-white border-2 border-slate-200 focus-within:border-[#032C64] rounded-2xl p-2 shadow-lg shadow-blue-600/5 transition-all">
+                  <Search className="w-5 h-5 text-[#032C64] ml-3 flex-shrink-0" />
                   <input
                     type="text"
                     value={searchQuery}
@@ -1065,15 +1089,15 @@ export default function TestBeatPortal() {
                           <div 
                             key={test.id} 
                             onClick={() => toggleTest(test)}
-                            className={`p-2.5 rounded-xl flex items-center justify-between cursor-pointer transition-colors ${isSelected ? 'bg-teal-50 text-[#039487]' : 'hover:bg-slate-50'}`}
+                            className={`p-2.5 rounded-xl flex items-center justify-between cursor-pointer transition-colors ${isSelected ? 'bg-blue-50 text-[#032C64]' : 'hover:bg-slate-50'}`}
                           >
                             <div>
                               <p className="font-extrabold text-xs text-slate-900">{test.name}</p>
                               <p className="text-[10px] text-slate-500">{test.code} • {test.parametersCount} Parameters</p>
                             </div>
                             <div className="flex items-center space-x-2">
-                              <span className="font-black text-xs text-[#012C63]">₹{test.offerPrice}</span>
-                              <span className={`text-[11px] font-bold px-2 py-0.5 rounded-md ${isSelected ? 'bg-[#039487] text-white' : 'bg-slate-100 text-slate-700'}`}>
+                              <span className="font-black text-xs text-[#032C64]">₹{test.offerPrice}</span>
+                              <span className={`text-[11px] font-bold px-2 py-0.5 rounded-md ${isSelected ? 'bg-[#032C64] text-white' : 'bg-slate-100 text-slate-700'}`}>
                                 {isSelected ? 'Selected ✓' : '+ Select'}
                               </span>
                             </div>
@@ -1087,16 +1111,16 @@ export default function TestBeatPortal() {
 
               {/* Point 3: Inline Selected Tests List & Compare Button directly under Search */}
               {selectedTests.length > 0 && (
-                <div className="mt-4 p-3.5 bg-white border border-teal-200 rounded-2xl shadow-xs max-w-xl">
+                <div className="mt-4 p-3.5 bg-white border border-blue-200 rounded-2xl shadow-xs max-w-xl">
                   <div className="flex items-center justify-between mb-2 text-xs">
-                    <span className="font-extrabold text-[#012C63]">{selectedTests.length} Test(s) Selected</span>
+                    <span className="font-extrabold text-[#032C64]">{selectedTests.length} Test(s) Selected</span>
                     <button 
                       onClick={() => {
                         setShowCompareTable(true);
                         const compElem = document.getElementById('compare');
                         if (compElem) compElem.scrollIntoView({ behavior: 'smooth' });
                       }}
-                      className="text-xs font-black text-[#039487] hover:underline flex items-center space-x-1"
+                      className="text-xs font-black text-[#4575B4] hover:underline flex items-center space-x-1"
                     >
                       <span>Compare Selected Tests Now</span>
                       <ChevronRight className="w-3.5 h-3.5" />
@@ -1104,7 +1128,7 @@ export default function TestBeatPortal() {
                   </div>
                   <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto">
                     {selectedTests.map(t => (
-                      <span key={t.id} className="inline-flex items-center text-[11px] bg-teal-50 border border-teal-200 text-teal-900 px-2 py-0.5 rounded-lg font-bold">
+                      <span key={t.id} className="inline-flex items-center text-[11px] bg-blue-50 border border-blue-200 text-[#032C64] px-2 py-0.5 rounded-lg font-bold">
                         <span>{t.name} (₹{t.offerPrice})</span>
                         <button onClick={() => toggleTest(t)} className="ml-1 text-slate-400 hover:text-rose-500">×</button>
                       </span>
@@ -1115,38 +1139,38 @@ export default function TestBeatPortal() {
 
               <div className="flex flex-wrap items-center gap-4 mt-6 text-xs font-bold text-slate-600">
                 <div className="flex items-center space-x-1.5 bg-white px-3 py-1.5 rounded-xl border border-slate-200">
-                  <ShieldCheck className="w-4 h-4 text-[#039487]" />
+                  <ShieldCheck className="w-4 h-4 text-[#4575B4]" />
                   <span>100% NABL / CAP Certified</span>
                 </div>
                 <div className="flex items-center space-x-1.5 bg-white px-3 py-1.5 rounded-xl border border-slate-200">
-                  <Clock className="w-4 h-4 text-[#012C63]" />
+                  <Clock className="w-4 h-4 text-[#032C64]" />
                   <span>Reports within 12 - 24 Hrs</span>
                 </div>
                 <div className="flex items-center space-x-1.5 bg-white px-3 py-1.5 rounded-xl border border-slate-200">
-                  <CheckCircle2 className="w-4 h-4 text-[#F44236]" />
+                  <CheckCircle2 className="w-4 h-4 text-[#D73027]" />
                   <span>₹0 Home Collection Fee</span>
                 </div>
               </div>
             </div>
 
-            {/* Right Column: 100% English Prescription Card (Point 1) */}
+            {/* Right Column: 100% English Prescription Card */}
             <div className="lg:col-span-4">
-              <div className="relative rounded-3xl p-6 text-white shadow-2xl border border-teal-500/30 overflow-hidden bg-gradient-to-br from-[#012C63] via-[#09356d] to-[#011c40] group">
+              <div className="relative rounded-3xl p-6 text-white shadow-2xl border border-blue-500/30 overflow-hidden bg-gradient-to-br from-[#032C64] via-[#09356d] to-[#011c40] group">
                 
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#039487]/15 to-transparent h-20 -translate-y-full group-hover:translate-y-[280px] transition-transform duration-1000 ease-in-out pointer-events-none"></div>
-                <div className="absolute top-0 right-0 -mr-8 -mt-8 w-28 h-28 bg-[#039487]/25 rounded-full blur-2xl pointer-events-none"></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#4575B4]/15 to-transparent h-20 -translate-y-full group-hover:translate-y-[280px] transition-transform duration-1000 ease-in-out pointer-events-none"></div>
+                <div className="absolute top-0 right-0 -mr-8 -mt-8 w-28 h-28 bg-[#4575B4]/25 rounded-full blur-2xl pointer-events-none"></div>
 
                 <div className="flex items-center justify-between mb-3 relative z-10">
-                  <div className="flex items-center space-x-2 text-teal-300">
-                    <div className="w-7 h-7 rounded-lg bg-[#039487]/30 flex items-center justify-center border border-teal-400/40">
-                      <Camera className="w-4 h-4 text-teal-300" />
+                  <div className="flex items-center space-x-2 text-blue-200">
+                    <div className="w-7 h-7 rounded-lg bg-[#4575B4]/30 flex items-center justify-center border border-blue-400/40">
+                      <Camera className="w-4 h-4 text-blue-200" />
                     </div>
-                    <span className="text-[11px] font-black uppercase tracking-wider text-teal-300">
+                    <span className="text-[11px] font-black uppercase tracking-wider text-blue-200">
                       TestBeat AI Vision
                     </span>
                   </div>
-                  <span className="bg-teal-500/20 text-teal-300 border border-teal-400/30 text-[10px] font-black px-2 py-0.5 rounded-full flex items-center space-x-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-ping"></span>
+                  <span className="bg-blue-500/20 text-blue-200 border border-blue-400/30 text-[10px] font-black px-2 py-0.5 rounded-full flex items-center space-x-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-300 animate-ping"></span>
                     <span>Live Scanner</span>
                   </span>
                 </div>
@@ -1155,13 +1179,13 @@ export default function TestBeatPortal() {
                   Upload Doctor Prescription
                 </h3>
                 <p className="text-slate-200 text-xs mt-1.5 mb-5 leading-relaxed relative z-10">
-                  Upload your doctor&apos;s prescription slip. <span className="text-teal-300 font-bold">TestBeat AI</span> automatically detects prescribed tests, checks live laboratory prices, and matches the cheapest rate.
+                  Upload your doctor&apos;s prescription slip. <span className="text-blue-200 font-bold">TestBeat AI</span> automatically detects prescribed tests, checks live laboratory prices, and matches the cheapest rate.
                 </p>
 
                 <div className="space-y-3 relative z-10">
                   <button
                     onClick={() => setIsRxOpen(true)}
-                    className="w-full py-3.5 bg-gradient-to-r from-[#039487] to-teal-500 hover:from-teal-600 hover:to-[#039487] text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center space-x-2 shadow-lg shadow-teal-900/50 hover:scale-[1.02]"
+                    className="w-full py-3.5 bg-gradient-to-r from-[#D73027] via-[#FDAE61] to-[#4575B4] hover:opacity-95 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center space-x-2 shadow-lg shadow-blue-900/50 hover:scale-[1.02]"
                   >
                     <UploadCloud className="w-4 h-4" />
                     <span>Upload & Scan Prescription (TestBeat AI)</span>
@@ -1171,7 +1195,7 @@ export default function TestBeatPortal() {
                     href="https://wa.me/918368887011?text=Hello%20TestBeat,%20I%20want%20to%20book%20tests%20from%20my%20prescription"
                     target="_blank"
                     rel="noreferrer"
-                    className="w-full py-2.5 bg-white/10 hover:bg-white/15 text-teal-300 border border-teal-400/30 rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-2"
+                    className="w-full py-2.5 bg-white/10 hover:bg-white/15 text-blue-200 border border-blue-400/30 rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-2"
                   >
                     <span>Send via WhatsApp (+91 83688 87011)</span>
                   </a>
@@ -1189,10 +1213,10 @@ export default function TestBeatPortal() {
         </div>
       </section>
 
-      {/* 4. TESTS BY HEALTH RISKS & ORGANS (Point 4: Decorated Categories, Point 7: Zero Pre-Selection) */}
+      {/* 4. TESTS BY HEALTH RISKS & ORGANS */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" id="habits">
         <div className="text-center max-w-2xl mx-auto mb-8">
-          <span className="text-xs font-black text-[#039487] bg-teal-50 border border-teal-200 px-3 py-1 rounded-full uppercase tracking-wider">
+          <span className="text-xs font-black text-[#032C64] bg-blue-50 border border-blue-200 px-3 py-1 rounded-full uppercase tracking-wider">
             Clinical Specialities
           </span>
           <h2 className="text-3xl font-black text-slate-900 tracking-tight mt-2">
@@ -1201,7 +1225,7 @@ export default function TestBeatPortal() {
           <p className="text-slate-500 text-xs sm:text-sm mt-1">Select an organ category or individual biomarker to calculate multi-lab prices.</p>
         </div>
 
-        {/* Decorated Categories Tabs (Point 4) */}
+        {/* Decorated Categories Tabs */}
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 mb-8">
           {CLINICAL_CATEGORIES.map(cat => {
             const Icon = cat.icon;
@@ -1212,8 +1236,8 @@ export default function TestBeatPortal() {
                 onClick={() => setActiveCategory(cat.id)}
                 className={`p-3.5 rounded-2xl border-2 flex flex-col items-center justify-center transition-all transform hover:-translate-y-0.5 shadow-xs ${
                   isActive 
-                    ? `bg-gradient-to-br ${cat.color} text-white border-transparent shadow-md ring-4 ring-teal-100 scale-105` 
-                    : `${cat.bgLight} ${cat.textLight} ${cat.border} hover:border-[#039487]`
+                    ? `bg-gradient-to-br ${cat.color} text-white border-transparent shadow-md ring-4 ring-blue-100 scale-105` 
+                    : `${cat.bgLight} ${cat.textLight} ${cat.border} hover:border-[#032C64]`
                 }`}
               >
                 <div className={`p-2 rounded-xl mb-1.5 ${isActive ? 'bg-white/20' : 'bg-white shadow-2xs'}`}>
@@ -1225,7 +1249,7 @@ export default function TestBeatPortal() {
           })}
         </div>
 
-        {/* Selectable Test Cards (Point 7: Zero Pre-Selected tests) */}
+        {/* Selectable Test Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {filteredCatalog.map(test => {
             const isSelected = selectedTests.some(t => t.id === test.id);
@@ -1235,16 +1259,16 @@ export default function TestBeatPortal() {
                 onClick={() => toggleTest(test)}
                 className={`p-4 rounded-2xl border cursor-pointer transition-all flex flex-col justify-between ${
                   isSelected
-                    ? 'bg-teal-50/80 border-[#039487] shadow-md ring-2 ring-[#039487]/20'
+                    ? 'bg-blue-50/80 border-[#032C64] shadow-md ring-2 ring-[#032C64]/20'
                     : 'bg-white border-slate-200 hover:border-slate-300'
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-[#012C63] bg-teal-100 px-2 py-0.5 rounded">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-[#032C64] bg-blue-100 px-2 py-0.5 rounded">
                       {test.category}
                     </span>
-                    <div className={`w-5 h-5 rounded-md flex items-center justify-center border ${isSelected ? 'bg-[#039487] border-[#039487] text-white' : 'border-slate-300 bg-white'}`}>
+                    <div className={`w-5 h-5 rounded-md flex items-center justify-center border ${isSelected ? 'bg-[#032C64] border-[#032C64] text-white' : 'border-slate-300 bg-white'}`}>
                       {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                     </div>
                   </div>
@@ -1254,7 +1278,7 @@ export default function TestBeatPortal() {
                 
                 <div className="pt-3 border-t border-slate-100 mt-3 flex items-center justify-between">
                   <div className="flex items-baseline space-x-1.5">
-                    <span className="text-base font-black text-[#012C63]">₹{test.offerPrice}</span>
+                    <span className="text-base font-black text-[#032C64]">₹{test.offerPrice}</span>
                     <span className="text-xs line-through text-slate-400">₹{test.mrp}</span>
                   </div>
                   <span className="text-[11px] font-semibold text-slate-500">
@@ -1267,15 +1291,15 @@ export default function TestBeatPortal() {
         </div>
       </section>
 
-      {/* 5. LIVE MULTI-LAB COMPARISON MATRIX (Point 3: Shows ONLY user selected tests) */}
+      {/* 5. LIVE MULTI-LAB COMPARISON MATRIX */}
       {(showCompareTable || selectedTests.length > 0) && (
         <section className="bg-white border-t border-b border-slate-200 py-12 px-4 sm:px-6 lg:px-8 animate-in fade-in" id="compare">
           <div className="max-w-7xl mx-auto" id="lab-compare">
             <div className="text-center max-w-2xl mx-auto mb-8">
-              <span className="text-xs font-black text-teal-800 bg-teal-100 px-3 py-1 rounded-full uppercase tracking-wider">
+              <span className="text-xs font-black text-blue-900 bg-blue-100 px-3 py-1 rounded-full uppercase tracking-wider">
                 Real-Time Comparative Pricing
               </span>
-              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mt-2">
+              <h2 className="text-3xl font-black text-slate-900 mt-2">
                 Compare India&apos;s Top Diagnostic Labs
               </h2>
               <p className="text-slate-500 text-xs sm:text-sm mt-1">
@@ -1291,12 +1315,12 @@ export default function TestBeatPortal() {
                     key={lab.labId}
                     className={`bg-white rounded-3xl p-6 border flex flex-col justify-between transition-all relative ${
                       isBestValue
-                        ? 'border-2 border-[#039487] shadow-xl ring-4 ring-teal-50'
+                        ? 'border-2 border-[#032C64] shadow-xl ring-4 ring-blue-50'
                         : 'border-slate-200 shadow hover:shadow-lg'
                     }`}
                   >
                     {isBestValue && (
-                      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#039487] text-white text-[10px] font-black uppercase tracking-wider py-1 px-3.5 rounded-full flex items-center shadow-md">
+                      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#032C64] text-white text-[10px] font-black uppercase tracking-wider py-1 px-3.5 rounded-full flex items-center shadow-md">
                         <Award className="w-3.5 h-3.5 mr-1" />
                         Best Value Choice
                       </div>
@@ -1304,7 +1328,7 @@ export default function TestBeatPortal() {
 
                     <div>
                       <div className="flex items-center justify-between mb-4">
-                        <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center font-black text-[#012C63] text-lg">
+                        <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center font-black text-[#032C64] text-lg">
                           {lab.shortCode}
                         </div>
                         <span className="text-[11px] font-bold text-slate-600 bg-slate-100 px-2 py-1 rounded-md">
@@ -1313,7 +1337,7 @@ export default function TestBeatPortal() {
                       </div>
 
                       <h4 className="font-extrabold text-slate-900 text-base leading-snug">{lab.name}</h4>
-                      <p className="text-xs text-[#039487] font-semibold mb-4">{lab.highlight}</p>
+                      <p className="text-xs text-[#4575B4] font-semibold mb-4">{lab.highlight}</p>
 
                       <div className="space-y-2 border-t border-b border-slate-100 py-3.5 mb-4 text-xs">
                         <div className="flex items-center justify-between text-slate-700">
@@ -1329,7 +1353,7 @@ export default function TestBeatPortal() {
                         </div>
                         <div className="flex items-center justify-between text-slate-700">
                           <span className="text-slate-500">Doorstep Collection:</span>
-                          <span className="font-black text-[#039487]">FREE</span>
+                          <span className="font-black text-[#4575B4]">FREE</span>
                         </div>
                       </div>
                     </div>
@@ -1337,9 +1361,9 @@ export default function TestBeatPortal() {
                     <div>
                       <div className="mb-4">
                         <div className="flex items-baseline space-x-2">
-                          <span className="text-3xl font-black text-[#012C63]">₹{lab.finalPrice}</span>
+                          <span className="text-3xl font-black text-[#032C64]">₹{lab.finalPrice}</span>
                           <span className="text-xs line-through text-slate-400">₹{lab.mrp}</span>
-                          <span className="text-xs font-bold text-[#039487] bg-teal-50 px-1.5 py-0.5 rounded">
+                          <span className="text-xs font-bold text-[#4575B4] bg-blue-50 px-1.5 py-0.5 rounded">
                             {lab.discountRate}% OFF
                           </span>
                         </div>
@@ -1350,8 +1374,8 @@ export default function TestBeatPortal() {
                         onClick={() => setIsCartOpen(true)}
                         className={`w-full py-3.5 px-4 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center space-x-2 transition-all shadow-md ${
                           isBestValue
-                            ? 'bg-[#039487] hover:bg-[#027d72] text-white'
-                            : 'bg-[#012C63] hover:bg-[#0c3b65] text-white'
+                            ? 'bg-[#032C64] hover:bg-[#0c3b65] text-white'
+                            : 'bg-[#4575B4] hover:bg-[#3b629b] text-white'
                         }`}
                       >
                         <span>Book with {lab.shortCode}</span>
@@ -1370,7 +1394,7 @@ export default function TestBeatPortal() {
       <section className="bg-slate-50 py-16 px-4 sm:px-6 lg:px-8 border-b border-slate-200" id="packages">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="text-xs font-extrabold text-[#039487] bg-teal-50 border border-teal-200 px-3 py-1 rounded-full uppercase tracking-widest">
+            <span className="text-xs font-extrabold text-[#032C64] bg-blue-50 border border-blue-200 px-3 py-1 rounded-full uppercase tracking-widest">
               Full Body Screening
             </span>
             <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight mt-3">
@@ -1383,13 +1407,13 @@ export default function TestBeatPortal() {
             {PACKAGES_LIST.map((pkg) => (
               <div key={pkg.id} className="bg-white rounded-3xl p-7 border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-lg transition-all">
                 <div>
-                  <span className="text-[10px] font-black text-[#012C63] bg-teal-100 px-2.5 py-1 rounded-full uppercase tracking-wider">
+                  <span className="text-[10px] font-black text-[#032C64] bg-blue-100 px-2.5 py-1 rounded-full uppercase tracking-wider">
                     {pkg.badge}
                   </span>
                   <h3 className="text-xl font-black text-slate-900 mt-3">{pkg.title}</h3>
                   
                   <div className="flex items-center space-x-2 text-xs text-slate-500 font-semibold mt-1 mb-4">
-                    <span className="text-[#039487] font-bold">{pkg.parameters} Tests Included</span>
+                    <span className="text-[#4575B4] font-bold">{pkg.parameters} Tests Included</span>
                     <span>•</span>
                     <span>{pkg.fasting}</span>
                   </div>
@@ -1397,36 +1421,36 @@ export default function TestBeatPortal() {
                   <div className="space-y-2 border-t border-b border-slate-100 py-4 mb-6">
                     {pkg.includes.map((feature, i) => (
                       <div key={i} className="flex items-center text-xs text-slate-700">
-                        <Check className="w-4 h-4 text-[#039487] mr-2 flex-shrink-0" />
+                        <Check className="w-4 h-4 text-[#4575B4] mr-2 flex-shrink-0" />
                         <span>{feature}</span>
                       </div>
                     ))}
                   </div>
 
-                  <div className="bg-teal-50/70 border border-teal-200 rounded-2xl p-3 mb-6">
+                  <div className="bg-blue-50/70 border border-blue-200 rounded-2xl p-3 mb-6">
                     <div className="flex items-center justify-between text-xs">
-                      <div className="flex items-center space-x-1 font-bold text-[#012C63]">
-                        <Users className="w-4 h-4 text-[#039487]" />
+                      <div className="flex items-center space-x-1 font-bold text-[#032C64]">
+                        <Users className="w-4 h-4 text-[#4575B4]" />
                         <span>Book for 2 Members:</span>
                       </div>
-                      <span className="font-black text-[#039487]">₹{pkg.perPersonTwoMembers}/person</span>
+                      <span className="font-black text-[#032C64]">₹{pkg.perPersonTwoMembers}/person</span>
                     </div>
-                    <p className="text-[11px] text-teal-800 mt-0.5">Total ₹{pkg.twoMembersPrice} (Save ₹{pkg.twoMembersMrp - pkg.twoMembersPrice})</p>
+                    <p className="text-[11px] text-blue-900 mt-0.5">Total ₹{pkg.twoMembersPrice} (Save ₹{pkg.twoMembersMrp - pkg.twoMembersPrice})</p>
                   </div>
                 </div>
 
                 <div>
                   <div className="flex items-baseline space-x-2 mb-4">
-                    <span className="text-3xl font-black text-[#012C63]">₹{pkg.singlePrice}</span>
+                    <span className="text-3xl font-black text-[#032C64]">₹{pkg.singlePrice}</span>
                     <span className="text-sm line-through text-slate-400">₹{pkg.singleMrp}</span>
-                    <span className="text-xs font-bold text-[#039487] bg-teal-50 px-1.5 py-0.5 rounded">
+                    <span className="text-xs font-bold text-[#4575B4] bg-blue-50 px-1.5 py-0.5 rounded">
                       70% OFF
                     </span>
                   </div>
 
                   <button 
                     onClick={() => alert(`Package ${pkg.title} selected! Proceeding to booking.`)}
-                    className="w-full py-3.5 bg-[#012C63] hover:bg-[#0c3b65] text-white font-bold rounded-xl text-sm transition-all"
+                    className="w-full py-3.5 bg-[#032C64] hover:bg-[#0c3b65] text-white font-bold rounded-xl text-sm transition-all"
                   >
                     Book for 1 or 2 Members
                   </button>
@@ -1442,7 +1466,7 @@ export default function TestBeatPortal() {
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-10">
             <div>
-              <span className="text-xs font-black text-[#039487] bg-teal-50 border border-teal-200 px-3 py-1 rounded-full uppercase tracking-wider">
+              <span className="text-xs font-black text-[#032C64] bg-blue-50 border border-blue-200 px-3 py-1 rounded-full uppercase tracking-wider">
                 Partner Lab Spotlights
               </span>
               <h2 className="text-3xl font-black text-slate-900 mt-2">
@@ -1452,7 +1476,7 @@ export default function TestBeatPortal() {
                 Curated high-precision individual pathology assays verified by specialized laboratory partners.
               </p>
             </div>
-            <a href="#compare" className="text-xs font-bold text-[#039487] hover:underline flex items-center">
+            <a href="#compare" className="text-xs font-bold text-[#4575B4] hover:underline flex items-center">
               <span>View All Tests</span>
               <ChevronRight className="w-4 h-4 ml-0.5" />
             </a>
@@ -1463,20 +1487,20 @@ export default function TestBeatPortal() {
               <div key={test.id} className="bg-slate-50/70 border border-slate-200 rounded-3xl p-6 flex flex-col justify-between hover:shadow-md transition-all">
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-[10px] font-black uppercase text-[#012C63] bg-teal-100 px-2 py-0.5 rounded">
+                    <span className="text-[10px] font-black uppercase text-[#032C64] bg-blue-100 px-2 py-0.5 rounded">
                       {test.labBadge}
                     </span>
                     <span className="text-[11px] font-bold text-slate-500">{test.parametersCount} Params</span>
                   </div>
 
                   <h4 className="font-extrabold text-slate-900 text-sm leading-snug">{test.name}</h4>
-                  <p className="text-[11px] text-teal-800 font-bold mt-1">Partner: {test.featuredLab}</p>
+                  <p className="text-[11px] text-blue-900 font-bold mt-1">Partner: {test.featuredLab}</p>
                   <p className="text-xs text-slate-500 mt-2 leading-relaxed">{test.description}</p>
                 </div>
 
                 <div className="mt-5 pt-4 border-t border-slate-200">
                   <div className="flex items-baseline space-x-2 mb-3">
-                    <span className="text-2xl font-black text-[#012C63]">₹{test.offerPrice}</span>
+                    <span className="text-2xl font-black text-[#032C64]">₹{test.offerPrice}</span>
                     <span className="text-xs line-through text-slate-400">₹{test.mrp}</span>
                   </div>
                   <button
@@ -1484,7 +1508,7 @@ export default function TestBeatPortal() {
                       toggleTest(test);
                       setIsCartOpen(true);
                     }}
-                    className="w-full py-2.5 bg-[#012C63] hover:bg-[#0c3b65] text-white rounded-xl text-xs font-bold transition-all shadow-sm"
+                    className="w-full py-2.5 bg-[#032C64] hover:bg-[#0c3b65] text-white rounded-xl text-xs font-bold transition-all shadow-sm"
                   >
                     + Book with {test.featuredLab.split(' ')[0]}
                   </button>
@@ -1499,7 +1523,7 @@ export default function TestBeatPortal() {
       <section className="bg-slate-50 py-16 px-4 sm:px-6 lg:px-8 border-b border-slate-200" id="wellness">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="text-xs font-black text-[#039487] bg-teal-50 border border-teal-200 px-3 py-1 rounded-full uppercase tracking-wider">
+            <span className="text-xs font-black text-[#032C64] bg-blue-50 border border-blue-200 px-3 py-1 rounded-full uppercase tracking-wider">
               Diagnostic Health Literacy
             </span>
             <h2 className="text-3xl font-black text-slate-900 mt-2">
@@ -1512,7 +1536,7 @@ export default function TestBeatPortal() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="border border-slate-200 rounded-3xl p-6 bg-white shadow-xs">
-              <Clock className="w-8 h-8 text-[#039487] mb-3" />
+              <Clock className="w-8 h-8 text-[#4575B4] mb-3" />
               <h4 className="font-extrabold text-slate-900 text-base mb-2">10 - 12 Hours Fasting Rules</h4>
               <p className="text-xs text-slate-600 leading-relaxed">
                 Fasting blood sugar, Lipid profiles, and Liver panels require complete overnight fasting. Plain drinking water is allowed, but tea, milk, or juices must be avoided.
@@ -1520,7 +1544,7 @@ export default function TestBeatPortal() {
             </div>
 
             <div className="border border-slate-200 rounded-3xl p-6 bg-white shadow-xs">
-              <Activity className="w-8 h-8 text-[#012C63] mb-3" />
+              <Activity className="w-8 h-8 text-[#032C64] mb-3" />
               <h4 className="font-extrabold text-slate-900 text-base mb-2">Morning Medication Protocol</h4>
               <p className="text-xs text-slate-600 leading-relaxed">
                 Thyroid medication (Levothyroxine) should be taken only after blood sample collection. Routine blood pressure medications can be consumed with water unless instructed otherwise.
@@ -1538,8 +1562,8 @@ export default function TestBeatPortal() {
         </div>
       </section>
 
-      {/* 9. FOOTER WITH SERVICEABLE LOCATIONS & DETAILED BLOGS (Point 5: Reviews section completely removed) */}
-      <footer className="bg-[#012C63] text-slate-300 text-xs border-t border-[#0c3b65]">
+      {/* 9. FOOTER WITH SERVICEABLE LOCATIONS & DETAILED BLOGS */}
+      <footer className="bg-[#032C64] text-slate-300 text-xs border-t border-[#0c3b65]">
         
         {/* Serviceable Locations Directory */}
         <div className="border-b border-[#0c3b65]/80 py-12 px-4 sm:px-6 lg:px-8">
@@ -1547,7 +1571,7 @@ export default function TestBeatPortal() {
             <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
               <div>
                 <h3 className="text-base font-black text-white flex items-center">
-                  <MapPin className="w-4 h-4 text-[#F44236] mr-1.5" />
+                  <MapPin className="w-4 h-4 text-[#D73027] mr-1.5" />
                   Serviceable States & Cities Across India (23 States • 2,100+ Pincodes)
                 </h3>
                 <p className="text-[11px] text-slate-400 mt-0.5">
@@ -1556,7 +1580,7 @@ export default function TestBeatPortal() {
               </div>
               <button
                 onClick={() => setIsLocationModalOpen(true)}
-                className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-teal-300 text-xs font-bold transition-colors"
+                className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-blue-200 text-xs font-bold transition-colors"
               >
                 Change Location & Pincode →
               </button>
@@ -1565,7 +1589,7 @@ export default function TestBeatPortal() {
             <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4 text-[11px]">
               {SERVICEABLE_LOCATIONS_DATA.slice(0, 16).map((loc, idx) => (
                 <div key={idx} className="space-y-1">
-                  <p className="font-extrabold text-teal-300 text-xs truncate" title={loc.city}>{loc.city.split(' ')[0]}</p>
+                  <p className="font-extrabold text-blue-200 text-xs truncate" title={loc.city}>{loc.city.split(' ')[0]}</p>
                   <p className="text-[10px] text-slate-400">{loc.state}</p>
                   <button 
                     onClick={() => {
@@ -1582,17 +1606,17 @@ export default function TestBeatPortal() {
           </div>
         </div>
 
-        {/* Diagnostic Blogs with Full Article Reading Modal (Point 6) */}
+        {/* Diagnostic Blogs with Full Article Reading Modal */}
         <div className="border-b border-[#0c3b65]/80 py-10 px-4 sm:px-6 lg:px-8" id="blogs">
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center space-x-2 mb-5">
-              <BookOpen className="w-4 h-4 text-[#039487]" />
+              <BookOpen className="w-4 h-4 text-[#4575B4]" />
               <h3 className="text-sm font-black text-white uppercase tracking-wider">Health Wellness Diagnostic Blogs & Guides</h3>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
               {HEALTH_WELLNESS_BLOGS.map((blog, idx) => (
-                <div key={idx} className="p-3.5 rounded-2xl bg-white/5 border border-white/10 hover:border-teal-400/40 transition-colors">
-                  <span className="text-[10px] font-black uppercase text-teal-300 bg-teal-900/60 px-2 py-0.5 rounded">
+                <div key={idx} className="p-3.5 rounded-2xl bg-white/5 border border-white/10 hover:border-blue-400/40 transition-colors">
+                  <span className="text-[10px] font-black uppercase text-blue-200 bg-blue-900/60 px-2 py-0.5 rounded">
                     {blog.category}
                   </span>
                   <h4 className="font-bold text-white text-xs mt-1.5 leading-snug">{blog.title}</h4>
@@ -1600,7 +1624,7 @@ export default function TestBeatPortal() {
                     <span>{blog.reads}</span>
                     <button 
                       onClick={() => setActiveBlogModal(blog)} 
-                      className="text-teal-300 font-bold hover:underline"
+                      className="text-blue-200 font-bold hover:underline"
                     >
                       Read Full Guide →
                     </button>
@@ -1611,19 +1635,15 @@ export default function TestBeatPortal() {
           </div>
         </div>
 
-        {/* Corporate Details */}
+        {/* Corporate Details with In-Code White Logo */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div className="space-y-3 md:col-span-2">
-              <div className="flex items-center space-x-2">
-                <span className="text-2xl font-black text-white">Test</span>
-                <span className="text-2xl font-black text-[#039487]">Beat</span>
-                <span className="w-2.5 h-2.5 rounded-full bg-[#F44236]"></span>
-              </div>
-              <p className="text-slate-300 text-xs leading-relaxed max-w-sm">
-                Indias Trusted MultiLabs.Healthcare Platform. Unifying accredited diagnostic chains (Thyrocare, Healthians, Redcliffe, Dr. Lal PathLabs) for transparent pricing, certified cold-chain logistics, and digital reports.
+              <TestBeatLogo className="h-9 w-auto" darkBg={true} />
+              <p className="text-slate-300 text-xs leading-relaxed max-w-sm mt-2">
+                India&apos;s Trusted MultiLabs Healthcare Platform. Unifying accredited diagnostic chains (Thyrocare, Healthians, Redcliffe, Dr. Lal PathLabs) for transparent pricing, certified cold-chain logistics, and digital reports.
               </p>
-              <div className="flex items-center space-x-1.5 text-teal-300 font-semibold text-xs">
+              <div className="flex items-center space-x-1.5 text-blue-200 font-semibold text-xs">
                 <ShieldCheck className="w-4 h-4" />
                 <span>NABL & CAP Certified Partner Laboratories</span>
               </div>
@@ -1633,7 +1653,7 @@ export default function TestBeatPortal() {
               <h4 className="font-bold text-white uppercase tracking-wider text-xs mb-3">Partner Network</h4>
               <ul className="space-y-2">
                 <li>
-                  <button onClick={() => setIsPartnerModalOpen(true)} className="text-teal-300 font-bold hover:underline flex items-center space-x-1">
+                  <button onClick={() => setIsPartnerModalOpen(true)} className="text-blue-200 font-bold hover:underline flex items-center space-x-1">
                     <span>★ Partner With Us (Application)</span>
                   </button>
                 </li>
@@ -1681,9 +1701,9 @@ export default function TestBeatPortal() {
 
       {/* Point 7: COMPACT FLOATING CART / COMPARE BADGE */}
       {selectedTests.length > 0 && (
-        <div className="fixed bottom-6 left-6 z-40 bg-[#012C63] text-white px-4 py-2.5 rounded-2xl shadow-2xl border border-teal-500/40 flex items-center space-x-3.5 animate-in slide-in-from-bottom duration-300">
+        <div className="fixed bottom-6 left-6 z-40 bg-[#032C64] text-white px-4 py-2.5 rounded-2xl shadow-2xl border border-blue-400/40 flex items-center space-x-3.5 animate-in slide-in-from-bottom duration-300">
           <div className="flex items-center space-x-2">
-            <div className="w-6 h-6 bg-[#039487] rounded-full flex items-center justify-center text-xs font-black">
+            <div className="w-6 h-6 bg-[#4575B4] rounded-full flex items-center justify-center text-xs font-black">
               {selectedTests.length}
             </div>
             <span className="text-xs font-bold">{selectedTests.length} Test(s) Configured</span>
@@ -1694,20 +1714,20 @@ export default function TestBeatPortal() {
               const compElem = document.getElementById('compare');
               if (compElem) compElem.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="px-3 py-1 bg-[#039487] hover:bg-teal-600 text-white rounded-xl text-xs font-black"
+            className="px-3 py-1 bg-[#4575B4] hover:bg-blue-600 text-white rounded-xl text-xs font-black"
           >
             Compare Labs
           </button>
           <button 
             onClick={() => setIsCartOpen(true)}
-            className="px-3 py-1 bg-white/10 hover:bg-white/20 text-teal-300 rounded-xl text-xs font-bold"
+            className="px-3 py-1 bg-white/10 hover:bg-white/20 text-blue-200 rounded-xl text-xs font-bold"
           >
             Cart
           </button>
         </div>
       )}
 
-      {/* ================= MODAL: BLOG FULL ARTICLE MODAL (Point 6) ================= */}
+      {/* ================= MODAL: BLOG FULL ARTICLE MODAL ================= */}
       {activeBlogModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
           <div className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl p-6 sm:p-8 relative border border-slate-100 max-h-[85vh] overflow-y-auto">
@@ -1717,7 +1737,7 @@ export default function TestBeatPortal() {
             >
               <X className="w-5 h-5" />
             </button>
-            <span className="text-xs font-black uppercase text-[#039487] bg-teal-50 px-2.5 py-1 rounded-md">
+            <span className="text-xs font-black uppercase text-[#032C64] bg-blue-50 px-2.5 py-1 rounded-md">
               {activeBlogModal.category} • {activeBlogModal.reads}
             </span>
             <h3 className="text-xl font-black text-slate-900 mt-2 mb-4 leading-snug">
@@ -1732,7 +1752,7 @@ export default function TestBeatPortal() {
               <span className="text-xs text-slate-400">Published by TestBeat Clinical Pathologists</span>
               <button 
                 onClick={() => setActiveBlogModal(null)}
-                className="px-4 py-2 bg-[#012C63] text-white rounded-xl text-xs font-bold"
+                className="px-4 py-2 bg-[#032C64] text-white rounded-xl text-xs font-bold"
               >
                 Close Article
               </button>
@@ -1741,7 +1761,7 @@ export default function TestBeatPortal() {
         </div>
       )}
 
-      {/* ================= MODAL: 100% ENGLISH TESTBEAT AI PRESCRIPTION SCANNER (Point 1 & 2) ================= */}
+      {/* ================= MODAL: 100% ENGLISH TESTBEAT AI PRESCRIPTION SCANNER ================= */}
       {isRxOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
           <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl p-6 relative border border-slate-100 max-h-[90vh] overflow-y-auto">
@@ -1756,9 +1776,9 @@ export default function TestBeatPortal() {
               <X className="w-4 h-4" />
             </button>
 
-            <div className="flex items-center space-x-1.5 text-[#039487] mb-1">
-              <Camera className="w-4 h-4" />
-              <span className="text-[11px] font-black uppercase tracking-wider">TestBeat AI Vision Scanner</span>
+            <div className="flex items-center space-x-1.5 text-[#032C64] mb-1">
+              <Camera className="w-4 h-4 text-[#4575B4]" />
+              <span className="text-[11px] font-black uppercase tracking-wider text-[#032C64]">TestBeat AI Vision Scanner</span>
             </div>
 
             <h3 className="text-xl font-black text-slate-900 mb-1">Doctor Prescription Scanner</h3>
@@ -1776,33 +1796,33 @@ export default function TestBeatPortal() {
 
             {/* Scanning progress */}
             {rxScanning ? (
-              <div className="border-2 border-dashed border-[#039487] rounded-2xl p-8 text-center bg-teal-50/50 mb-4 animate-pulse">
-                <div className="w-10 h-10 border-4 border-[#039487] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-                <p className="text-xs font-black text-[#012C63]">{rxStatusMsg}</p>
+              <div className="border-2 border-dashed border-[#032C64] rounded-2xl p-8 text-center bg-blue-50/50 mb-4 animate-pulse">
+                <div className="w-10 h-10 border-4 border-[#032C64] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+                <p className="text-xs font-black text-[#032C64]">{rxStatusMsg}</p>
                 <p className="text-[10px] text-slate-400 mt-1">Analyzing medical handwriting & biomarker tokens...</p>
               </div>
             ) : (
               <div
                 onClick={() => rxFileInputRef.current?.click()}
-                className="border-2 border-dashed border-slate-300 hover:border-[#039487] rounded-2xl p-6 text-center bg-slate-50 hover:bg-teal-50/40 transition-all cursor-pointer mb-4 group"
+                className="border-2 border-dashed border-slate-300 hover:border-[#032C64] rounded-2xl p-6 text-center bg-slate-50 hover:bg-blue-50/40 transition-all cursor-pointer mb-4 group"
               >
-                <UploadCloud className="w-10 h-10 text-[#039487] mx-auto mb-2 group-hover:scale-110 transition-transform" />
+                <UploadCloud className="w-10 h-10 text-[#032C64] mx-auto mb-2 group-hover:scale-110 transition-transform" />
                 <p className="text-xs font-bold text-slate-800">Tap to upload prescription slip from mobile or gallery</p>
                 <p className="text-[10px] text-slate-400 mt-0.5">JPG, PNG, PDF up to 10MB</p>
               </div>
             )}
 
-            {/* Results Feedback & Unmatched Tests Notice (Point 2 - No popup alert) */}
+            {/* Results Feedback & Unmatched Tests Notice (No browser popup) */}
             {rxDetectedPrescriptions.length > 0 && !rxScanning && (
               <div className="mb-4 space-y-2">
-                <div className="p-3 bg-teal-50 border border-teal-200 rounded-xl text-xs">
-                  <p className="font-bold text-teal-900 flex items-center">
+                <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs">
+                  <p className="font-bold text-[#032C64] flex items-center">
                     <CheckCircle2 className="w-4 h-4 text-emerald-600 mr-1.5" />
                     Prescription Tests Detected by TestBeat AI:
                   </p>
                   <div className="flex flex-wrap gap-1.5 mt-2">
                     {rxDetectedPrescriptions.map((tName, i) => (
-                      <span key={i} className="bg-white border border-teal-300 text-[#012C63] font-bold text-[11px] px-2 py-0.5 rounded-md">
+                      <span key={i} className="bg-white border border-blue-300 text-[#032C64] font-bold text-[11px] px-2 py-0.5 rounded-md">
                         {tName}
                       </span>
                     ))}
@@ -1827,7 +1847,7 @@ export default function TestBeatPortal() {
               </div>
             )}
 
-            {/* Point 2: Compact Inline Manual Test Search & Add inside Modal */}
+            {/* Compact Inline Manual Test Search & Add inside Modal */}
             <div className="mb-4">
               <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">
                 Add Missing Test Manually (Optional)
@@ -1839,7 +1859,7 @@ export default function TestBeatPortal() {
                   value={rxManualSearch}
                   onChange={(e) => setRxManualSearch(e.target.value)}
                   placeholder="Type test name (e.g. CBC, KFT, Thyroid)..."
-                  className="w-full pl-8 pr-3 py-1.5 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#039487]"
+                  className="w-full pl-8 pr-3 py-1.5 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#032C64]"
                 />
               </div>
 
@@ -1855,7 +1875,7 @@ export default function TestBeatPortal() {
                             toggleTest(test);
                             setRxManualSearch('');
                           }}
-                          className={`px-2 py-0.5 rounded text-[10px] font-black ${isAdded ? 'bg-rose-100 text-rose-700' : 'bg-[#039487] text-white'}`}
+                          className={`px-2 py-0.5 rounded text-[10px] font-black ${isAdded ? 'bg-rose-100 text-rose-700' : 'bg-[#032C64] text-white'}`}
                         >
                           {isAdded ? 'Remove' : '+ Add (₹' + test.offerPrice + ')'}
                         </button>
@@ -1882,7 +1902,7 @@ export default function TestBeatPortal() {
                   const compElem = document.getElementById('compare');
                   if (compElem) compElem.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="flex-1 py-3 bg-[#039487] hover:bg-[#027d72] text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow"
+                className="flex-1 py-3 bg-[#032C64] hover:bg-[#0c3b65] text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow"
               >
                 Continue & Compare Labs ({selectedTests.length})
               </button>
@@ -1891,7 +1911,7 @@ export default function TestBeatPortal() {
         </div>
       )}
 
-      {/* ================= MODAL: LOCATION SELECTOR & AUTO-DETECT (Point 8) ================= */}
+      {/* ================= MODAL: LOCATION SELECTOR & AUTO-DETECT ================= */}
       {isLocationModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
           <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl p-6 relative border border-slate-100 max-h-[85vh] overflow-y-auto">
@@ -1899,23 +1919,23 @@ export default function TestBeatPortal() {
               <X className="w-4 h-4" />
             </button>
 
-            <div className="flex items-center space-x-2 text-[#039487] mb-1">
-              <MapPin className="w-5 h-5 text-[#F44236]" />
+            <div className="flex items-center space-x-2 text-[#032C64] mb-1">
+              <MapPin className="w-5 h-5 text-[#D73027]" />
               <h3 className="text-lg font-black text-slate-900">Choose Collection Location</h3>
             </div>
             <p className="text-xs text-slate-500 mb-4">Select your city or detect live GPS location for doorstep sample collection.</p>
 
-            {/* Point 8: Live GPS Auto-Detect Button */}
+            {/* GPS Auto-Detect Button */}
             <button
               onClick={handleDetectLocation}
               disabled={isDetectingLocation}
-              className="w-full py-3 mb-4 bg-teal-50 hover:bg-teal-100 border border-teal-200 text-[#012C63] font-bold text-xs rounded-2xl flex items-center justify-center space-x-2 transition-colors"
+              className="w-full py-3 mb-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-[#032C64] font-bold text-xs rounded-2xl flex items-center justify-center space-x-2 transition-colors"
             >
-              <MapPin className={`w-4 h-4 text-[#039487] ${isDetectingLocation ? 'animate-bounce' : ''}`} />
+              <MapPin className={`w-4 h-4 text-[#032C64] ${isDetectingLocation ? 'animate-bounce' : ''}`} />
               <span>{isDetectingLocation ? 'Detecting Live GPS Pincode...' : 'Use My Current Location (GPS Auto-Detect)'}</span>
             </button>
 
-            {/* Point 8: Search by City Name OR Pincode */}
+            {/* Search by City Name OR Pincode */}
             <div className="relative mb-4">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
               <input
@@ -1923,7 +1943,7 @@ export default function TestBeatPortal() {
                 value={locationSearchInput}
                 onChange={(e) => setLocationSearchInput(e.target.value)}
                 placeholder="Search city name or enter Pincode (e.g. 12, 201310, Noida)..."
-                className="w-full border border-slate-300 rounded-xl pl-9 pr-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#039487]"
+                className="w-full border border-slate-300 rounded-xl pl-9 pr-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#032C64]"
               />
             </div>
 
@@ -1993,7 +2013,7 @@ export default function TestBeatPortal() {
                       value={affiliateData.name}
                       onChange={(e) => setAffiliateData({ ...affiliateData, name: e.target.value })}
                       placeholder="Dr. / Clinic Name" 
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#039487]"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#032C64]"
                     />
                   </div>
                   <div>
@@ -2005,7 +2025,7 @@ export default function TestBeatPortal() {
                       value={affiliateData.phone}
                       onChange={(e) => setAffiliateData({ ...affiliateData, phone: e.target.value })}
                       placeholder="10-digit number" 
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#039487]"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#032C64]"
                     />
                   </div>
                 </div>
@@ -2019,7 +2039,7 @@ export default function TestBeatPortal() {
                       value={affiliateData.city}
                       onChange={(e) => setAffiliateData({ ...affiliateData, city: e.target.value })}
                       placeholder="e.g. Greater Noida, Delhi, Lucknow" 
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#039487]"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#032C64]"
                     />
                   </div>
                   <div>
@@ -2027,7 +2047,7 @@ export default function TestBeatPortal() {
                     <select 
                       value={affiliateData.category}
                       onChange={(e) => setAffiliateData({ ...affiliateData, category: e.target.value })}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#039487]"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#032C64]"
                     >
                       <option>Doctor / Private Clinic</option>
                       <option>Local Collection Centre / Pathology Lab</option>
@@ -2039,13 +2059,721 @@ export default function TestBeatPortal() {
 
                 <button 
                   type="submit" 
-                  className="w-full py-3 bg-[#012C63] hover:bg-[#0c3b65] text-white rounded-xl font-bold text-xs shadow-md transition-all flex items-center justify-center space-x-2"
+                  className="w-full py-3 bg-[#032C64] hover:bg-[#0c3b65] text-white rounded-xl font-bold text-xs shadow-md transition-all flex items-center justify-center space-x-2"
                 >
                   <span>Submit Partner Application</span>
                   <Send className="w-3.5 h-3.5" />
                 </button>
               </form>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* ================= FUNCTIONAL SHOPPING CART SLIDE-OVER DRAWER ================= */}
+      {isCartOpen && (
+        <div className="fixed inset-0 z-50 overflow-hidden bg-slate-950/70 backdrop-blur-xs flex justify-end">
+          <div className="bg-white w-full max-w-md h-full flex flex-col shadow-2xl animate-in slide-in-from-right duration-300">
+            
+            <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+              <div className="flex items-center space-x-2">
+                <ShoppingCart className="w-5 h-5 text-[#4575B4]" />
+                <h3 className="text-lg font-black text-slate-900">Diagnostic Cart</h3>
+                <span className="bg-blue-100 text-[#032C64] text-xs font-black px-2 py-0.5 rounded-full">
+                  {selectedTests.length} Items
+                </span>
+              </div>
+              <button 
+                onClick={() => setIsCartOpen(false)}
+                className="p-1.5 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-200"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-6 space-y-3">
+              {selectedTests.length === 0 ? (
+                <div className="text-center py-16">
+                  <ShoppingCart className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                  <p className="text-sm font-bold text-slate-700">Your cart is empty</p>
+                  <p className="text-xs text-slate-400 mt-1">Select blood tests or scan prescription to begin.</p>
+                </div>
+              ) : (
+                selectedTests.map(item => (
+                  <div key={item.id} className="p-3.5 border border-slate-200 rounded-2xl flex items-center justify-between bg-white shadow-2xs">
+                    <div>
+                      <span className="text-[9px] font-black uppercase text-blue-900 bg-blue-50 px-1.5 py-0.5 rounded">
+                        {item.category}
+                      </span>
+                      <h4 className="font-bold text-slate-900 text-xs mt-1 leading-snug">{item.name}</h4>
+                      <p className="text-[11px] text-slate-400">{item.parametersCount} Parameters • Code: {item.code}</p>
+                    </div>
+                    <div className="text-right ml-3 flex-shrink-0">
+                      <p className="text-sm font-black text-[#032C64]">₹{item.offerPrice}</p>
+                      <button 
+                        onClick={() => toggleTest(item)}
+                        className="text-[11px] text-rose-500 hover:underline font-semibold"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {selectedTests.length > 0 && (
+              <div className="p-6 border-t border-slate-200 bg-slate-50 space-y-3">
+                {walletBalance > 0 && (
+                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-between text-xs">
+                    <div className="flex items-center space-x-2">
+                      <Wallet className="w-4 h-4 text-[#4575B4]" />
+                      <div>
+                        <p className="font-bold text-slate-800">Use TestBeat Wallet</p>
+                        <p className="text-[10px] text-blue-700">Balance: ₹{walletBalance}</p>
+                      </div>
+                    </div>
+                    <input 
+                      type="checkbox" 
+                      checked={useWalletBalance} 
+                      onChange={(e) => setUseWalletBalance(e.target.checked)}
+                      className="w-4 h-4 accent-[#032C64] cursor-pointer" 
+                    />
+                  </div>
+                )}
+
+                <div className="space-y-1.5 text-xs text-slate-600">
+                  <div className="flex justify-between">
+                    <span>Tests Subtotal:</span>
+                    <span className="font-bold text-slate-900">₹{cartSubtotal}</span>
+                  </div>
+                  <div className="flex justify-between text-emerald-600 font-medium">
+                    <span>Total Discount Saved:</span>
+                    <span>-₹{cartDiscount}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Phlebotomist Doorstep Collection:</span>
+                    <span className="font-bold text-emerald-600">FREE ₹0</span>
+                  </div>
+                  {useWalletBalance && walletBalance > 0 && (
+                    <div className="flex justify-between text-blue-800 font-bold">
+                      <span>Wallet Deduction Applied:</span>
+                      <span>-₹{Math.min(walletBalance, cartSubtotal)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between text-base font-black text-slate-900 pt-2 border-t border-slate-200">
+                    <span>Final Amount Payable:</span>
+                    <span className="text-[#032C64]">₹{finalPayable}</span>
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleProceedCheckout}
+                  className="w-full py-3.5 bg-[#032C64] hover:bg-[#0c3b65] text-white rounded-xl text-xs font-black uppercase tracking-wider shadow-lg shadow-blue-900/30 transition-all flex items-center justify-center space-x-2"
+                >
+                  <span>Proceed to Home Collection Booking</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+
+          </div>
+        </div>
+      )}
+
+      {/* ================= MODAL: ORDER CONFIRMED MODAL ================= */}
+      {confirmedOrder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl p-7 relative border border-slate-100 animate-in zoom-in-95 duration-200 text-center">
+            
+            <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 ring-8 ring-emerald-50">
+              <Check className="w-8 h-8 text-emerald-600 stroke-[3]" />
+            </div>
+
+            <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full inline-block mb-2">
+              Appointment Scheduled
+            </span>
+
+            <h3 className="text-2xl font-black text-slate-900">Order Placed Successfully!</h3>
+            <p className="text-slate-500 text-xs mt-1 mb-6">
+              Your certified home sample collection appointment is confirmed.
+            </p>
+
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-left text-xs space-y-2.5 mb-6">
+              <div className="flex justify-between pb-2 border-b border-slate-200">
+                <span className="text-slate-500 font-semibold">Booking Reference ID:</span>
+                <span className="font-black text-[#032C64]">{confirmedOrder.bookingId}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500 font-semibold">Patient Name:</span>
+                <span className="font-bold text-slate-900">{confirmedOrder.patientName}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500 font-semibold">Scheduled Slot:</span>
+                <span className="font-bold text-emerald-700">{confirmedOrder.scheduledTime}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500 font-semibold">Biomarkers Included:</span>
+                <span className="font-bold text-slate-900">{confirmedOrder.testCount} Tests Selected</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500 font-semibold">Home Pickup Address:</span>
+                <span className="font-semibold text-slate-800 truncate max-w-[200px]" title={confirmedOrder.address}>{confirmedOrder.address}</span>
+              </div>
+              <div className="flex justify-between pt-2 border-t border-slate-200 font-black text-sm">
+                <span className="text-slate-900">Total Amount Paid:</span>
+                <span className="text-[#032C64]">₹{confirmedOrder.amountPaid}</span>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <button
+                onClick={() => {
+                  setConfirmedOrder(null);
+                  setActiveAccountView('orders');
+                }}
+                className="w-full py-3 bg-[#032C64] hover:bg-[#0c3b65] text-white rounded-xl text-xs font-black uppercase tracking-wider shadow-md transition-all flex items-center justify-center space-x-2"
+              >
+                <span>Track in My Orders</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+
+              <button
+                onClick={() => {
+                  setConfirmedOrder(null);
+                  setSelectedTests([]);
+                }}
+                className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all"
+              >
+                Done / Back to Home
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* ================= MODAL: CUSTOMER ACCOUNT PANELS ================= */}
+      {activeAccountView && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
+          <div className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl p-6 sm:p-8 relative border border-slate-100 max-h-[90vh] overflow-y-auto">
+            <button 
+              onClick={() => setActiveAccountView(null)}
+              className="absolute top-5 right-5 p-1.5 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center space-x-2 border-b border-slate-100 pb-4 overflow-x-auto text-xs font-black mb-6">
+              <button 
+                onClick={() => setActiveAccountView('profile')} 
+                className={`px-3 py-2 rounded-xl transition-all ${activeAccountView === 'profile' ? 'bg-[#032C64] text-white shadow' : 'border border-slate-200 text-slate-600'}`}
+              >
+                My Profile
+              </button>
+              <button 
+                onClick={() => setActiveAccountView('orders')} 
+                className={`px-3 py-2 rounded-xl transition-all ${activeAccountView === 'orders' ? 'bg-[#032C64] text-white shadow' : 'border border-slate-200 text-slate-600'}`}
+              >
+                My Orders
+              </button>
+              <button 
+                onClick={() => setActiveAccountView('subscriptions')} 
+                className={`px-3 py-2 rounded-xl transition-all ${activeAccountView === 'subscriptions' ? 'bg-[#032C64] text-white shadow' : 'border border-slate-200 text-slate-600'}`}
+              >
+                My Subscriptions
+              </button>
+              <button 
+                onClick={() => setActiveAccountView('wallet')} 
+                className={`px-3 py-2 rounded-xl transition-all ${activeAccountView === 'wallet' ? 'bg-[#032C64] text-white shadow' : 'border border-slate-200 text-slate-600'}`}
+              >
+                Wallet (₹{walletBalance})
+              </button>
+              <button 
+                onClick={() => setActiveAccountView('family')} 
+                className={`px-3 py-2 rounded-xl transition-all ${activeAccountView === 'family' ? 'bg-[#032C64] text-white shadow' : 'border border-slate-200 text-slate-600'}`}
+              >
+                Family Members
+              </button>
+            </div>
+
+            {/* PANEL: MY PROFILE */}
+            {activeAccountView === 'profile' && (
+              <div>
+                <h3 className="text-xl font-black text-slate-900 mb-1">Customer Profile & Address</h3>
+                <p className="text-xs text-slate-500 mb-6">Manage your primary collection address for phlebotomist home visits.</p>
+                
+                <form onSubmit={(e) => { e.preventDefault(); alert('Profile details updated successfully!'); setActiveAccountView(null); }} className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Full Name</label>
+                      <input 
+                        type="text" 
+                        value={profileData.name} 
+                        onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
+                        className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:border-[#032C64] focus:outline-none" 
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Mobile Number</label>
+                      <input 
+                        type="tel" 
+                        value={profileData.phone} 
+                        readOnly 
+                        className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold bg-slate-50 focus:outline-none text-slate-500" 
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Age</label>
+                      <input 
+                        type="number" 
+                        value={profileData.age} 
+                        onChange={(e) => setProfileData({ ...profileData, age: e.target.value })}
+                        className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:border-[#032C64] focus:outline-none" 
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">City</label>
+                      <input 
+                        type="text" 
+                        value={profileData.city} 
+                        onChange={(e) => setProfileData({ ...profileData, city: e.target.value })}
+                        className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:border-[#032C64] focus:outline-none" 
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Pincode</label>
+                      <input 
+                        type="text" 
+                        value={profileData.pincode} 
+                        onChange={(e) => setProfileData({ ...profileData, pincode: e.target.value })}
+                        className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:border-[#032C64] focus:outline-none" 
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Detailed Home Address</label>
+                    <textarea 
+                      rows={2} 
+                      value={profileData.address}
+                      onChange={(e) => setProfileData({ ...profileData, address: e.target.value })}
+                      className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:border-[#032C64] focus:outline-none" 
+                    />
+                  </div>
+
+                  <button type="submit" className="px-6 py-2.5 bg-[#032C64] hover:bg-[#0c3b65] text-white text-xs font-bold rounded-xl shadow transition-all">
+                    Save Changes
+                  </button>
+                </form>
+              </div>
+            )}
+
+            {/* PANEL: MY ORDERS */}
+            {activeAccountView === 'orders' && (
+              <div>
+                <h3 className="text-xl font-black text-slate-900 mb-1">Live Bookings & Report Vault</h3>
+                <p className="text-xs text-slate-500 mb-6">Real-time status of blood sample collection, lab processing, and report download.</p>
+
+                <div className="border border-slate-200 rounded-2xl p-5 bg-slate-50/50">
+                  <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-200">
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">
+                        Phlebotomist Assigned
+                      </span>
+                      <h4 className="font-extrabold text-slate-900 text-sm mt-1">Full Body Comprehensive (Vital Checkup)</h4>
+                      <p className="text-[11px] text-slate-500">Booking ID: #TB-98210 • Partner Lab: Thyrocare Technologies</p>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-base font-black text-slate-900">₹1,199</span>
+                      <p className="text-[11px] text-emerald-600 font-bold">Paid via Wallet</p>
+                    </div>
+                  </div>
+                  <div className="pt-3 flex flex-wrap items-center justify-between text-xs gap-3">
+                    <div className="flex items-center space-x-2 text-slate-600">
+                      <User className="w-4 h-4 text-[#032C64]" />
+                      <span>Patient: <b>Self ({profileData.name})</b></span>
+                    </div>
+                    <div className="flex items-center space-x-2 text-slate-600">
+                      <Clock className="w-4 h-4 text-[#032C64]" />
+                      <span>Scheduled: <b>Tomorrow, 07:30 AM</b></span>
+                    </div>
+                    <button onClick={() => alert('Sample tracking: Phlebotomist en route at 7:00 AM')} className="px-3.5 py-1.5 bg-[#032C64] text-white rounded-lg text-xs font-bold">
+                      Live Tracking
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* PANEL: MY SUBSCRIPTIONS */}
+            {activeAccountView === 'subscriptions' && (
+              <div>
+                <h3 className="text-xl font-black text-slate-900 mb-1">Preventive Health Subscriptions</h3>
+                <p className="text-xs text-slate-500 mb-6">Periodic quarterly diabetes and thyroid monitoring plans.</p>
+
+                <div className="border border-slate-200 rounded-2xl p-5 bg-white">
+                  <span className="text-[10px] font-black uppercase text-[#032C64] bg-blue-50 px-2 py-0.5 rounded">Active Plan</span>
+                  <h4 className="font-bold text-slate-900 text-sm mt-1">Quarterly Diabetic Care Shield (HbA1c + Fasting)</h4>
+                  <p className="text-xs text-slate-500 mt-1">Next test due in: 45 Days • Automatic sample collection</p>
+                  <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                    <span className="font-extrabold text-[#032C64]">₹499 / Quarter</span>
+                    <button className="text-rose-600 font-bold hover:underline">Manage Plan</button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* PANEL: WALLET BALANCE */}
+            {activeAccountView === 'wallet' && (
+              <div>
+                <h3 className="text-xl font-black text-slate-900 mb-1">TestBeat Health Wallet</h3>
+                <p className="text-xs text-slate-500 mb-6">Manage cashback and wallet recharge for seamless diagnostic checkouts.</p>
+
+                <div className="bg-gradient-to-tr from-[#032C64] to-[#0c3b65] text-white rounded-2xl p-6 shadow-md mb-6 flex items-center justify-between">
+                  <div>
+                    <span className="text-xs font-bold text-blue-200">Available Balance</span>
+                    <h2 className="text-4xl font-black mt-1 text-white">₹{walletBalance}</h2>
+                  </div>
+                  <button 
+                    onClick={() => setIsAddMoneyOpen(true)}
+                    className="px-5 py-2.5 bg-[#4575B4] hover:bg-blue-600 text-white font-bold text-xs rounded-xl transition-all shadow"
+                  >
+                    + Add Balance
+                  </button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
+                    <div className="flex items-center space-x-2.5">
+                      <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">+</div>
+                      <div>
+                        <p className="font-bold text-slate-900">Sign Up Welcome Health Bonus</p>
+                        <p className="text-[10px] text-slate-400">Promotional Credit • Active</p>
+                      </div>
+                    </div>
+                    <span className="font-black text-emerald-600 text-sm">+₹250</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* PANEL: FAMILY MEMBERS */}
+            {activeAccountView === 'family' && (
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-xl font-black text-slate-900">Family Members Diagnostic Profiles</h3>
+                    <p className="text-xs text-slate-500">Book blood tests specifically for yourself or family members.</p>
+                  </div>
+                  <button 
+                    onClick={() => setIsAddFamilyOpen(true)}
+                    className="px-3.5 py-2 bg-[#032C64] hover:bg-[#0c3b65] text-white text-xs font-bold rounded-xl shadow flex items-center space-x-1.5 transition-all"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>+ Add Member</span>
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {familyMembers.map(member => (
+                    <div key={member.id} className="border border-slate-200 rounded-2xl p-4 bg-white shadow-xs flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-[10px] font-black uppercase text-blue-900 bg-blue-100 px-2 py-0.5 rounded">
+                            {member.relation}
+                          </span>
+                          <span className="text-xs font-bold text-slate-400">{member.gender}</span>
+                        </div>
+                        <h4 className="font-bold text-slate-900 text-sm">{member.name}</h4>
+                        <p className="text-xs text-slate-500">Age: {member.age} Years</p>
+                      </div>
+
+                      <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                        <button onClick={() => alert(`Selected ${member.name} for upcoming booking`)} className="text-[#032C64] font-bold">
+                          Book Test For {member.relation}
+                        </button>
+                        {member.relation !== 'Self' && (
+                          <button onClick={() => setFamilyMembers(prev => prev.filter(m => m.id !== member.id))} className="text-rose-500 hover:text-rose-700">
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+          </div>
+        </div>
+      )}
+
+      {/* ================= MODAL: CUSTOMER AUTHENTICATION ================= */}
+      {isAuthOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
+          <div className="bg-white w-full max-w-sm rounded-3xl shadow-2xl p-6 relative border border-slate-100">
+            <button 
+              onClick={() => { setIsAuthOpen(false); setAuthOtpSent(false); }}
+              className="absolute top-4 right-4 p-1.5 rounded-full text-slate-400 hover:text-slate-600"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex bg-slate-100 p-1 rounded-xl mb-4">
+              <button 
+                onClick={() => { setAuthMode('LOGIN'); setAuthOtpSent(false); }}
+                className={`flex-1 py-1.5 text-xs font-black rounded-lg transition-all ${authMode === 'LOGIN' ? 'bg-[#032C64] text-white' : 'text-slate-600'}`}
+              >
+                OTP Login
+              </button>
+              <button 
+                onClick={() => { setAuthMode('SIGNUP'); setAuthOtpSent(false); }}
+                className={`flex-1 py-1.5 text-xs font-black rounded-lg transition-all ${authMode === 'SIGNUP' ? 'bg-[#032C64] text-white' : 'text-slate-600'}`}
+              >
+                New Sign Up
+              </button>
+            </div>
+
+            {authMode === 'LOGIN' ? (
+              <form onSubmit={handleLoginSubmit} className="space-y-3.5">
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Mobile Number</label>
+                  <div className="flex items-center border border-slate-300 rounded-xl px-3 py-2 focus-within:border-[#032C64]">
+                    <span className="text-slate-500 font-bold text-xs mr-2">+91</span>
+                    <input 
+                      type="tel" 
+                      maxLength={10} 
+                      required 
+                      value={patientMobile}
+                      onChange={(e) => setPatientMobile(e.target.value.replace(/\D/g, ''))}
+                      placeholder="10-digit number" 
+                      className="w-full text-slate-900 font-bold focus:outline-none text-sm" 
+                    />
+                  </div>
+                </div>
+
+                {authOtpSent && (
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Enter 6-Digit OTP</label>
+                    <input 
+                      type="text" 
+                      maxLength={6} 
+                      required
+                      value={patientOtp}
+                      onChange={(e) => setPatientOtp(e.target.value.replace(/\D/g, ''))}
+                      placeholder="123456" 
+                      className="w-full border border-slate-300 rounded-xl px-3 py-2 text-center font-black tracking-widest text-base focus:border-[#032C64] focus:outline-none" 
+                    />
+                  </div>
+                )}
+
+                <button type="submit" className="w-full py-2.5 bg-[#032C64] hover:bg-[#0c3b65] text-white rounded-xl text-xs font-black uppercase tracking-wider shadow-md transition-all">
+                  {authOtpSent ? 'Verify OTP & Enter' : 'Send Login OTP'}
+                </button>
+              </form>
+            ) : (
+              <form onSubmit={handleSignupSubmit} className="space-y-3">
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-700 uppercase mb-0.5">Mobile Number *</label>
+                  <div className="flex items-center border border-slate-300 rounded-xl px-3 py-1.5">
+                    <span className="text-slate-500 font-bold text-xs mr-2">+91</span>
+                    <input 
+                      type="tel" 
+                      maxLength={10} 
+                      required 
+                      value={signupForm.phone}
+                      onChange={(e) => setSignupForm({ ...signupForm, phone: e.target.value.replace(/\D/g, '') })}
+                      placeholder="10-digit mobile" 
+                      className="w-full text-slate-900 font-bold text-xs focus:outline-none" 
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-700 uppercase mb-0.5">Full Name *</label>
+                  <input 
+                    type="text" 
+                    required 
+                    value={signupForm.name}
+                    onChange={(e) => setSignupForm({ ...signupForm, name: e.target.value })}
+                    placeholder="Patient full name" 
+                    className="w-full border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-semibold focus:outline-none" 
+                  />
+                </div>
+
+                <div className="grid grid-cols-3 gap-2">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-700 uppercase mb-0.5">Age</label>
+                    <input 
+                      type="number" 
+                      required 
+                      value={signupForm.age}
+                      onChange={(e) => setSignupForm({ ...signupForm, age: e.target.value })}
+                      placeholder="28" 
+                      className="w-full border border-slate-300 rounded-xl px-2 py-1.5 text-xs font-semibold focus:outline-none" 
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-700 uppercase mb-0.5">City</label>
+                    <input 
+                      type="text" 
+                      required 
+                      value={signupForm.city}
+                      onChange={(e) => setSignupForm({ ...signupForm, city: e.target.value })}
+                      placeholder="Noida" 
+                      className="w-full border border-slate-300 rounded-xl px-2 py-1.5 text-xs font-semibold focus:outline-none" 
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-700 uppercase mb-0.5">Pincode</label>
+                    <input 
+                      type="text" 
+                      maxLength={6} 
+                      required 
+                      value={signupForm.pincode}
+                      onChange={(e) => setSignupForm({ ...signupForm, pincode: e.target.value.replace(/\D/g, '') })}
+                      placeholder="201310" 
+                      className="w-full border border-slate-300 rounded-xl px-2 py-1.5 text-xs font-semibold focus:outline-none" 
+                    />
+                  </div>
+                </div>
+
+                {authOtpSent && (
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-700 uppercase mb-0.5">Enter OTP Code</label>
+                    <input 
+                      type="text" 
+                      maxLength={6} 
+                      value={patientOtp}
+                      onChange={(e) => setPatientOtp(e.target.value.replace(/\D/g, ''))}
+                      placeholder="123456" 
+                      className="w-full border border-slate-300 rounded-xl px-2 py-1.5 text-center font-bold tracking-widest text-xs focus:outline-none" 
+                    />
+                  </div>
+                )}
+
+                <button type="submit" className="w-full py-2.5 bg-[#032C64] hover:bg-[#0c3b65] text-white rounded-xl text-xs font-black uppercase tracking-wider shadow-md transition-all">
+                  {authOtpSent ? 'Verify OTP & Finish' : 'Create Account & Send OTP'}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ================= MODAL: ADD MONEY TO WALLET ================= */}
+      {isAddMoneyOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
+          <div className="bg-white w-full max-w-sm rounded-3xl shadow-2xl p-6 relative border border-slate-100">
+            <button onClick={() => setIsAddMoneyOpen(false)} className="absolute top-4 right-4 p-1.5 rounded-full text-slate-400 hover:text-slate-600">
+              <X className="w-4 h-4" />
+            </button>
+            <h3 className="text-base font-black text-slate-900 mb-1">Add Money to TestBeat Wallet</h3>
+            <p className="text-xs text-slate-500 mb-4">Pay securely across all partner labs with instant discount redemption.</p>
+
+            <div className="flex gap-2 mb-4">
+              {[500, 1000, 2000].map(amt => (
+                <button 
+                  key={amt} 
+                  onClick={() => setRechargeAmt(amt)}
+                  className={`flex-1 py-1.5 border rounded-xl text-xs font-bold transition-all ${rechargeAmt === amt ? 'bg-blue-50 border-[#032C64] text-[#032C64]' : 'border-slate-200 text-slate-700'}`}
+                >
+                  +₹{amt}
+                </button>
+              ))}
+            </div>
+
+            <input 
+              type="number" 
+              value={rechargeAmt}
+              onChange={(e) => setRechargeAmt(parseInt(e.target.value) || 0)}
+              className="w-full border border-slate-300 rounded-xl px-3 py-2 text-center text-xl font-black focus:outline-none mb-4" 
+            />
+
+            <button onClick={handleAddMoneyConfirm} className="w-full py-2.5 bg-[#032C64] hover:bg-[#0c3b65] text-white font-bold text-xs rounded-xl shadow">
+              Proceed with Razorpay / UPI
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ================= MODAL: ADD FAMILY MEMBER ================= */}
+      {isAddFamilyOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
+          <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl p-6 relative border border-slate-100">
+            <button onClick={() => setIsAddFamilyOpen(false)} className="absolute top-4 right-4 p-1.5 rounded-full text-slate-400 hover:text-slate-600">
+              <X className="w-4 h-4" />
+            </button>
+            
+            <div className="flex items-center space-x-1.5 text-[#032C64] mb-1">
+              <Users className="w-4 h-4" />
+              <span className="text-xs font-extrabold uppercase tracking-wider">Family Member Setup</span>
+            </div>
+            <h3 className="text-lg font-black text-slate-900 mb-1">Add Person for Blood Test</h3>
+            <p className="text-xs text-slate-500 mb-4">Select relation and patient details for certified lab reports.</p>
+
+            <form onSubmit={handleAddFamilyConfirm} className="space-y-3.5">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Relation *</label>
+                <select 
+                  value={newFamilyMember.relation}
+                  onChange={(e) => setNewFamilyMember({ ...newFamilyMember, relation: e.target.value as FamilyRelation })}
+                  className="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold focus:outline-none"
+                >
+                  <option value="Self">Self</option>
+                  <option value="Spouse">Spouse</option>
+                  <option value="Children">Children</option>
+                  <option value="Parents">Parents</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Full Name *</label>
+                <input 
+                  type="text" 
+                  required 
+                  value={newFamilyMember.name}
+                  onChange={(e) => setNewFamilyMember({ ...newFamilyMember, name: e.target.value })}
+                  placeholder="Patient Name" 
+                  className="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none" 
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Age *</label>
+                  <input 
+                    type="number" 
+                    required 
+                    value={newFamilyMember.age}
+                    onChange={(e) => setNewFamilyMember({ ...newFamilyMember, age: e.target.value })}
+                    placeholder="e.g. 58" 
+                    className="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none" 
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Gender *</label>
+                  <select 
+                    value={newFamilyMember.gender}
+                    onChange={(e) => setNewFamilyMember({ ...newFamilyMember, gender: e.target.value as GenderType })}
+                    className="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold focus:outline-none"
+                  >
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <button type="submit" className="w-full py-2.5 bg-[#032C64] hover:bg-[#0c3b65] text-white rounded-xl text-xs font-black uppercase tracking-wider shadow transition-all">
+                Save Family Member
+              </button>
+            </form>
           </div>
         </div>
       )}
