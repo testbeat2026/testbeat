@@ -35,9 +35,7 @@ import {
   Plus,
   Trash2,
   ShoppingCart,
-  Loader2,
   AlertCircle,
-  Building2,
   ChevronDown,
   Star,
   MessageCircle,
@@ -106,7 +104,7 @@ const TESTS_CATALOG: TestItem[] = [
   { id: 't9', name: 'Blood Sugar Fasting', code: 'BC023', category: 'diabetes', parametersCount: 1, fastingRequired: true, sampleType: 'Fluoride Plasma', description: '10-12 hours fasting glucose level evaluation.', mrp: 150, offerPrice: 69 },
   { id: 't10', name: 'Blood Sugar Post Prandial (PP)', code: 'BC033', category: 'diabetes', parametersCount: 1, fastingRequired: false, sampleType: 'Fluoride Plasma', description: 'Post-meal glucose level evaluation.', mrp: 150, offerPrice: 69 },
   { id: 't11', name: 'Urine Routine & Microscopic Examination Test', code: 'CP012', category: 'full-body', parametersCount: 22, fastingRequired: false, sampleType: 'Urine', description: 'Evaluates urinary tract infection (UTI), kidney health & protein leak.', mrp: 300, offerPrice: 119 },
-  { id: 't12', name: 'Complete Hemogram (CBC & ESR)', code: 'HM013', category: 'full-body', parametersCount: 29, fastingRequired: false, sampleType: 'EDTA Blood', description: 'CBC with automated ESR sedimentation rate.', mrp: 600, offerPrice: 449 }
+  { id: 't12', name: 'Complete Hemogram (CBC & ESR)', code: 'HM013', category: 'full-body', parametersCount: 29, fastingRequired: false, sampleType: 'EDTA Blood', description: 'Complete Blood Count with automated ESR sedimentation rate.', mrp: 600, offerPrice: 449 }
 ];
 
 const FEATURED_LAB_TESTS: FeaturedTestItem[] = [
@@ -213,12 +211,15 @@ const LAB_CHAINS = [
   }
 ];
 
+type FamilyRelation = 'Self' | 'Spouse' | 'Children' | 'Parents' | 'Other';
+type GenderType = 'Male' | 'Female' | 'Other';
+
 interface FamilyMember {
   id: string;
-  relation: 'Self' | 'Spouse' | 'Children' | 'Parents' | 'Other';
+  relation: FamilyRelation;
   name: string;
   age: number;
-  gender: 'Male' | 'Female' | 'Other';
+  gender: GenderType;
 }
 
 interface OrderConfirmationData {
@@ -299,10 +300,10 @@ export default function TestBeatPortal() {
   ]);
   const [isAddFamilyOpen, setIsAddFamilyOpen] = useState(false);
   const [newFamilyMember, setNewFamilyMember] = useState<{
-    relation: 'Self' | 'Spouse' | 'Children' | 'Parents' | 'Other';
+    relation: FamilyRelation;
     name: string;
     age: string;
-    gender: 'Male' | 'Female' | 'Other';
+    gender: GenderType;
   }>({
     relation: 'Parents',
     name: '',
@@ -562,7 +563,7 @@ export default function TestBeatPortal() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800 antialiased selection:bg-[#039487] selection:text-white">
 
-      {/* 1. TOP PAN-INDIA TRUST & HELPLINE BAR (High Contrast & 23 States Counter) */}
+      {/* 1. TOP PAN-INDIA TRUST & HELPLINE BAR */}
       <div className="bg-[#012C63] text-slate-200 text-xs py-2 px-4 border-b border-[#0c3b65]">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center space-x-4 overflow-x-auto text-[11px] sm:text-xs">
@@ -594,11 +595,10 @@ export default function TestBeatPortal() {
         </div>
       </div>
 
-      {/* 2. MAIN NAVBAR WITH 3-LINE DRAWER TRIGGER (DESKTOP & MOBILE) */}
+      {/* 2. MAIN NAVBAR */}
       <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           
-          {/* Logo & Location Indicator */}
           <div className="flex items-center space-x-4">
             <a href="#" className="flex items-center space-x-3 group">
               <div className="w-11 h-11 rounded-2xl bg-[#012C63] flex items-center justify-center p-1.5 shadow-md shadow-[#012C63]/20 group-hover:scale-105 transition-transform">
@@ -632,7 +632,6 @@ export default function TestBeatPortal() {
             </button>
           </div>
 
-          {/* Genuine Diagnostic Navigation (Partner With Us Removed from header bar) */}
           <nav className="hidden lg:flex items-center space-x-8 text-sm font-bold text-slate-700">
             <a href="#compare" className="flex items-center space-x-1.5 text-[#039487] hover:text-[#012C63] transition-colors">
               <FlaskConical className="w-4 h-4" />
@@ -653,9 +652,7 @@ export default function TestBeatPortal() {
             </a>
           </nav>
 
-          {/* Cart & ONLY USER ICON BUTTON + 3-LINE MENU FOR BOTH DESKTOP & MOBILE */}
           <div className="flex items-center space-x-3.5">
-            
             <button
               onClick={() => setIsCartOpen(true)}
               className="relative p-2 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors"
@@ -669,7 +666,6 @@ export default function TestBeatPortal() {
               )}
             </button>
 
-            {/* User Icon */}
             <div className="relative">
               <button
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
@@ -758,7 +754,6 @@ export default function TestBeatPortal() {
               )}
             </div>
 
-            {/* Desktop & Mobile 3-Line Menu Trigger */}
             <button
               onClick={() => setIsDrawerMenuOpen(true)}
               className="p-2.5 rounded-xl border border-slate-200 text-[#012C63] hover:bg-slate-100 transition-colors shadow-2xs"
@@ -770,7 +765,7 @@ export default function TestBeatPortal() {
         </div>
       </header>
 
-      {/* 3-LINE SIDE-DRAWER MENU (DESKTOP & MOBILE WITH DEDICATED ICONS) */}
+      {/* 3-LINE SIDE-DRAWER MENU */}
       {isDrawerMenuOpen && (
         <div className="fixed inset-0 z-50 overflow-hidden bg-slate-950/70 backdrop-blur-xs flex justify-end">
           <div className="bg-white w-full max-w-sm h-full flex flex-col shadow-2xl animate-in slide-in-from-right duration-300">
@@ -804,7 +799,7 @@ export default function TestBeatPortal() {
                 className="flex items-center space-x-3 p-3 rounded-2xl hover:bg-teal-50 hover:text-[#039487] transition-colors"
               >
                 <Package className="w-5 h-5 text-indigo-600" />
-                <span>Full Body Health Packages</span>
+                <span>Health Packages</span>
               </a>
 
               <a 
@@ -873,13 +868,12 @@ export default function TestBeatPortal() {
         </div>
       )}
 
-      {/* 3. HERO SECTION WITH ANIMATED & DECORATED TESTBEAT AI PRESCRIPTION READER */}
+      {/* 3. HERO SECTION */}
       <section className="bg-gradient-to-b from-teal-50/50 via-white to-slate-50 pt-10 pb-12 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
-            {/* Left Column: Headline & Multi-Search */}
             <div className="lg:col-span-8">
               <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-teal-100 text-[#012C63] text-xs font-bold mb-4 shadow-xs">
                 <Sparkles className="w-4 h-4 text-[#039487]" />
@@ -895,7 +889,6 @@ export default function TestBeatPortal() {
                 Choose tests from Thyrocare, Healthians, Redcliffe & Dr. Lal PathLabs. Enjoy free doorstep sample pickup with 2°C - 8°C cold-chain tracking.
               </p>
 
-              {/* Instant Search Bar with Live Suggestions */}
               <div className="mt-6 relative max-w-xl">
                 <div className="relative flex items-center bg-white border-2 border-slate-200 focus-within:border-[#039487] rounded-2xl p-2 shadow-lg shadow-teal-600/5 transition-all">
                   <Search className="w-5 h-5 text-[#039487] ml-3 flex-shrink-0" />
@@ -914,7 +907,6 @@ export default function TestBeatPortal() {
                   )}
                 </div>
 
-                {/* Instant Search Suggestions Dropdown */}
                 {isSearchFocused && (
                   <div className="absolute left-0 right-0 top-full mt-2 bg-white rounded-2xl border border-slate-200 shadow-2xl p-3 z-30 max-h-72 overflow-y-auto">
                     <div className="flex items-center justify-between pb-2 border-b border-slate-100 text-[11px] font-bold text-slate-400">
@@ -952,7 +944,6 @@ export default function TestBeatPortal() {
                 )}
               </div>
 
-              {/* Quick Trust Strip */}
               <div className="flex flex-wrap items-center gap-4 mt-6 text-xs font-bold text-slate-600">
                 <div className="flex items-center space-x-1.5 bg-white px-3 py-1.5 rounded-xl border border-slate-200">
                   <ShieldCheck className="w-4 h-4 text-[#039487]" />
@@ -969,11 +960,9 @@ export default function TestBeatPortal() {
               </div>
             </div>
 
-            {/* Right Column: DECORATED & ANIMATED TESTBEAT AI PRESCRIPTION READER */}
             <div className="lg:col-span-4">
               <div className="relative rounded-3xl p-6 text-white shadow-2xl border border-teal-500/30 overflow-hidden bg-gradient-to-br from-[#012C63] via-[#09356d] to-[#011c40] group">
                 
-                {/* Animated Scanner Laser Beam Effect */}
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#039487]/15 to-transparent h-20 -translate-y-full group-hover:translate-y-[280px] transition-transform duration-1000 ease-in-out pointer-events-none"></div>
                 <div className="absolute top-0 right-0 -mr-8 -mt-8 w-28 h-28 bg-[#039487]/25 rounded-full blur-2xl pointer-events-none"></div>
 
@@ -1042,7 +1031,6 @@ export default function TestBeatPortal() {
           <p className="text-slate-500 text-xs sm:text-sm mt-1">Select an organ category or individual biomarker to calculate multi-lab prices.</p>
         </div>
 
-        {/* Category Selector Tabs */}
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 mb-8">
           {CLINICAL_CATEGORIES.map(cat => {
             const Icon = cat.icon;
@@ -1064,7 +1052,6 @@ export default function TestBeatPortal() {
           })}
         </div>
 
-        {/* Selectable Test Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {filteredCatalog.map(test => {
             const isSelected = selectedTests.some(t => t.id === test.id);
@@ -1272,7 +1259,6 @@ export default function TestBeatPortal() {
                     ))}
                   </div>
 
-                  {/* Dual Member Slab */}
                   <div className="bg-teal-50/70 border border-teal-200 rounded-2xl p-3 mb-6">
                     <div className="flex items-center justify-between text-xs">
                       <div className="flex items-center space-x-1 font-bold text-[#012C63]">
@@ -1470,7 +1456,7 @@ export default function TestBeatPortal() {
         </div>
       </section>
 
-      {/* 10. FOOTER WITH SERVICEABLE STATES, BLOGS & BRAND DIRECTORY */}
+      {/* 10. FOOTER WITH LOGO AND SITEMAP */}
       <footer className="bg-[#012C63] text-slate-300 text-xs border-t border-[#0c3b65]">
         
         {/* Serviceable Locations Directory */}
@@ -1599,7 +1585,7 @@ export default function TestBeatPortal() {
         </div>
       </footer>
 
-      {/* FLOATING WHATSAPP BUTTON (Right Bottom) */}
+      {/* FLOATING WHATSAPP BUTTON */}
       <a
         href="https://wa.me/918368887011?text=Hello%20TestBeat,%20I%20want%20to%20inquire%20about%20blood%20tests"
         target="_blank"
@@ -2403,7 +2389,7 @@ export default function TestBeatPortal() {
                 <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Relation *</label>
                 <select 
                   value={newFamilyMember.relation}
-                  onChange={(e) => setNewFamilyMember({ ...newFamilyMember, relation: e.target.value as any })}
+                  onChange={(e) => setNewFamilyMember({ ...newFamilyMember, relation: e.target.value as FamilyRelation })}
                   className="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold focus:outline-none"
                 >
                   <option value="Self">Self</option>
@@ -2442,7 +2428,7 @@ export default function TestBeatPortal() {
                   <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Gender *</label>
                   <select 
                     value={newFamilyMember.gender}
-                    onChange={(e) => setNewFamilyMember({ ...newFamilyMember, gender: e.target.value as any })}
+                    onChange={(e) => setNewFamilyMember({ ...newFamilyMember, gender: e.target.value as GenderType })}
                     className="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold focus:outline-none"
                   >
                     <option value="Male">Male</option>
@@ -2460,7 +2446,7 @@ export default function TestBeatPortal() {
         </div>
       )}
 
-      {/* ================= MODAL: TESTBEAT AI PRESCRIPTION SCANNER (NO GEMINI BRANDING) ================= */}
+      {/* ================= MODAL: TESTBEAT AI PRESCRIPTION SCANNER ================= */}
       {isRxOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
           <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl p-6 relative border border-slate-100 max-h-[90vh] overflow-y-auto">
@@ -2495,7 +2481,7 @@ export default function TestBeatPortal() {
 
             {rxScanning ? (
               <div className="border-2 border-dashed border-[#039487] rounded-2xl p-8 text-center bg-teal-50/50 mb-4 animate-pulse">
-                <Loader2 className="w-10 h-10 text-[#039487] mx-auto mb-3 animate-spin" />
+                <div className="w-10 h-10 border-4 border-[#039487] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
                 <p className="text-xs font-black text-[#012C63]">{rxStatusMsg}</p>
                 <p className="text-[10px] text-slate-400 mt-1">Analyzing medical handwriting & biomarker tokens...</p>
               </div>
@@ -2510,7 +2496,6 @@ export default function TestBeatPortal() {
               </div>
             )}
 
-            {/* Results Feedback & Unmatched Tests Notice */}
             {rxDetectedPrescriptions.length > 0 && !rxScanning && (
               <div className="mb-4 space-y-2">
                 <div className="p-3 bg-teal-50 border border-teal-200 rounded-xl text-xs">
@@ -2566,98 +2551,6 @@ export default function TestBeatPortal() {
                 </button>
               )}
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* ================= MODAL: DEDICATED PARTNER WITH US APPLICATION ================= */}
-      {isPartnerModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
-          <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl p-7 relative border border-slate-100 max-h-[90vh] overflow-y-auto">
-            <button onClick={() => setIsPartnerModalOpen(false)} className="absolute top-5 right-5 p-1.5 rounded-full text-slate-400 hover:text-slate-600">
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="flex items-center space-x-2 text-emerald-700 mb-2">
-              <Handshake className="w-5 h-5 text-emerald-600" />
-              <span className="text-xs font-bold uppercase tracking-wider">TestBeat B2B & Affiliate Partner Program</span>
-            </div>
-
-            <h3 className="text-xl font-black text-slate-900 mb-1">Partner With India&apos;s Multi-Lab Network</h3>
-            <p className="text-slate-500 text-xs mb-6">
-              Doctors, Clinics, Pathology Centers & Medical Stores: Monetize diagnostic bookings with transparent tracking and high partner revenue sharing.
-            </p>
-
-            {affiliateSubmitted ? (
-              <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-2xl text-center space-y-2">
-                <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto" />
-                <h4 className="text-base font-black text-slate-900">Application Received!</h4>
-                <p className="text-xs text-slate-600">Our business onboarding executive will contact you within 2 hours.</p>
-              </div>
-            ) : (
-              <form onSubmit={handlePartnerSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Full Name / Practice Name</label>
-                    <input 
-                      type="text" 
-                      required 
-                      value={affiliateData.name}
-                      onChange={(e) => setAffiliateData({ ...affiliateData, name: e.target.value })}
-                      placeholder="Dr. / Clinic Name" 
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#039487]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Mobile Contact</label>
-                    <input 
-                      type="tel" 
-                      maxLength={10} 
-                      required 
-                      value={affiliateData.phone}
-                      onChange={(e) => setAffiliateData({ ...affiliateData, phone: e.target.value.replace(/\D/g, '') })}
-                      placeholder="10-digit number" 
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#039487]"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">City of Operation</label>
-                    <input 
-                      type="text" 
-                      required 
-                      value={affiliateData.city}
-                      onChange={(e) => setAffiliateData({ ...affiliateData, city: e.target.value })}
-                      placeholder="e.g. Greater Noida, Delhi, Lucknow" 
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#039487]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Affiliate Type</label>
-                    <select 
-                      value={affiliateData.category}
-                      onChange={(e) => setAffiliateData({ ...affiliateData, category: e.target.value })}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#039487]"
-                    >
-                      <option>Doctor / Private Clinic</option>
-                      <option>Local Collection Centre / Pathology Lab</option>
-                      <option>Pharmacy / Medical Chemist</option>
-                      <option>Digital Health Influencer / Web Partner</option>
-                    </select>
-                  </div>
-                </div>
-
-                <button 
-                  type="submit" 
-                  className="w-full py-3 bg-[#012C63] hover:bg-[#0c3b65] text-white rounded-xl font-bold text-xs shadow-md transition-all flex items-center justify-center space-x-2"
-                >
-                  <span>Submit Partner Application</span>
-                  <Send className="w-3.5 h-3.5" />
-                </button>
-              </form>
-            )}
           </div>
         </div>
       )}
