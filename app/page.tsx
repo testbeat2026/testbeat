@@ -51,7 +51,7 @@ interface PincodeEntry {
   allPins: string[];
 }
 
-// 111 Districts across 23 States mapped directly from Excel
+// 111 Serviceable Districts across 23 States directly from Excel
 const SERVICEABLE_LOCATIONS_DATA: PincodeEntry[] = [
   { city: 'Gautambuddha Nagar (Greater Noida)', state: 'Uttar Pradesh', pin: '201310', allPins: ['201310', '201306', '201308', '201312', '201314', '201315'] },
   { city: 'Noida', state: 'Uttar Pradesh', pin: '201301', allPins: ['201301', '201303', '201304', '201305', '201307', '201309', '201313'] },
@@ -425,7 +425,7 @@ export default function TestBeatPortal() {
     category: 'Doctor / Clinic'
   });
 
-  // Dynamic filter for Location (City, State, or Pincode - Point 8)
+  // Point 8: Location search by city name OR PIN code
   const filteredLocationResults = useMemo(() => {
     const q = locationSearchInput.toLowerCase().trim();
     if (!q) return SERVICEABLE_LOCATIONS_DATA;
@@ -575,7 +575,6 @@ export default function TestBeatPortal() {
             }
           });
 
-          // Auto-select matched tests into user's selection
           if (matchedCatalogTests.length > 0) {
             setSelectedTests(prev => {
               const merged = [...prev];
@@ -897,6 +896,7 @@ export default function TestBeatPortal() {
               )}
             </div>
 
+            {/* Desktop & Mobile 3-Line Menu Trigger */}
             <button
               onClick={() => setIsDrawerMenuOpen(true)}
               className="p-2.5 rounded-xl border border-slate-200 text-[#012C63] hover:bg-slate-100 transition-colors shadow-2xs"
@@ -1773,7 +1773,7 @@ export default function TestBeatPortal() {
               onChange={handleRxFileChange}
             />
 
-            {/* Scanning progress */}
+            {/* Scanning progress with Universal CSS Spinner */}
             {rxScanning ? (
               <div className="border-2 border-dashed border-[#039487] rounded-2xl p-8 text-center bg-teal-50/50 mb-4 animate-pulse">
                 <div className="w-10 h-10 border-4 border-[#039487] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
