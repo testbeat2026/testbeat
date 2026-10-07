@@ -8,13 +8,13 @@ export async function POST(req: Request) {
     const imageBase64: string = body?.imageBase64 || '';
 
     if (!imageBase64) {
-      return NextResponse.json({ error: 'Prescription image is required' }, status: 400);
+      return NextResponse.json({ error: 'Prescription image is required' }, { status: 400 });
     }
 
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       return NextResponse.json(
-        { error: 'API Key missing in Vercel Environment Variables. Please set GEMINI_API_KEY in Vercel settings.' },
+        { error: 'API Key missing in Vercel. Please add GEMINI_API_KEY in Vercel Environment Variables.' },
         { status: 500 }
       );
     }
@@ -28,10 +28,7 @@ export async function POST(req: Request) {
 
     const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, '').trim();
 
-    const promptText = `You are an expert Indian clinical pathologist. Carefully examine this handwritten doctor prescription slip.
-Extract ALL prescribed diagnostic pathology tests, blood tests, and lab investigations (e.g., CBC, Thyroid/TSH, HbA1c, Fasting Blood Sugar, LFT, KFT, Creatinine, Lipid Profile, Vitamin D, Vitamin B12, Urine Routine, Calcium, Iron, ESR).
-Return the result strictly as a valid JSON array of test names as strings, for example: ["Complete Blood Count (CBC) Test", "Thyroid Profile Total (T3, T4, TSH)", "HBA1C Test"].
-If no diagnostic tests are written, return []. Do not include markdown formatting or backticks. Return ONLY the raw JSON array.`;
+    const promptText = 'You are an expert Indian clinical pathologist. Read this handwritten doctor prescription slip. Extract ALL prescribed diagnostic pathology tests, blood tests, and lab investigations (e.g. CBC, Thyroid/TSH, HbA1c, Fasting Blood Sugar, LFT, KFT, Creatinine, Lipid Profile, Vitamin D, Vitamin B12, Urine Routine, Calcium, Iron, ESR). Return strictly a valid raw JSON array of strings, for example: ["Complete Blood Count (CBC) Test", "Thyroid Profile Total (T3, T4, TSH)", "HBA1C Test"]. If no diagnostic tests are written, return []. Do not include markdown formatting or backticks. Return ONLY the raw JSON array.';
 
     const res = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
@@ -64,7 +61,7 @@ If no diagnostic tests are written, return []. Do not include markdown formattin
 
     if (data?.error) {
       return NextResponse.json(
-        { error: data.error.message || 'AI Vision API error. Please check API Key in Vercel.' },
+        { error: data.error.message || 'Vision AI processing error' },
         { status: 500 }
       );
     }
