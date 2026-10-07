@@ -51,7 +51,7 @@ interface PincodeEntry {
   allPins: string[];
 }
 
-// Complete 111 Districts across 23 States mapped directly from Excel
+// 111 Districts across 23 States mapped directly from Excel
 const SERVICEABLE_LOCATIONS_DATA: PincodeEntry[] = [
   { city: 'Gautambuddha Nagar (Greater Noida)', state: 'Uttar Pradesh', pin: '201310', allPins: ['201310', '201306', '201308', '201312', '201314', '201315'] },
   { city: 'Noida', state: 'Uttar Pradesh', pin: '201301', allPins: ['201301', '201303', '201304', '201305', '201307', '201309', '201313'] },
@@ -501,7 +501,6 @@ export default function TestBeatPortal() {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
-        // Attempt reverse geocoding via public endpoint with fallback
         fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`)
           .then(res => res.json())
           .then(data => {
@@ -1548,7 +1547,7 @@ export default function TestBeatPortal() {
               <div>
                 <h3 className="text-base font-black text-white flex items-center">
                   <MapPin className="w-4 h-4 text-[#F44236] mr-1.5" />
-                  Serviceable States & Cities Across India ({totalCitiesCount}+ Locations & 2,100+ Pincodes)
+                  Serviceable States & Cities Across India (23 States • 2,100+ Pincodes)
                 </h3>
                 <p className="text-[11px] text-slate-400 mt-0.5">
                   Phlebotomist doorstep sample pickup network with cold-chain gel bags across northern and central hubs.
@@ -1679,7 +1678,35 @@ export default function TestBeatPortal() {
         </span>
       </a>
 
-      {/* ================= MODAL: BLOG FULL ARTICLE VIEW (Point 6) ================= */}
+      {/* Point 7: COMPACT FLOATING CART / COMPARE BADGE (Clean 1-line strip replacing big blue box) */}
+      {selectedTests.length > 0 && (
+        <div className="fixed bottom-6 left-6 z-40 bg-[#012C63] text-white px-4 py-2.5 rounded-2xl shadow-2xl border border-teal-500/40 flex items-center space-x-3.5 animate-in slide-in-from-bottom duration-300">
+          <div className="flex items-center space-x-2">
+            <div className="w-6 h-6 bg-[#039487] rounded-full flex items-center justify-center text-xs font-black">
+              {selectedTests.length}
+            </div>
+            <span className="text-xs font-bold">{selectedTests.length} Test(s) Selected</span>
+          </div>
+          <button
+            onClick={() => {
+              setShowCompareTable(true);
+              const compElem = document.getElementById('compare');
+              if (compElem) compElem.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="px-3 py-1 bg-[#039487] hover:bg-teal-600 text-white rounded-xl text-xs font-black"
+          >
+            Compare Labs
+          </button>
+          <button 
+            onClick={() => setIsCartOpen(true)}
+            className="px-3 py-1 bg-white/10 hover:bg-white/20 text-teal-300 rounded-xl text-xs font-bold"
+          >
+            Cart
+          </button>
+        </div>
+      )}
+
+      {/* ================= MODAL: BLOG FULL ARTICLE MODAL (Point 6) ================= */}
       {activeBlogModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
           <div className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl p-6 sm:p-8 relative border border-slate-100 max-h-[85vh] overflow-y-auto">
@@ -1701,7 +1728,7 @@ export default function TestBeatPortal() {
               ))}
             </div>
             <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
-              <span className="text-xs text-slate-400">Authored by TestBeat Clinical Pathologists</span>
+              <span className="text-xs text-slate-400">Published by TestBeat Clinical Pathologists</span>
               <button 
                 onClick={() => setActiveBlogModal(null)}
                 className="px-4 py-2 bg-[#012C63] text-white rounded-xl text-xs font-bold"
@@ -1887,7 +1914,7 @@ export default function TestBeatPortal() {
               <span>{isDetectingLocation ? 'Detecting Live GPS Pincode...' : 'Use My Current Location (GPS Auto-Detect)'}</span>
             </button>
 
-            {/* Point 8: Search by City Name OR Pincode (e.g. typing "12" matches Faridabad, Gurugram, Rohtak) */}
+            {/* Point 8: Search by City Name OR Pincode */}
             <div className="relative mb-4">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
               <input
@@ -2018,714 +2045,6 @@ export default function TestBeatPortal() {
                 </button>
               </form>
             )}
-          </div>
-        </div>
-      )}
-
-      {/* ================= FUNCTIONAL SHOPPING CART SLIDE-OVER DRAWER ================= */}
-      {isCartOpen && (
-        <div className="fixed inset-0 z-50 overflow-hidden bg-slate-950/70 backdrop-blur-xs flex justify-end">
-          <div className="bg-white w-full max-w-md h-full flex flex-col shadow-2xl animate-in slide-in-from-right duration-300">
-            
-            <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">
-              <div className="flex items-center space-x-2">
-                <ShoppingCart className="w-5 h-5 text-[#039487]" />
-                <h3 className="text-lg font-black text-slate-900">Diagnostic Cart</h3>
-                <span className="bg-teal-100 text-[#012C63] text-xs font-black px-2 py-0.5 rounded-full">
-                  {selectedTests.length} Items
-                </span>
-              </div>
-              <button 
-                onClick={() => setIsCartOpen(false)}
-                className="p-1.5 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-200"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="flex-1 overflow-y-auto p-6 space-y-3">
-              {selectedTests.length === 0 ? (
-                <div className="text-center py-16">
-                  <ShoppingCart className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                  <p className="text-sm font-bold text-slate-700">Your cart is empty</p>
-                  <p className="text-xs text-slate-400 mt-1">Select blood tests or scan prescription to begin.</p>
-                </div>
-              ) : (
-                selectedTests.map(item => (
-                  <div key={item.id} className="p-3.5 border border-slate-200 rounded-2xl flex items-center justify-between bg-white shadow-2xs">
-                    <div>
-                      <span className="text-[9px] font-black uppercase text-teal-800 bg-teal-50 px-1.5 py-0.5 rounded">
-                        {item.category}
-                      </span>
-                      <h4 className="font-bold text-slate-900 text-xs mt-1 leading-snug">{item.name}</h4>
-                      <p className="text-[11px] text-slate-400">{item.parametersCount} Parameters • Code: {item.code}</p>
-                    </div>
-                    <div className="text-right ml-3 flex-shrink-0">
-                      <p className="text-sm font-black text-[#012C63]">₹{item.offerPrice}</p>
-                      <button 
-                        onClick={() => toggleTest(item)}
-                        className="text-[11px] text-rose-500 hover:underline font-semibold"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-
-            {selectedTests.length > 0 && (
-              <div className="p-6 border-t border-slate-200 bg-slate-50 space-y-3">
-                {walletBalance > 0 && (
-                  <div className="p-3 bg-teal-50 border border-teal-200 rounded-xl flex items-center justify-between text-xs">
-                    <div className="flex items-center space-x-2">
-                      <Wallet className="w-4 h-4 text-[#039487]" />
-                      <div>
-                        <p className="font-bold text-slate-800">Use TestBeat Wallet</p>
-                        <p className="text-[10px] text-teal-700">Balance: ₹{walletBalance}</p>
-                      </div>
-                    </div>
-                    <input 
-                      type="checkbox" 
-                      checked={useWalletBalance} 
-                      onChange={(e) => setUseWalletBalance(e.target.checked)}
-                      className="w-4 h-4 accent-[#039487] cursor-pointer" 
-                    />
-                  </div>
-                )}
-
-                <div className="space-y-1.5 text-xs text-slate-600">
-                  <div className="flex justify-between">
-                    <span>Tests Subtotal:</span>
-                    <span className="font-bold text-slate-900">₹{cartSubtotal}</span>
-                  </div>
-                  <div className="flex justify-between text-emerald-600 font-medium">
-                    <span>Total Discount Saved:</span>
-                    <span>-₹{cartDiscount}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Phlebotomist Doorstep Collection:</span>
-                    <span className="font-bold text-emerald-600">FREE ₹0</span>
-                  </div>
-                  {useWalletBalance && walletBalance > 0 && (
-                    <div className="flex justify-between text-teal-700 font-bold">
-                      <span>Wallet Deduction Applied:</span>
-                      <span>-₹{Math.min(walletBalance, cartSubtotal)}</span>
-                    </div>
-                  )}
-                  <div className="flex justify-between text-base font-black text-slate-900 pt-2 border-t border-slate-200">
-                    <span>Final Amount Payable:</span>
-                    <span className="text-[#012C63]">₹{finalPayable}</span>
-                  </div>
-                </div>
-
-                <button
-                  onClick={handleProceedCheckout}
-                  className="w-full py-3.5 bg-[#039487] hover:bg-[#027d72] text-white rounded-xl text-xs font-black uppercase tracking-wider shadow-lg shadow-teal-900/30 transition-all flex items-center justify-center space-x-2"
-                >
-                  <span>Proceed to Home Collection Booking</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
-            )}
-
-          </div>
-        </div>
-      )}
-
-      {/* ================= MODAL: ORDER CONFIRMED MODAL ================= */}
-      {confirmedOrder && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl p-7 relative border border-slate-100 animate-in zoom-in-95 duration-200 text-center">
-            
-            <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 ring-8 ring-emerald-50">
-              <Check className="w-8 h-8 text-emerald-600 stroke-[3]" />
-            </div>
-
-            <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full inline-block mb-2">
-              Appointment Scheduled
-            </span>
-
-            <h3 className="text-2xl font-black text-slate-900">Order Placed Successfully!</h3>
-            <p className="text-slate-500 text-xs mt-1 mb-6">
-              Your certified home sample collection appointment is confirmed.
-            </p>
-
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-left text-xs space-y-2.5 mb-6">
-              <div className="flex justify-between pb-2 border-b border-slate-200">
-                <span className="text-slate-500 font-semibold">Booking Reference ID:</span>
-                <span className="font-black text-[#012C63]">{confirmedOrder.bookingId}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500 font-semibold">Patient Name:</span>
-                <span className="font-bold text-slate-900">{confirmedOrder.patientName}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500 font-semibold">Scheduled Slot:</span>
-                <span className="font-bold text-emerald-700">{confirmedOrder.scheduledTime}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500 font-semibold">Biomarkers Included:</span>
-                <span className="font-bold text-slate-900">{confirmedOrder.testCount} Tests Selected</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500 font-semibold">Home Pickup Address:</span>
-                <span className="font-semibold text-slate-800 truncate max-w-[200px]" title={confirmedOrder.address}>{confirmedOrder.address}</span>
-              </div>
-              <div className="flex justify-between pt-2 border-t border-slate-200 font-black text-sm">
-                <span className="text-slate-900">Total Amount Paid:</span>
-                <span className="text-[#039487]">₹{confirmedOrder.amountPaid}</span>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <button
-                onClick={() => {
-                  setConfirmedOrder(null);
-                  setActiveAccountView('orders');
-                }}
-                className="w-full py-3 bg-[#012C63] hover:bg-[#0c3b65] text-white rounded-xl text-xs font-black uppercase tracking-wider shadow-md transition-all flex items-center justify-center space-x-2"
-              >
-                <span>Track in My Orders</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-
-              <button
-                onClick={() => {
-                  setConfirmedOrder(null);
-                  setSelectedTests([]);
-                }}
-                className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all"
-              >
-                Done / Back to Home
-              </button>
-            </div>
-
-          </div>
-        </div>
-      )}
-
-      {/* ================= MODAL: CUSTOMER ACCOUNT PANELS ================= */}
-      {activeAccountView && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
-          <div className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl p-6 sm:p-8 relative border border-slate-100 max-h-[90vh] overflow-y-auto">
-            <button 
-              onClick={() => setActiveAccountView(null)}
-              className="absolute top-5 right-5 p-1.5 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="flex items-center space-x-2 border-b border-slate-100 pb-4 overflow-x-auto text-xs font-black mb-6">
-              <button 
-                onClick={() => setActiveAccountView('profile')} 
-                className={`px-3 py-2 rounded-xl transition-all ${activeAccountView === 'profile' ? 'bg-[#012C63] text-white shadow' : 'border border-slate-200 text-slate-600'}`}
-              >
-                My Profile
-              </button>
-              <button 
-                onClick={() => setActiveAccountView('orders')} 
-                className={`px-3 py-2 rounded-xl transition-all ${activeAccountView === 'orders' ? 'bg-[#012C63] text-white shadow' : 'border border-slate-200 text-slate-600'}`}
-              >
-                My Orders
-              </button>
-              <button 
-                onClick={() => setActiveAccountView('subscriptions')} 
-                className={`px-3 py-2 rounded-xl transition-all ${activeAccountView === 'subscriptions' ? 'bg-[#012C63] text-white shadow' : 'border border-slate-200 text-slate-600'}`}
-              >
-                My Subscriptions
-              </button>
-              <button 
-                onClick={() => setActiveAccountView('wallet')} 
-                className={`px-3 py-2 rounded-xl transition-all ${activeAccountView === 'wallet' ? 'bg-[#012C63] text-white shadow' : 'border border-slate-200 text-slate-600'}`}
-              >
-                Wallet (₹{walletBalance})
-              </button>
-              <button 
-                onClick={() => setActiveAccountView('family')} 
-                className={`px-3 py-2 rounded-xl transition-all ${activeAccountView === 'family' ? 'bg-[#012C63] text-white shadow' : 'border border-slate-200 text-slate-600'}`}
-              >
-                Family Members
-              </button>
-            </div>
-
-            {/* PANEL: MY PROFILE */}
-            {activeAccountView === 'profile' && (
-              <div>
-                <h3 className="text-xl font-black text-slate-900 mb-1">Customer Profile & Address</h3>
-                <p className="text-xs text-slate-500 mb-6">Manage your primary collection address for phlebotomist home visits.</p>
-                
-                <form onSubmit={(e) => { e.preventDefault(); alert('Profile details updated successfully!'); setActiveAccountView(null); }} className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Full Name</label>
-                      <input 
-                        type="text" 
-                        value={profileData.name} 
-                        onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
-                        className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:border-[#039487] focus:outline-none" 
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Mobile Number</label>
-                      <input 
-                        type="tel" 
-                        value={profileData.phone} 
-                        readOnly 
-                        className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold bg-slate-50 focus:outline-none text-slate-500" 
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Age</label>
-                      <input 
-                        type="number" 
-                        value={profileData.age} 
-                        onChange={(e) => setProfileData({ ...profileData, age: e.target.value })}
-                        className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:border-[#039487] focus:outline-none" 
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">City</label>
-                      <input 
-                        type="text" 
-                        value={profileData.city} 
-                        onChange={(e) => setProfileData({ ...profileData, city: e.target.value })}
-                        className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:border-[#039487] focus:outline-none" 
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Pincode</label>
-                      <input 
-                        type="text" 
-                        value={profileData.pincode} 
-                        onChange={(e) => setProfileData({ ...profileData, pincode: e.target.value })}
-                        className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:border-[#039487] focus:outline-none" 
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Detailed Home Address</label>
-                    <textarea 
-                      rows={2} 
-                      value={profileData.address}
-                      onChange={(e) => setProfileData({ ...profileData, address: e.target.value })}
-                      className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:border-[#039487] focus:outline-none" 
-                    />
-                  </div>
-
-                  <button type="submit" className="px-6 py-2.5 bg-[#012C63] hover:bg-[#0c3b65] text-white text-xs font-bold rounded-xl shadow transition-all">
-                    Save Changes
-                  </button>
-                </form>
-              </div>
-            )}
-
-            {/* PANEL: MY ORDERS */}
-            {activeAccountView === 'orders' && (
-              <div>
-                <h3 className="text-xl font-black text-slate-900 mb-1">Live Bookings & Report Vault</h3>
-                <p className="text-xs text-slate-500 mb-6">Real-time status of blood sample collection, lab processing, and report download.</p>
-
-                <div className="border border-slate-200 rounded-2xl p-5 bg-slate-50/50">
-                  <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-200">
-                    <div>
-                      <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">
-                        Phlebotomist Assigned
-                      </span>
-                      <h4 className="font-extrabold text-slate-900 text-sm mt-1">Full Body Comprehensive (Vital Checkup)</h4>
-                      <p className="text-[11px] text-slate-500">Booking ID: #TB-98210 • Partner Lab: Thyrocare Technologies</p>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-base font-black text-slate-900">₹1,199</span>
-                      <p className="text-[11px] text-emerald-600 font-bold">Paid via Wallet</p>
-                    </div>
-                  </div>
-                  <div className="pt-3 flex flex-wrap items-center justify-between text-xs gap-3">
-                    <div className="flex items-center space-x-2 text-slate-600">
-                      <User className="w-4 h-4 text-[#039487]" />
-                      <span>Patient: <b>Self ({profileData.name})</b></span>
-                    </div>
-                    <div className="flex items-center space-x-2 text-slate-600">
-                      <Clock className="w-4 h-4 text-[#012C63]" />
-                      <span>Scheduled: <b>Tomorrow, 07:30 AM</b></span>
-                    </div>
-                    <button onClick={() => alert('Sample tracking: Phlebotomist en route at 7:00 AM')} className="px-3.5 py-1.5 bg-[#039487] text-white rounded-lg text-xs font-bold">
-                      Live Tracking
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* PANEL: MY SUBSCRIPTIONS */}
-            {activeAccountView === 'subscriptions' && (
-              <div>
-                <h3 className="text-xl font-black text-slate-900 mb-1">Preventive Health Subscriptions</h3>
-                <p className="text-xs text-slate-500 mb-6">Periodic quarterly diabetes and thyroid monitoring plans.</p>
-
-                <div className="border border-slate-200 rounded-2xl p-5 bg-white">
-                  <span className="text-[10px] font-black uppercase text-[#039487] bg-teal-50 px-2 py-0.5 rounded">Active Plan</span>
-                  <h4 className="font-bold text-slate-900 text-sm mt-1">Quarterly Diabetic Care Shield (HbA1c + Fasting)</h4>
-                  <p className="text-xs text-slate-500 mt-1">Next test due in: 45 Days • Automatic sample collection</p>
-                  <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                    <span className="font-extrabold text-[#012C63]">₹499 / Quarter</span>
-                    <button className="text-rose-600 font-bold hover:underline">Manage Plan</button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* PANEL: WALLET BALANCE */}
-            {activeAccountView === 'wallet' && (
-              <div>
-                <h3 className="text-xl font-black text-slate-900 mb-1">TestBeat Health Wallet</h3>
-                <p className="text-xs text-slate-500 mb-6">Manage cashback and wallet recharge for seamless diagnostic checkouts.</p>
-
-                <div className="bg-gradient-to-tr from-[#012C63] to-[#0c3b65] text-white rounded-2xl p-6 shadow-md mb-6 flex items-center justify-between">
-                  <div>
-                    <span className="text-xs font-bold text-teal-300">Available Balance</span>
-                    <h2 className="text-4xl font-black mt-1 text-white">₹{walletBalance}</h2>
-                  </div>
-                  <button 
-                    onClick={() => setIsAddMoneyOpen(true)}
-                    className="px-5 py-2.5 bg-[#039487] hover:bg-teal-600 text-white font-bold text-xs rounded-xl transition-all shadow"
-                  >
-                    + Add Balance
-                  </button>
-                </div>
-
-                <div className="space-y-3 text-xs">
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
-                    <div className="flex items-center space-x-2.5">
-                      <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">+</div>
-                      <div>
-                        <p className="font-bold text-slate-900">Sign Up Welcome Health Bonus</p>
-                        <p className="text-[10px] text-slate-400">Promotional Credit • Active</p>
-                      </div>
-                    </div>
-                    <span className="font-black text-emerald-600 text-sm">+₹250</span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* PANEL: FAMILY MEMBERS */}
-            {activeAccountView === 'family' && (
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <h3 className="text-xl font-black text-slate-900">Family Members Diagnostic Profiles</h3>
-                    <p className="text-xs text-slate-500">Book blood tests specifically for yourself or family members.</p>
-                  </div>
-                  <button 
-                    onClick={() => setIsAddFamilyOpen(true)}
-                    className="px-3.5 py-2 bg-[#039487] hover:bg-teal-600 text-white text-xs font-bold rounded-xl shadow flex items-center space-x-1.5 transition-all"
-                  >
-                    <Plus className="w-4 h-4" />
-                    <span>+ Add Member</span>
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {familyMembers.map(member => (
-                    <div key={member.id} className="border border-slate-200 rounded-2xl p-4 bg-white shadow-xs flex flex-col justify-between">
-                      <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-[10px] font-black uppercase text-teal-800 bg-teal-100 px-2 py-0.5 rounded">
-                            {member.relation}
-                          </span>
-                          <span className="text-xs font-bold text-slate-400">{member.gender}</span>
-                        </div>
-                        <h4 className="font-bold text-slate-900 text-sm">{member.name}</h4>
-                        <p className="text-xs text-slate-500">Age: {member.age} Years</p>
-                      </div>
-
-                      <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                        <button onClick={() => alert(`Selected ${member.name} for upcoming booking`)} className="text-[#039487] font-bold">
-                          Book Test For {member.relation}
-                        </button>
-                        {member.relation !== 'Self' && (
-                          <button onClick={() => setFamilyMembers(prev => prev.filter(m => m.id !== member.id))} className="text-rose-500 hover:text-rose-700">
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-          </div>
-        </div>
-      )}
-
-      {/* ================= MODAL: CUSTOMER AUTHENTICATION ================= */}
-      {isAuthOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
-          <div className="bg-white w-full max-w-sm rounded-3xl shadow-2xl p-6 relative border border-slate-100">
-            <button 
-              onClick={() => { setIsAuthOpen(false); setAuthOtpSent(false); }}
-              className="absolute top-4 right-4 p-1.5 rounded-full text-slate-400 hover:text-slate-600"
-            >
-              <X className="w-4 h-4" />
-            </button>
-
-            <div className="flex bg-slate-100 p-1 rounded-xl mb-4">
-              <button 
-                onClick={() => { setAuthMode('LOGIN'); setAuthOtpSent(false); }}
-                className={`flex-1 py-1.5 text-xs font-black rounded-lg transition-all ${authMode === 'LOGIN' ? 'bg-[#012C63] text-white' : 'text-slate-600'}`}
-              >
-                OTP Login
-              </button>
-              <button 
-                onClick={() => { setAuthMode('SIGNUP'); setAuthOtpSent(false); }}
-                className={`flex-1 py-1.5 text-xs font-black rounded-lg transition-all ${authMode === 'SIGNUP' ? 'bg-[#012C63] text-white' : 'text-slate-600'}`}
-              >
-                New Sign Up
-              </button>
-            </div>
-
-            {authMode === 'LOGIN' ? (
-              <form onSubmit={handleLoginSubmit} className="space-y-3.5">
-                <div>
-                  <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Mobile Number</label>
-                  <div className="flex items-center border border-slate-300 rounded-xl px-3 py-2 focus-within:border-[#039487]">
-                    <span className="text-slate-500 font-bold text-xs mr-2">+91</span>
-                    <input 
-                      type="tel" 
-                      maxLength={10} 
-                      required 
-                      value={patientMobile}
-                      onChange={(e) => setPatientMobile(e.target.value.replace(/\D/g, ''))}
-                      placeholder="10-digit number" 
-                      className="w-full text-slate-900 font-bold focus:outline-none text-sm" 
-                    />
-                  </div>
-                </div>
-
-                {authOtpSent && (
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Enter 6-Digit OTP</label>
-                    <input 
-                      type="text" 
-                      maxLength={6} 
-                      required
-                      value={patientOtp}
-                      onChange={(e) => setPatientOtp(e.target.value.replace(/\D/g, ''))}
-                      placeholder="123456" 
-                      className="w-full border border-slate-300 rounded-xl px-3 py-2 text-center font-black tracking-widest text-base focus:border-[#039487] focus:outline-none" 
-                    />
-                  </div>
-                )}
-
-                <button type="submit" className="w-full py-2.5 bg-[#012C63] hover:bg-[#0c3b65] text-white rounded-xl text-xs font-black uppercase tracking-wider shadow-md transition-all">
-                  {authOtpSent ? 'Verify OTP & Enter' : 'Send Login OTP'}
-                </button>
-              </form>
-            ) : (
-              <form onSubmit={handleSignupSubmit} className="space-y-3">
-                <div>
-                  <label className="block text-[11px] font-bold text-slate-700 uppercase mb-0.5">Mobile Number *</label>
-                  <div className="flex items-center border border-slate-300 rounded-xl px-3 py-1.5">
-                    <span className="text-slate-500 font-bold text-xs mr-2">+91</span>
-                    <input 
-                      type="tel" 
-                      maxLength={10} 
-                      required 
-                      value={signupForm.phone}
-                      onChange={(e) => setSignupForm({ ...signupForm, phone: e.target.value.replace(/\D/g, '') })}
-                      placeholder="10-digit mobile" 
-                      className="w-full text-slate-900 font-bold text-xs focus:outline-none" 
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-bold text-slate-700 uppercase mb-0.5">Full Name *</label>
-                  <input 
-                    type="text" 
-                    required 
-                    value={signupForm.name}
-                    onChange={(e) => setSignupForm({ ...signupForm, name: e.target.value })}
-                    placeholder="Patient full name" 
-                    className="w-full border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-semibold focus:outline-none" 
-                  />
-                </div>
-
-                <div className="grid grid-cols-3 gap-2">
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-700 uppercase mb-0.5">Age</label>
-                    <input 
-                      type="number" 
-                      required 
-                      value={signupForm.age}
-                      onChange={(e) => setSignupForm({ ...signupForm, age: e.target.value })}
-                      placeholder="28" 
-                      className="w-full border border-slate-300 rounded-xl px-2 py-1.5 text-xs font-semibold focus:outline-none" 
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-700 uppercase mb-0.5">City</label>
-                    <input 
-                      type="text" 
-                      required 
-                      value={signupForm.city}
-                      onChange={(e) => setSignupForm({ ...signupForm, city: e.target.value })}
-                      placeholder="Noida" 
-                      className="w-full border border-slate-300 rounded-xl px-2 py-1.5 text-xs font-semibold focus:outline-none" 
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-700 uppercase mb-0.5">Pincode</label>
-                    <input 
-                      type="text" 
-                      maxLength={6} 
-                      required 
-                      value={signupForm.pincode}
-                      onChange={(e) => setSignupForm({ ...signupForm, pincode: e.target.value.replace(/\D/g, '') })}
-                      placeholder="201310" 
-                      className="w-full border border-slate-300 rounded-xl px-2 py-1.5 text-xs font-semibold focus:outline-none" 
-                    />
-                  </div>
-                </div>
-
-                {authOtpSent && (
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-700 uppercase mb-0.5">Enter OTP Code</label>
-                    <input 
-                      type="text" 
-                      maxLength={6} 
-                      value={patientOtp}
-                      onChange={(e) => setPatientOtp(e.target.value.replace(/\D/g, ''))}
-                      placeholder="123456" 
-                      className="w-full border border-slate-300 rounded-xl px-2 py-1.5 text-center font-bold tracking-widest text-xs focus:outline-none" 
-                    />
-                  </div>
-                )}
-
-                <button type="submit" className="w-full py-2.5 bg-[#039487] hover:bg-teal-600 text-white rounded-xl text-xs font-black uppercase tracking-wider shadow-md transition-all">
-                  {authOtpSent ? 'Verify OTP & Finish' : 'Create Account & Send OTP'}
-                </button>
-              </form>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* ================= MODAL: ADD MONEY TO WALLET ================= */}
-      {isAddMoneyOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
-          <div className="bg-white w-full max-w-sm rounded-3xl shadow-2xl p-6 relative border border-slate-100">
-            <button onClick={() => setIsAddMoneyOpen(false)} className="absolute top-4 right-4 p-1.5 rounded-full text-slate-400 hover:text-slate-600">
-              <X className="w-4 h-4" />
-            </button>
-            <h3 className="text-base font-black text-slate-900 mb-1">Add Money to TestBeat Wallet</h3>
-            <p className="text-xs text-slate-500 mb-4">Pay securely across all partner labs with instant discount redemption.</p>
-
-            <div className="flex gap-2 mb-4">
-              {[500, 1000, 2000].map(amt => (
-                <button 
-                  key={amt} 
-                  onClick={() => setRechargeAmt(amt)}
-                  className={`flex-1 py-1.5 border rounded-xl text-xs font-bold transition-all ${rechargeAmt === amt ? 'bg-teal-50 border-[#039487] text-[#039487]' : 'border-slate-200 text-slate-700'}`}
-                >
-                  +₹{amt}
-                </button>
-              ))}
-            </div>
-
-            <input 
-              type="number" 
-              value={rechargeAmt}
-              onChange={(e) => setRechargeAmt(parseInt(e.target.value) || 0)}
-              className="w-full border border-slate-300 rounded-xl px-3 py-2 text-center text-xl font-black focus:outline-none mb-4" 
-            />
-
-            <button onClick={handleAddMoneyConfirm} className="w-full py-2.5 bg-[#039487] hover:bg-teal-600 text-white font-bold text-xs rounded-xl shadow">
-              Proceed with Razorpay / UPI
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* ================= MODAL: ADD FAMILY MEMBER ================= */}
-      {isAddFamilyOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
-          <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl p-6 relative border border-slate-100">
-            <button onClick={() => setIsAddFamilyOpen(false)} className="absolute top-4 right-4 p-1.5 rounded-full text-slate-400 hover:text-slate-600">
-              <X className="w-4 h-4" />
-            </button>
-            
-            <div className="flex items-center space-x-1.5 text-[#039487] mb-1">
-              <Users className="w-4 h-4" />
-              <span className="text-xs font-extrabold uppercase tracking-wider">Family Member Setup</span>
-            </div>
-            <h3 className="text-lg font-black text-slate-900 mb-1">Add Person for Blood Test</h3>
-            <p className="text-xs text-slate-500 mb-4">Select relation and patient details for certified lab reports.</p>
-
-            <form onSubmit={handleAddFamilyConfirm} className="space-y-3.5">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Relation *</label>
-                <select 
-                  value={newFamilyMember.relation}
-                  onChange={(e) => setNewFamilyMember({ ...newFamilyMember, relation: e.target.value as FamilyRelation })}
-                  className="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold focus:outline-none"
-                >
-                  <option value="Self">Self</option>
-                  <option value="Spouse">Spouse</option>
-                  <option value="Children">Children</option>
-                  <option value="Parents">Parents</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Full Name *</label>
-                <input 
-                  type="text" 
-                  required 
-                  value={newFamilyMember.name}
-                  onChange={(e) => setNewFamilyMember({ ...newFamilyMember, name: e.target.value })}
-                  placeholder="Patient Name" 
-                  className="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none" 
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Age *</label>
-                  <input 
-                    type="number" 
-                    required 
-                    value={newFamilyMember.age}
-                    onChange={(e) => setNewFamilyMember({ ...newFamilyMember, age: e.target.value })}
-                    placeholder="e.g. 58" 
-                    className="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none" 
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Gender *</label>
-                  <select 
-                    value={newFamilyMember.gender}
-                    onChange={(e) => setNewFamilyMember({ ...newFamilyMember, gender: e.target.value as GenderType })}
-                    className="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold focus:outline-none"
-                  >
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </div>
-              </div>
-
-              <button type="submit" className="w-full py-2.5 bg-[#012C63] hover:bg-[#0c3b65] text-white rounded-xl text-xs font-black uppercase tracking-wider shadow transition-all">
-                Save Family Member
-              </button>
-            </form>
           </div>
         </div>
       )}
