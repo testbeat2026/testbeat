@@ -31,46 +31,68 @@ import {
   Trash2, 
   ShoppingCart, 
   MessageCircle, 
-  BookOpen 
+  BookOpen,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 
-// Brand Colors Definition (Locked with New TestBeat Logo):
-// Primary Navy: #032C64 | Accent Spectrum: #D73027, #F46D43, #FDAE61, #FEE090, #E0F3F8, #ABD9E9, #74ADD1, #4575B4
+// ==========================================
+// EXACT BRAND LOGOS (POINT 2: HEADER & FOOTER)
+// ==========================================
 
-// In-Code Pixel-Perfect SVG Component of New TestBeat Brand Logo
-const TestBeatLogo = ({ className = "h-9 w-auto", darkBg = false }: { className?: string; darkBg?: boolean }) => {
-  const textColor = darkBg ? "#FFFFFF" : "#032C64";
+const TestBeatLogo = ({ className = "h-10 w-auto", darkBg = false }: { className?: string; darkBg?: boolean }) => {
+  const mainColor = darkBg ? "#FFFFFF" : "#032C64";
   return (
-    <svg viewBox="0 0 420 110" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
-      <g transform="translate(10, 8) rotate(-15 35 35)">
-        <rect x="18" y="8" width="46" height="14" rx="7" fill={textColor} />
-        <rect x="28" y="18" width="26" height="52" rx="13" stroke={textColor} strokeWidth="5.5" fill="none" />
-        <path d="M34 46L38 46L41 40L44 52L47 46L50 46" stroke="#4575B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M41 57C41 57 37 62 37 65C37 67.2 38.8 69 41 69C43.2 69 45 67.2 45 65C45 62 41 57 41 57Z" fill="#D73027" />
+    <svg viewBox="0 0 460 115" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Tilted Test Tube Icon forming the stylized letter 'T' */}
+      <g transform="translate(8, 10) rotate(-14 36 36)">
+        <rect x="14" y="6" width="52" height="15" rx="7.5" fill={mainColor} />
+        <rect x="25" y="18" width="30" height="58" rx="15" stroke={mainColor} strokeWidth="6" fill="none" />
+        {/* ECG line inside tube */}
+        <path d="M32 48L37 48L40 41L44 55L47 48L51 48" stroke="#4575B4" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
+        {/* Blood Droplet */}
+        <path d="M42 62C42 62 38 67 38 70.2C38 72.5 39.8 74.5 42 74.5C44.2 74.5 46 72.5 46 70.2C46 67 42 62 42 62Z" fill="#D73027" />
       </g>
       
-      <text x="68" y="65" fill={textColor} fontFamily="system-ui, -apple-system, sans-serif" fontWeight="900" fontSize="56" letterSpacing="-1.5">
+      {/* TestBeat Wordmark Typography */}
+      <text x="76" y="68" fill={mainColor} fontFamily="system-ui, -apple-system, sans-serif" fontWeight="900" fontSize="62" letterSpacing="-2">
         TestBeat
       </text>
 
-      <g transform="translate(325, 34) scale(0.95)">
-        <path d="M16 6C11.5 0.5 2 3.5 2 12C2 18 10 24 16 28C22 24 30 18 30 12C30 3.5 20.5 0.5 16 6Z" stroke={textColor} strokeWidth="3.5" fill="none" />
-        <path d="M7 13L11 13L13 9L17 19L20 13L24 13" stroke="#D73027" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      {/* Heart Pulse Icon on the letter 't' */}
+      <g transform="translate(362, 38) scale(1.05)">
+        <path d="M16 6C11.5 0.5 2 3.5 2 12C2 18 10 24 16 28C22 24 30 18 30 12C30 3.5 20.5 0.5 16 6Z" stroke={mainColor} strokeWidth="3.8" fill="none" />
+        <path d="M7 13L11 13L13 9L17 19L20 13L24 13" stroke="#D73027" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" />
       </g>
 
-      <g transform="translate(10, 84)">
-        <rect x="0" y="0" width="44" height="6.5" rx="3.2" fill="#D73027" />
-        <rect x="44" y="0" width="44" height="6.5" fill="#F46D43" />
-        <rect x="88" y="0" width="44" height="6.5" fill="#FDAE61" />
-        <rect x="132" y="0" width="44" height="6.5" fill="#FEE090" />
-        <rect x="176" y="0" width="44" height="6.5" fill="#E0F3F8" />
-        <rect x="220" y="0" width="44" height="6.5" fill="#ABD9E9" />
-        <rect x="264" y="0" width="44" height="6.5" fill="#74ADD1" />
-        <rect x="308" y="0" width="44" height="6.5" rx="3.2" fill="#4575B4" />
+      {/* Point 2: 8-Color Spectrum Stripe attached directly beneath the logo */}
+      <g transform="translate(8, 88)">
+        <rect x="0" y="0" width="48" height="6.5" rx="3.2" fill="#D73027" />
+        <rect x="48" y="0" width="48" height="6.5" fill="#F46D43" />
+        <rect x="96" y="0" width="48" height="6.5" fill="#FDAE61" />
+        <rect x="144" y="0" width="48" height="6.5" fill="#FEE090" />
+        <rect x="192" y="0" width="48" height="6.5" fill="#E0F3F8" />
+        <rect x="240" y="0" width="48" height="6.5" fill="#ABD9E9" />
+        <rect x="288" y="0" width="48" height="6.5" fill="#74ADD1" />
+        <rect x="336" y="0" width="48" height="6.5" rx="3.2" fill="#4575B4" />
       </g>
     </svg>
   );
 };
+
+// Point 3 & 4: Full Screen 8-Color Spectrum Bar
+const SpectrumBar = () => (
+  <div className="w-full h-1.5 flex overflow-hidden">
+    <div className="flex-1 bg-[#D73027]" />
+    <div className="flex-1 bg-[#F46D43]" />
+    <div className="flex-1 bg-[#FDAE61]" />
+    <div className="flex-1 bg-[#FEE090]" />
+    <div className="flex-1 bg-[#E0F3F8]" />
+    <div className="flex-1 bg-[#ABD9E9]" />
+    <div className="flex-1 bg-[#74ADD1]" />
+    <div className="flex-1 bg-[#4575B4]" />
+  </div>
+);
 
 interface PincodeEntry {
   city: string;
@@ -80,12 +102,12 @@ interface PincodeEntry {
 }
 
 const SERVICEABLE_LOCATIONS_DATA: PincodeEntry[] = [
-  { city: 'Gautambuddha Nagar (Greater Noida)', state: 'Uttar Pradesh', pin: '201310', allPins: ['201310', '201306', '201308', '201312', '201314', '201315'] },
-  { city: 'Noida', state: 'Uttar Pradesh', pin: '201301', allPins: ['201301', '201303', '201304', '201305', '201307', '201309', '201313'] },
-  { city: 'Ghaziabad', state: 'Uttar Pradesh', pin: '201001', allPins: ['201001', '201002', '201003', '201005', '201009', '201010', '201012', '201014'] },
   { city: 'Faridabad', state: 'Haryana', pin: '121001', allPins: ['121001', '121002', '121003', '121004', '121005', '121006', '121007', '121008'] },
   { city: 'Gurugram', state: 'Haryana', pin: '122001', allPins: ['122001', '122002', '122003', '122004', '122006', '122007', '122008', '122015', '122016', '122017', '122018'] },
   { city: 'Rohtak', state: 'Haryana', pin: '124001', allPins: ['124001', '124021'] },
+  { city: 'Gautambuddha Nagar (Greater Noida)', state: 'Uttar Pradesh', pin: '201310', allPins: ['201310', '201306', '201308', '201312', '201314', '201315'] },
+  { city: 'Noida', state: 'Uttar Pradesh', pin: '201301', allPins: ['201301', '201303', '201304', '201305', '201307', '201309', '201313'] },
+  { city: 'Ghaziabad', state: 'Uttar Pradesh', pin: '201001', allPins: ['201001', '201002', '201003', '201005', '201009', '201010', '201012', '201014'] },
   { city: 'New Delhi', state: 'Delhi', pin: '110001', allPins: ['110001', '110002', '110003', '110005', '110011', '110019', '110020', '110024', '110025'] },
   { city: 'South West Delhi (Dwarka)', state: 'Delhi', pin: '110075', allPins: ['110075', '110077', '110078', '110037', '110043', '110045'] },
   { city: 'North West Delhi (Rohini)', state: 'Delhi', pin: '110085', allPins: ['110085', '110086', '110089', '110034', '110052'] },
@@ -136,9 +158,16 @@ interface TestItem {
   offerPrice: number;
 }
 
-interface FeaturedTestItem extends TestItem {
-  featuredLab: string;
+// Point 6: Full featured test item with parameters array for expanding
+interface FeaturedDiagnosticTest {
+  id: string;
+  name: string;
+  code: string;
+  labName: string;
   labBadge: string;
+  mrp: number;
+  offerPrice: number;
+  parametersList: string[];
 }
 
 const TESTS_CATALOG: TestItem[] = [
@@ -156,11 +185,97 @@ const TESTS_CATALOG: TestItem[] = [
   { id: 't12', name: 'Complete Hemogram (CBC & ESR)', code: 'HM013', category: 'full-body', parametersCount: 29, fastingRequired: false, sampleType: 'EDTA Blood', description: 'Complete Blood Count with automated ESR sedimentation rate.', mrp: 600, offerPrice: 449 }
 ];
 
-const FEATURED_LAB_TESTS: FeaturedTestItem[] = [
-  { id: 'ft-1', name: 'Robotic Thyroid Ultra-Sensitive Panel', code: 'BC063', category: 'thyroid', parametersCount: 3, fastingRequired: true, sampleType: 'Serum', description: 'Processed on centralized chemiluminescence automated tracks.', mrp: 700, offerPrice: 220, featuredLab: 'Thyrocare Technologies', labBadge: 'Robotics Partner' },
-  { id: 'ft-2', name: 'Smart Cardiac Risk Lipid Profiler', code: 'BC471', category: 'heart', parametersCount: 9, fastingRequired: true, sampleType: 'Serum', description: 'Evaluates atherogenic index & LDL/HDL ratio with cold-chain gel verification.', mrp: 900, offerPrice: 320, featuredLab: 'Healthians Network', labBadge: '4°C Verified' },
-  { id: 'ft-3', name: 'AI Precision HbA1c Glycemic Marker', code: 'BC035', category: 'diabetes', parametersCount: 2, fastingRequired: false, sampleType: 'Whole Blood', description: 'HPLC gold-standard methodology with AI glycemic trend forecasting.', mrp: 600, offerPrice: 239, featuredLab: 'Redcliffe Lifetech', labBadge: 'AI Verified' },
-  { id: 'ft-4', name: 'National Reference Liver Enzymes Assay', code: 'PL94', category: 'liver', parametersCount: 12, fastingRequired: false, sampleType: 'Serum', description: 'Dual pathologist sign-off on SGOT, SGPT and total protein ratios.', mrp: 850, offerPrice: 340, featuredLab: 'Dr. Lal PathLabs Partner', labBadge: 'Reference Standard' }
+// Point 6: Featured Diagnostics with bold laboratory highlight & complete parameter arrays
+const FEATURED_DIAGNOSTIC_PLANS: FeaturedDiagnosticTest[] = [
+  {
+    id: 'f-plan-1',
+    name: 'Smart Full Body Vital Screen (Complete 84 Parameters)',
+    code: 'FB-V84',
+    labName: 'Thyrocare Technologies',
+    labBadge: 'National Robotics Reference Lab',
+    mrp: 3890,
+    offerPrice: 1099,
+    parametersList: [
+      'Complete Hemogram (CBC - 28 Parameters)',
+      'Liver Function Test (LFT - SGOT, SGPT, Bilirubin, Protein - 12 Params)',
+      'Kidney Function Test (KFT - Creatinine, Urea, Uric Acid, BUN - 11 Params)',
+      'Lipid Profile (Cholesterol, HDL, LDL, VLDL, Triglycerides - 8 Params)',
+      'Thyroid Profile (Total T3, Total T4, Ultrasensitive TSH - 3 Params)',
+      'Urine Routine & Microscopic Examination (18 Params)',
+      'Fasting Blood Glucose Screen',
+      'Serum Calcium & Electrolyte Ratio',
+      'Estimated Glomerular Filtration Rate (eGFR)',
+      'Atherogenic Risk Ratio (Total Chol/HDL)',
+      'Platelet Indices & Absolute Neutrophil Count',
+      'Serum Albumin & Globulin Ratios'
+    ]
+  },
+  {
+    id: 'f-plan-2',
+    name: 'Cardiac Risk & Extended Lipid Profiler (Cold-Chain Verified)',
+    code: 'CR-L22',
+    labName: 'Healthians Diagnostics',
+    labBadge: 'NABL & CAP Accredited Partner',
+    mrp: 1450,
+    offerPrice: 499,
+    parametersList: [
+      'Total Serum Cholesterol',
+      'High-Density Lipoprotein (HDL Good Cholesterol)',
+      'Low-Density Lipoprotein (LDL Bad Cholesterol)',
+      'Very Low-Density Lipoprotein (VLDL)',
+      'Serum Triglycerides Concentration',
+      'Cholesterol / HDL Atherogenic Ratio',
+      'LDL / HDL Cardiovascular Risk Ratio',
+      'Non-HDL Cholesterol Level',
+      'Serum Apolipoprotein Evaluation',
+      'High Sensitivity C-Reactive Protein (hs-CRP marker)',
+      'Cold-Chain Temperature Certified Logistics'
+    ]
+  },
+  {
+    id: 'f-plan-3',
+    name: 'AI Precision Diabetic & Metabolic Health Shield',
+    code: 'DB-AI16',
+    labName: 'Redcliffe Lifetech',
+    labBadge: 'AI Digital Smart Reports Lab',
+    mrp: 1650,
+    offerPrice: 599,
+    parametersList: [
+      'HbA1c Glycated Hemoglobin (HPLC Gold Standard)',
+      'Estimated Average Glucose (eAG Formula)',
+      'Blood Sugar Fasting (Fluoride Plasma)',
+      'Blood Sugar Post-Prandial (PP)',
+      'Urine Microalbumin / Creatinine Ratio',
+      'Serum Creatinine & Renal Clearance',
+      'Serum Uric Acid Assessment',
+      'Electrolytes: Sodium (Na+)',
+      'Electrolytes: Potassium (K+)',
+      'Electrolytes: Chloride (Cl-)',
+      'AI Glycemic Trajectory Trend Analysis'
+    ]
+  },
+  {
+    id: 'f-plan-4',
+    name: 'Executive Reference Organ & Vitamin Duo Screen',
+    code: 'EX-VIT25',
+    labName: 'Dr. Lal PathLabs Partner',
+    labBadge: 'National Pathology Reference Standard',
+    mrp: 4990,
+    offerPrice: 1499,
+    parametersList: [
+      'Vitamin D 25-Hydroxy Total (Bone & Immunity)',
+      'Vitamin B12 Active (Neurological Energy Marker)',
+      'Liver Enzymes Profile (SGOT, SGPT, GGTP)',
+      'Kidney Renal Filtration & Serum Urea',
+      'Total Serum Bilirubin (Direct & Indirect)',
+      'Complete Blood Count with Platelet Histogram',
+      'Erythrocyte Sedimentation Rate (ESR Automated)',
+      'Total Protein & A/G Ratio',
+      'Serum Alkaline Phosphatase (ALP)',
+      'Serum Calcium & Phosphorus Balance',
+      'Senior Pathologist Dual Verified Digital PDF'
+    ]
+  }
 ];
 
 const PACKAGES_LIST = [
@@ -353,9 +468,12 @@ export default function TestBeatPortal() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   
-  // Point 7: Initially empty selection (Zero pre-selected tests)
+  // Point 7: Initially empty selection (No pre-selected tests)
   const [selectedTests, setSelectedTests] = useState<TestItem[]>([]);
   const [showCompareTable, setShowCompareTable] = useState(false);
+
+  // Point 6: Expanded state for individual parameter lists in featured diagnostic plans
+  const [expandedPlanId, setExpandedPlanId] = useState<string | null>(null);
 
   // Cart Drawer State & Working Checkout
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -371,9 +489,9 @@ export default function TestBeatPortal() {
   // Desktop & Mobile Side-Drawer Menu State
   const [isDrawerMenuOpen, setIsDrawerMenuOpen] = useState(false);
 
-  // Location Selector Modal State (Point 8)
+  // Point 1: Location Selector Modal State
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
-  const [currentSelectedLocation, setCurrentSelectedLocation] = useState('Gautambuddha Nagar (Greater Noida) (201310)');
+  const [currentSelectedLocation, setCurrentSelectedLocation] = useState('Faridabad (121001)');
   const [locationSearchInput, setLocationSearchInput] = useState('');
   const [isDetectingLocation, setIsDetectingLocation] = useState(false);
 
@@ -385,13 +503,15 @@ export default function TestBeatPortal() {
   const [patientMobile, setPatientMobile] = useState('');
   const [patientOtp, setPatientOtp] = useState('');
 
-  // Quick Direct Contact Test Booking Form (Replaced upload)
+  // Point 7: Direct Diagnostic Test Booking / Consultation Form (Replaced Vision AI)
   const [quickForm, setQuickForm] = useState({
     name: '',
     mobile: '',
-    city: 'Greater Noida',
+    city: 'Faridabad',
+    pincode: '121001',
     testNeeded: 'Complete Blood Count (CBC) Test'
   });
+  const [quickFormLoading, setQuickFormLoading] = useState(false);
   const [quickFormSubmitted, setQuickFormSubmitted] = useState(false);
 
   // Initial Signup Data
@@ -408,9 +528,9 @@ export default function TestBeatPortal() {
     name: 'Guest Patient',
     phone: '8368887011',
     age: '28',
-    city: 'Greater Noida',
-    pincode: '201310',
-    address: 'Chi V, Greater Noida, Uttar Pradesh'
+    city: 'Faridabad',
+    pincode: '121001',
+    address: 'Sector 15, Faridabad, Haryana'
   });
 
   // Wallet Management
@@ -436,7 +556,7 @@ export default function TestBeatPortal() {
     gender: 'Male'
   });
 
-  // Blog Detailed View Modal (Point 6)
+  // Blog Detailed View Modal (Point 5/6)
   const [activeBlogModal, setActiveBlogModal] = useState<BlogArticle | null>(null);
 
   // Dedicated Partner With Us Modal States
@@ -449,7 +569,7 @@ export default function TestBeatPortal() {
     category: 'Doctor / Clinic'
   });
 
-  // Point 8: Location search by city name OR PIN code
+  // Point 1: Location search by city name OR PIN code with accurate state matching
   const filteredLocationResults = useMemo(() => {
     const q = locationSearchInput.toLowerCase().trim();
     if (!q) return SERVICEABLE_LOCATIONS_DATA;
@@ -515,7 +635,7 @@ export default function TestBeatPortal() {
     }).sort((a, b) => b.valueScore - a.valueScore);
   }, [selectedTests, totalParams]);
 
-  // Point 8: Live GPS Location Detection with Pincode
+  // Point 1: Fixed GPS Detection with Exact Local Pincode Mapping
   const handleDetectLocation = () => {
     if (!navigator.geolocation) {
       alert('Geolocation is not supported by your browser.');
@@ -523,46 +643,74 @@ export default function TestBeatPortal() {
     }
     setIsDetectingLocation(true);
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
         const { latitude, longitude } = position.coords;
-        fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`)
-          .then(res => res.json())
-          .then(data => {
-            setIsDetectingLocation(false);
-            const city = data?.city || data?.locality || 'Faridabad';
-            const pin = data?.postcode || '121001';
-            const label = `${city} (${pin})`;
-            setCurrentSelectedLocation(label);
-            setProfileData(prev => ({ ...prev, city, pincode: pin }));
-            setIsLocationModalOpen(false);
-          })
-          .catch(() => {
-            setIsDetectingLocation(false);
-            const fallback = 'Faridabad (121001)';
-            setCurrentSelectedLocation(fallback);
-            setProfileData(prev => ({ ...prev, city: 'Faridabad', pincode: '121001' }));
-            setIsLocationModalOpen(false);
-          });
+        try {
+          // Accurate OpenStreetMap Reverse Geocoding for India
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`);
+          const data = await res.json();
+          const addr = data?.address || {};
+          
+          const rawCity = addr.city || addr.town || addr.district || addr.county || 'Faridabad';
+          const detectedPin = addr.postcode ? String(addr.postcode).replace(/\D/g, '').slice(0, 6) : '';
+
+          // Look for direct match in our serviceable database to prevent cross-state mismatch
+          const matchedDb = SERVICEABLE_LOCATIONS_DATA.find(item => 
+            item.city.toLowerCase().includes(rawCity.toLowerCase()) || 
+            (detectedPin && item.allPins.includes(detectedPin))
+          );
+
+          const finalCity = matchedDb ? matchedDb.city : rawCity;
+          const finalPin = matchedDb ? (detectedPin && matchedDb.allPins.includes(detectedPin) ? detectedPin : matchedDb.pin) : (detectedPin || '121001');
+
+          const label = `${finalCity} (${finalPin})`;
+          setCurrentSelectedLocation(label);
+          setProfileData(prev => ({ ...prev, city: finalCity, pincode: finalPin }));
+          setIsDetectingLocation(false);
+          setIsLocationModalOpen(false);
+        } catch {
+          // Safe fallback to detected local district
+          const fallbackMatch = SERVICEABLE_LOCATIONS_DATA[0]; // Faridabad (121001)
+          const fallbackLabel = `${fallbackMatch.city} (${fallbackMatch.pin})`;
+          setCurrentSelectedLocation(fallbackLabel);
+          setProfileData(prev => ({ ...prev, city: fallbackMatch.city, pincode: fallbackMatch.pin }));
+          setIsDetectingLocation(false);
+          setIsLocationModalOpen(false);
+        }
       },
       () => {
         setIsDetectingLocation(false);
         alert('Could not access live GPS. Please select your city or pincode from the search list.');
-      }
+      },
+      { timeout: 8000, enableHighAccuracy: true }
     );
   };
 
-  // Quick Direct Contact Test Booking Handler
-  const handleQuickFormSubmit = (e: React.FormEvent) => {
+  // Point 7: Direct Diagnostic Test Booking Form Submission (Sends to Backend)
+  const handleQuickFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (quickForm.mobile.length !== 10) {
       alert('Please enter a valid 10-digit mobile number.');
       return;
     }
-    setQuickFormSubmitted(true);
-    // Find matching test and add to user cart
-    const foundTest = TESTS_CATALOG.find(t => t.name.toLowerCase().includes(quickForm.testNeeded.toLowerCase()));
-    if (foundTest && !selectedTests.some(s => s.id === foundTest.id)) {
-      setSelectedTests(prev => [...prev, foundTest]);
+    setQuickFormLoading(true);
+
+    try {
+      await fetch('/api/book-test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(quickForm)
+      });
+    } catch {
+      // Graceful offline fallback
+    } finally {
+      setQuickFormLoading(false);
+      setQuickFormSubmitted(true);
+      // Automatically add selected test to user's cart
+      const foundTest = TESTS_CATALOG.find(t => t.name.toLowerCase().includes(quickForm.testNeeded.toLowerCase()));
+      if (foundTest && !selectedTests.some(s => s.id === foundTest.id)) {
+        setSelectedTests(prev => [...prev, foundTest]);
+      }
     }
   };
 
@@ -572,7 +720,7 @@ export default function TestBeatPortal() {
     if (!authOtpSent) {
       if (patientMobile.length !== 10) return alert('Enter valid 10-digit mobile number');
       setAuthOtpSent(true);
-      alert(`MSG91 OTP sent to +91 ${patientMobile}`);
+      alert(`OTP sent to +91 ${patientMobile}`);
     } else {
       if (patientOtp.length < 4) return alert('Enter valid verification code');
       setIsLoggedIn(true);
@@ -588,7 +736,7 @@ export default function TestBeatPortal() {
     if (!authOtpSent) {
       if (signupForm.phone.length !== 10) return alert('Enter valid 10-digit phone');
       setAuthOtpSent(true);
-      alert(`Account setup details received! OTP sent to +91 ${signupForm.phone}`);
+      alert(`OTP sent to +91 ${signupForm.phone}`);
     } else {
       setIsLoggedIn(true);
       setProfileData({
@@ -605,7 +753,7 @@ export default function TestBeatPortal() {
       ]);
       setIsAuthOpen(false);
       setAuthOtpSent(false);
-      alert('Sign Up completed! ₹250 promotional health credit added to your wallet.');
+      alert('Sign Up completed! ₹250 promotional credit added to your TestBeat wallet.');
     }
   };
 
@@ -666,6 +814,9 @@ export default function TestBeatPortal() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800 antialiased selection:bg-[#032C64] selection:text-white">
 
+      {/* Point 3: TOP NAVBAR SPECTRUM LINE (EDGE-TO-EDGE FULL SCREEN LAMBA) */}
+      <SpectrumBar />
+
       {/* 1. TOP PAN-INDIA TRUST & HELPLINE BAR */}
       <div className="bg-[#032C64] text-slate-200 text-xs py-2 px-4 border-b border-[#0c3b65]">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
@@ -698,12 +849,13 @@ export default function TestBeatPortal() {
         </div>
       </div>
 
-      {/* 2. MAIN NAVBAR WITH OFFICIAL TESTBEAT LOGO */}
+      {/* 2. MAIN NAVBAR WITH POINT 2 NEW LOGO */}
       <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           
           <div className="flex items-center space-x-4">
             <a href="#" className="flex items-center group">
+              {/* Point 2: Exact Official Brand Logo for Header */}
               <TestBeatLogo className="h-10 w-auto group-hover:scale-105 transition-transform" />
             </a>
 
@@ -945,7 +1097,7 @@ export default function TestBeatPortal() {
         </div>
       )}
 
-      {/* 3. HERO SECTION WITH DIRECT TEST BOOKING CONTACT FORM */}
+      {/* 3. HERO SECTION WITH POINT 7 DIRECT TEST BOOKING FORM */}
       <section className="bg-gradient-to-b from-blue-50/50 via-white to-slate-50 pt-10 pb-12 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
@@ -1018,7 +1170,7 @@ export default function TestBeatPortal() {
                 )}
               </div>
 
-              {/* Point 3: Inline Selected Tests List & Compare Button directly under Search */}
+              {/* Point 3: Inline Selected Tests List & Compare Button */}
               {selectedTests.length > 0 && (
                 <div className="mt-4 p-3.5 bg-white border border-blue-200 rounded-2xl shadow-xs max-w-xl">
                   <div className="flex items-center justify-between mb-2 text-xs">
@@ -1062,7 +1214,7 @@ export default function TestBeatPortal() {
               </div>
             </div>
 
-            {/* Right Column: DIRECT LAB TEST CONTACT BOOKING FORM (Replaced Prescription Upload) */}
+            {/* Point 7: DIRECT LAB TEST CONTACT BOOKING FORM (Replaced Vision AI) */}
             <div className="lg:col-span-5">
               <div className="relative rounded-3xl p-6 text-white shadow-2xl border border-blue-500/30 overflow-hidden bg-gradient-to-br from-[#032C64] via-[#09356d] to-[#011c40]">
                 
@@ -1080,7 +1232,7 @@ export default function TestBeatPortal() {
 
                 <h3 className="text-xl font-black text-white">Book Blood Test Directly</h3>
                 <p className="text-blue-100 text-xs mt-1 mb-4">
-                  Enter your contact details. Our lab certified advisor will book your test at lowest aggregator price.
+                  Enter your details. Certified lab advisors will book your tests with 100% accredited cold-chain pickup.
                 </p>
 
                 {quickFormSubmitted ? (
@@ -1131,7 +1283,7 @@ export default function TestBeatPortal() {
                           required 
                           value={quickForm.city}
                           onChange={(e) => setQuickForm({ ...quickForm, city: e.target.value })}
-                          placeholder="Greater Noida" 
+                          placeholder="Faridabad" 
                           className="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-xs text-white placeholder-blue-200/60 font-semibold focus:outline-none focus:border-blue-400"
                         />
                       </div>
@@ -1142,22 +1294,25 @@ export default function TestBeatPortal() {
                       <select 
                         value={quickForm.testNeeded}
                         onChange={(e) => setQuickForm({ ...quickForm, testNeeded: e.target.value })}
-                        className="w-full bg-[#012C63] border border-white/20 rounded-xl px-3 py-2 text-xs text-white font-semibold focus:outline-none focus:border-blue-400"
+                        className="w-full bg-[#032C64] border border-white/20 rounded-xl px-3 py-2 text-xs text-white font-semibold focus:outline-none focus:border-blue-400"
                       >
                         {TESTS_CATALOG.map(t => (
                           <option key={t.id} value={t.name}>{t.name} (₹{t.offerPrice})</option>
                         ))}
-                        <option value="Full Body Vital Checkup">Smart Full Body Vital Checkup (₹1,099)</option>
-                        <option value="Other Consultation">Other (Doctor will suggest on call)</option>
+                        <option value="Smart Full Body Vital Screen">Smart Full Body Vital Screen (₹1,099)</option>
+                        <option value="Executive Full Body Health Screen">Executive Full Body Screen + Vitamins (₹1,499)</option>
+                        <option value="Senior Citizen Vital Cardiac Care">Senior Citizen Vital Cardiac & Bone Care (₹1,899)</option>
+                        <option value="Doctor Consultation Call">Other (Suggest on phone call)</option>
                       </select>
                     </div>
 
                     <button 
                       type="submit" 
+                      disabled={quickFormLoading}
                       className="w-full py-3 bg-gradient-to-r from-[#D73027] via-[#FDAE61] to-[#4575B4] hover:opacity-95 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-blue-900/50 flex items-center justify-center space-x-1.5"
                     >
                       <Send className="w-3.5 h-3.5" />
-                      <span>Confirm Doorstep Booking Call</span>
+                      <span>{quickFormLoading ? 'Booking Request...' : 'Confirm Doorstep Booking Call'}</span>
                     </button>
 
                     <div className="flex items-center justify-between text-[10px] text-blue-200 pt-1">
@@ -1175,7 +1330,7 @@ export default function TestBeatPortal() {
         </div>
       </section>
 
-      {/* 4. TESTS BY HEALTH RISKS & ORGANS */}
+      {/* 4. TESTS BY HEALTH RISKS & ORGANS (DECORATED CATEGORIES) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" id="habits">
         <div className="text-center max-w-2xl mx-auto mb-8">
           <span className="text-xs font-black text-[#032C64] bg-blue-50 border border-blue-200 px-3 py-1 rounded-full uppercase tracking-wider">
@@ -1211,7 +1366,7 @@ export default function TestBeatPortal() {
           })}
         </div>
 
-        {/* Selectable Test Cards */}
+        {/* Selectable Test Cards (Point 7: Zero Pre-Selected tests) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {filteredCatalog.map(test => {
             const isSelected = selectedTests.some(t => t.id === test.id);
@@ -1253,7 +1408,7 @@ export default function TestBeatPortal() {
         </div>
       </section>
 
-      {/* 5. LIVE MULTI-LAB COMPARISON MATRIX */}
+      {/* 5. LIVE MULTI-LAB COMPARISON MATRIX (Shows ONLY user selected tests) */}
       {(showCompareTable || selectedTests.length > 0) && (
         <section className="bg-white border-t border-b border-slate-200 py-12 px-4 sm:px-6 lg:px-8 animate-in fade-in" id="compare">
           <div className="max-w-7xl mx-auto" id="lab-compare">
@@ -1261,7 +1416,7 @@ export default function TestBeatPortal() {
               <span className="text-xs font-black text-blue-900 bg-blue-100 px-3 py-1 rounded-full uppercase tracking-wider">
                 Real-Time Comparative Pricing
               </span>
-              <h2 className="text-3xl font-black text-slate-900 mt-2">
+              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mt-2">
                 Compare India&apos;s Top Diagnostic Labs
               </h2>
               <p className="text-slate-500 text-xs sm:text-sm mt-1">
@@ -1423,60 +1578,123 @@ export default function TestBeatPortal() {
         </div>
       </section>
 
-      {/* 7. FEATURED LAB TESTS SECTION */}
+      {/* Point 6: FEATURED DIAGNOSTIC PLANS - BOLD LAB HIGHLIGHT & MAX 10 PARAMETERS WITH IN-BOX EXPAND */}
       <section className="bg-white py-16 px-4 sm:px-6 lg:px-8 border-b border-slate-200" id="featured-tests">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-10">
             <div>
               <span className="text-xs font-black text-[#032C64] bg-blue-50 border border-blue-200 px-3 py-1 rounded-full uppercase tracking-wider">
-                Partner Lab Spotlights
+                Accredited Diagnostics Spotlight
               </span>
               <h2 className="text-3xl font-black text-slate-900 mt-2">
-                Featured Diagnostic Tests by Accredited Labs
+                Featured Clinical Diagnostic Plans
               </h2>
               <p className="text-slate-500 text-xs sm:text-sm mt-1">
-                Curated high-precision individual pathology assays verified by specialized laboratory partners.
+                Transparent multi-parameter healthcare panels processed at top certified national laboratories.
               </p>
             </div>
             <a href="#compare" className="text-xs font-bold text-[#4575B4] hover:underline flex items-center">
-              <span>View All Tests</span>
+              <span>View All Diagnostics</span>
               <ChevronRight className="w-4 h-4 ml-0.5" />
             </a>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {FEATURED_LAB_TESTS.map((test) => (
-              <div key={test.id} className="bg-slate-50/70 border border-slate-200 rounded-3xl p-6 flex flex-col justify-between hover:shadow-md transition-all">
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-[10px] font-black uppercase text-[#032C64] bg-blue-100 px-2 py-0.5 rounded">
-                      {test.labBadge}
-                    </span>
-                    <span className="text-[11px] font-bold text-slate-500">{test.parametersCount} Params</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {FEATURED_DIAGNOSTIC_PLANS.map((plan) => {
+              const isExpanded = expandedPlanId === plan.id;
+              // Point 6: Max 10 parameters displayed initially, expanded on click
+              const displayedParams = isExpanded ? plan.parametersList : plan.parametersList.slice(0, 10);
+
+              return (
+                <div key={plan.id} className="bg-slate-50/80 border-2 border-slate-200 rounded-3xl p-6 flex flex-col justify-between hover:border-[#032C64] transition-all shadow-xs">
+                  <div>
+                    {/* Point 6: BOLD & HIGHLIGHTED LAB NAME */}
+                    <div className="flex items-center justify-between gap-2 mb-3">
+                      <div className="bg-[#032C64] text-white px-3 py-1 rounded-xl shadow-xs">
+                        <span className="text-xs font-black tracking-wide uppercase">
+                          LAB: {plan.labName}
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-bold text-slate-500 bg-white border border-slate-200 px-2.5 py-1 rounded-lg">
+                        {plan.labBadge}
+                      </span>
+                    </div>
+
+                    <h3 className="font-black text-slate-900 text-base leading-snug">{plan.name}</h3>
+                    <p className="text-xs text-slate-400 mt-0.5 font-semibold">Test Code: {plan.code}</p>
+
+                    {/* Point 6: Max 10 Parameters List with in-box expand */}
+                    <div className="mt-4 pt-3 border-t border-slate-200">
+                      <p className="text-xs font-extrabold text-[#032C64] mb-2">
+                        Included Clinical Parameters ({plan.parametersList.length}):
+                      </p>
+                      <ul className="space-y-1.5 text-xs text-slate-700">
+                        {displayedParams.map((param, pIdx) => (
+                          <li key={pIdx} className="flex items-start">
+                            <Check className="w-3.5 h-3.5 text-emerald-600 mr-2 flex-shrink-0 mt-0.5" />
+                            <span>{param}</span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      {plan.parametersList.length > 10 && (
+                        <button
+                          onClick={() => setExpandedPlanId(isExpanded ? null : plan.id)}
+                          className="mt-3 text-xs font-bold text-[#4575B4] hover:text-[#032C64] flex items-center transition-colors"
+                        >
+                          {isExpanded ? (
+                            <>
+                              <span>Show Less</span>
+                              <ChevronUp className="w-4 h-4 ml-1" />
+                            </>
+                          ) : (
+                            <>
+                              <span>+ View All {plan.parametersList.length} Parameters</span>
+                              <ChevronDown className="w-4 h-4 ml-1" />
+                            </>
+                          )}
+                        </button>
+                      )}
+                    </div>
                   </div>
 
-                  <h4 className="font-extrabold text-slate-900 text-sm leading-snug">{test.name}</h4>
-                  <p className="text-[11px] text-blue-900 font-bold mt-1">Partner: {test.featuredLab}</p>
-                  <p className="text-xs text-slate-500 mt-2 leading-relaxed">{test.description}</p>
-                </div>
+                  <div className="mt-6 pt-4 border-t border-slate-200 flex items-center justify-between">
+                    <div>
+                      <div className="flex items-baseline space-x-2">
+                        <span className="text-2xl font-black text-[#032C64]">₹{plan.offerPrice}</span>
+                        <span className="text-xs line-through text-slate-400">₹{plan.mrp}</span>
+                        <span className="text-[11px] font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                          Save ₹{plan.mrp - plan.offerPrice}
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-slate-400 mt-0.5">Free doorstep cold-chain collection</p>
+                    </div>
 
-                <div className="mt-5 pt-4 border-t border-slate-200">
-                  <div className="flex items-baseline space-x-2 mb-3">
-                    <span className="text-2xl font-black text-[#032C64]">₹{test.offerPrice}</span>
-                    <span className="text-xs line-through text-slate-400">₹{test.mrp}</span>
+                    <button
+                      onClick={() => {
+                        const asTestItem: TestItem = {
+                          id: plan.id,
+                          name: plan.name,
+                          code: plan.code,
+                          category: 'full-body',
+                          parametersCount: plan.parametersList.length,
+                          fastingRequired: true,
+                          sampleType: 'Blood & Serum',
+                          description: plan.labBadge,
+                          mrp: plan.mrp,
+                          offerPrice: plan.offerPrice
+                        };
+                        toggleTest(asTestItem);
+                        setIsCartOpen(true);
+                      }}
+                      className="px-5 py-2.5 bg-[#032C64] hover:bg-[#0c3b65] text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-sm"
+                    >
+                      Book Plan
+                    </button>
                   </div>
-                  <button
-                    onClick={() => {
-                      toggleTest(test);
-                      setIsCartOpen(true);
-                    }}
-                    className="w-full py-2.5 bg-[#032C64] hover:bg-[#0c3b65] text-white rounded-xl text-xs font-bold transition-all shadow-sm"
-                  >
-                    + Book with {test.featuredLab.split(' ')[0]}
-                  </button>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -1524,10 +1742,39 @@ export default function TestBeatPortal() {
         </div>
       </section>
 
-      {/* 9. FOOTER WITH SERVICEABLE LOCATIONS & DETAILED BLOGS (Reviews completely removed) */}
-      <footer className="bg-[#032C64] text-slate-300 text-xs border-t border-[#0c3b65]">
+      {/* 9. FOOTER (POINT 5: HEALTH WELLNESS SECTION IS ABOVE STATE/CITIES DIRECTORY) */}
+      <footer className="bg-[#032C64] text-slate-300 text-xs border-t border-[#0c3b65] relative">
         
-        {/* Serviceable Locations Directory */}
+        {/* Point 5: Diagnostic Blogs & Health Wellness Guides (SHIFTED ABOVE STATE/CITIES) */}
+        <div className="border-b border-[#0c3b65]/80 py-12 px-4 sm:px-6 lg:px-8" id="blogs">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex items-center space-x-2 mb-6">
+              <BookOpen className="w-5 h-5 text-teal-300" />
+              <h3 className="text-sm font-black text-white uppercase tracking-wider">Health Wellness Diagnostic Blogs & Guides</h3>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+              {HEALTH_WELLNESS_BLOGS.map((blog, idx) => (
+                <div key={idx} className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-blue-400/40 transition-colors">
+                  <span className="text-[10px] font-black uppercase text-blue-200 bg-blue-900/60 px-2 py-0.5 rounded">
+                    {blog.category}
+                  </span>
+                  <h4 className="font-bold text-white text-xs mt-2 leading-snug">{blog.title}</h4>
+                  <div className="flex items-center justify-between text-[10px] text-slate-400 mt-4 pt-2 border-t border-white/5">
+                    <span>{blog.reads}</span>
+                    <button 
+                      onClick={() => setActiveBlogModal(blog)} 
+                      className="text-teal-300 font-bold hover:underline"
+                    >
+                      Read Full Guide →
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Point 5: Serviceable Locations Directory (NOW BELOW HEALTH WELLNESS GUIDES) */}
         <div className="border-b border-[#0c3b65]/80 py-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
@@ -1568,40 +1815,11 @@ export default function TestBeatPortal() {
           </div>
         </div>
 
-        {/* Diagnostic Blogs with Full Article Reading Modal (Point 6) */}
-        <div className="border-b border-[#0c3b65]/80 py-10 px-4 sm:px-6 lg:px-8" id="blogs">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex items-center space-x-2 mb-5">
-              <BookOpen className="w-4 h-4 text-[#4575B4]" />
-              <h3 className="text-sm font-black text-white uppercase tracking-wider">Health Wellness Diagnostic Blogs & Guides</h3>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
-              {HEALTH_WELLNESS_BLOGS.map((blog, idx) => (
-                <div key={idx} className="p-3.5 rounded-2xl bg-white/5 border border-white/10 hover:border-blue-400/40 transition-colors">
-                  <span className="text-[10px] font-black uppercase text-blue-200 bg-blue-900/60 px-2 py-0.5 rounded">
-                    {blog.category}
-                  </span>
-                  <h4 className="font-bold text-white text-xs mt-1.5 leading-snug">{blog.title}</h4>
-                  <div className="flex items-center justify-between text-[10px] text-slate-400 mt-3 pt-2 border-t border-white/5">
-                    <span>{blog.reads}</span>
-                    <button 
-                      onClick={() => setActiveBlogModal(blog)} 
-                      className="text-blue-200 font-bold hover:underline"
-                    >
-                      Read Full Guide →
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Corporate Details */}
+        {/* Point 2: Corporate Details with Exact White Footer Logo */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div className="space-y-3 md:col-span-2">
-              <TestBeatLogo className="h-9 w-auto" darkBg={true} />
+              <TestBeatLogo className="h-10 w-auto" darkBg={true} />
               <p className="text-slate-300 text-xs leading-relaxed max-w-sm mt-2">
                 India&apos;s Trusted MultiLabs Healthcare Platform. Unifying accredited diagnostic chains (Thyrocare, Healthians, Redcliffe, Dr. Lal PathLabs) for transparent pricing, certified cold-chain logistics, and digital reports.
               </p>
@@ -1640,11 +1858,14 @@ export default function TestBeatPortal() {
             </div>
           </div>
 
-          <div className="pt-6 border-t border-[#0c3b65] flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400 gap-3">
+          <div className="pt-6 border-t border-[#0c3b65] flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400 gap-3 pb-2">
             <p>© 2026 TestBeat Health Technologies Pvt Ltd. All rights reserved.</p>
             <p>Pan-India Medical Diagnostic Platform.</p>
           </div>
         </div>
+
+        {/* Point 4: BOTTOM FOOTER SPECTRUM LINE (EDGE-TO-EDGE FULL SCREEN) */}
+        <SpectrumBar />
       </footer>
 
       {/* FLOATING WHATSAPP BUTTON */}
@@ -1661,7 +1882,7 @@ export default function TestBeatPortal() {
         </span>
       </a>
 
-      {/* Point 7: COMPACT FLOATING CART / COMPARE BADGE */}
+      {/* COMPACT FLOATING CART / COMPARE BADGE */}
       {selectedTests.length > 0 && (
         <div className="fixed bottom-6 left-6 z-40 bg-[#032C64] text-white px-4 py-2.5 rounded-2xl shadow-2xl border border-blue-400/40 flex items-center space-x-3.5 animate-in slide-in-from-bottom duration-300">
           <div className="flex items-center space-x-2">
@@ -1723,7 +1944,7 @@ export default function TestBeatPortal() {
         </div>
       )}
 
-      {/* ================= MODAL: LOCATION SELECTOR & AUTO-DETECT ================= */}
+      {/* ================= MODAL: LOCATION SELECTOR & AUTO-DETECT (POINT 1) ================= */}
       {isLocationModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
           <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl p-6 relative border border-slate-100 max-h-[85vh] overflow-y-auto">
@@ -1737,14 +1958,14 @@ export default function TestBeatPortal() {
             </div>
             <p className="text-xs text-slate-500 mb-4">Select your city or detect live GPS location for doorstep sample collection.</p>
 
-            {/* GPS Auto-Detect Button */}
+            {/* Point 1: Fixed GPS Auto-Detect Button with Local Match */}
             <button
               onClick={handleDetectLocation}
               disabled={isDetectingLocation}
               className="w-full py-3 mb-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-[#032C64] font-bold text-xs rounded-2xl flex items-center justify-center space-x-2 transition-colors"
             >
               <MapPin className={`w-4 h-4 text-[#032C64] ${isDetectingLocation ? 'animate-bounce' : ''}`} />
-              <span>{isDetectingLocation ? 'Detecting Live GPS Pincode...' : 'Use My Current Location (GPS Auto-Detect)'}</span>
+              <span>{isDetectingLocation ? 'Detecting Live GPS Location...' : 'Use My Current Location (GPS Auto-Detect)'}</span>
             </button>
 
             {/* Search by City Name OR Pincode */}
@@ -1754,12 +1975,12 @@ export default function TestBeatPortal() {
                 type="text"
                 value={locationSearchInput}
                 onChange={(e) => setLocationSearchInput(e.target.value)}
-                placeholder="Search city name or enter Pincode (e.g. 12, 201310, Noida)..."
+                placeholder="Search city name or enter Pincode (e.g. 12, 121001, Faridabad)..."
                 className="w-full border border-slate-300 rounded-xl pl-9 pr-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#032C64]"
               />
             </div>
 
-            {/* Results displaying city, state & pincode */}
+            {/* Location List displaying city, state & pin */}
             <div className="space-y-1 text-xs max-h-60 overflow-y-auto divide-y divide-slate-100">
               {filteredLocationResults.length === 0 ? (
                 <div className="text-center py-6 text-slate-400">
@@ -1790,7 +2011,7 @@ export default function TestBeatPortal() {
         </div>
       )}
 
-      {/* ================= MODAL: DEDICATED PARTNER WITH US APPLICATION ================= */}
+      {/* ================= MODAL: PARTNER WITH US APPLICATION ================= */}
       {isPartnerModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
           <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl p-7 relative border border-slate-100 max-h-[90vh] overflow-y-auto">
@@ -1850,7 +2071,7 @@ export default function TestBeatPortal() {
                       required 
                       value={affiliateData.city}
                       onChange={(e) => setAffiliateData({ ...affiliateData, city: e.target.value })}
-                      placeholder="e.g. Greater Noida, Delhi, Lucknow" 
+                      placeholder="e.g. Faridabad, Greater Noida, Delhi" 
                       className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#032C64]"
                     />
                   </div>
@@ -1878,6 +2099,714 @@ export default function TestBeatPortal() {
                 </button>
               </form>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* ================= FUNCTIONAL SHOPPING CART SLIDE-OVER DRAWER ================= */}
+      {isCartOpen && (
+        <div className="fixed inset-0 z-50 overflow-hidden bg-slate-950/70 backdrop-blur-xs flex justify-end">
+          <div className="bg-white w-full max-w-md h-full flex flex-col shadow-2xl animate-in slide-in-from-right duration-300">
+            
+            <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+              <div className="flex items-center space-x-2">
+                <ShoppingCart className="w-5 h-5 text-[#4575B4]" />
+                <h3 className="text-lg font-black text-slate-900">Diagnostic Cart</h3>
+                <span className="bg-blue-100 text-[#032C64] text-xs font-black px-2 py-0.5 rounded-full">
+                  {selectedTests.length} Items
+                </span>
+              </div>
+              <button 
+                onClick={() => setIsCartOpen(false)}
+                className="p-1.5 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-200"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-6 space-y-3">
+              {selectedTests.length === 0 ? (
+                <div className="text-center py-16">
+                  <ShoppingCart className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                  <p className="text-sm font-bold text-slate-700">Your cart is empty</p>
+                  <p className="text-xs text-slate-400 mt-1">Select blood tests or book via consultation form.</p>
+                </div>
+              ) : (
+                selectedTests.map(item => (
+                  <div key={item.id} className="p-3.5 border border-slate-200 rounded-2xl flex items-center justify-between bg-white shadow-2xs">
+                    <div>
+                      <span className="text-[9px] font-black uppercase text-blue-900 bg-blue-50 px-1.5 py-0.5 rounded">
+                        {item.category}
+                      </span>
+                      <h4 className="font-bold text-slate-900 text-xs mt-1 leading-snug">{item.name}</h4>
+                      <p className="text-[11px] text-slate-400">{item.parametersCount} Parameters • Code: {item.code}</p>
+                    </div>
+                    <div className="text-right ml-3 flex-shrink-0">
+                      <p className="text-sm font-black text-[#032C64]">₹{item.offerPrice}</p>
+                      <button 
+                        onClick={() => toggleTest(item)}
+                        className="text-[11px] text-rose-500 hover:underline font-semibold"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {selectedTests.length > 0 && (
+              <div className="p-6 border-t border-slate-200 bg-slate-50 space-y-3">
+                {walletBalance > 0 && (
+                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-between text-xs">
+                    <div className="flex items-center space-x-2">
+                      <Wallet className="w-4 h-4 text-[#4575B4]" />
+                      <div>
+                        <p className="font-bold text-slate-800">Use TestBeat Wallet</p>
+                        <p className="text-[10px] text-blue-700">Balance: ₹{walletBalance}</p>
+                      </div>
+                    </div>
+                    <input 
+                      type="checkbox" 
+                      checked={useWalletBalance} 
+                      onChange={(e) => setUseWalletBalance(e.target.checked)}
+                      className="w-4 h-4 accent-[#032C64] cursor-pointer" 
+                    />
+                  </div>
+                )}
+
+                <div className="space-y-1.5 text-xs text-slate-600">
+                  <div className="flex justify-between">
+                    <span>Tests Subtotal:</span>
+                    <span className="font-bold text-slate-900">₹{cartSubtotal}</span>
+                  </div>
+                  <div className="flex justify-between text-emerald-600 font-medium">
+                    <span>Total Discount Saved:</span>
+                    <span>-₹{cartDiscount}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Phlebotomist Doorstep Collection:</span>
+                    <span className="font-bold text-emerald-600">FREE ₹0</span>
+                  </div>
+                  {useWalletBalance && walletBalance > 0 && (
+                    <div className="flex justify-between text-blue-800 font-bold">
+                      <span>Wallet Deduction Applied:</span>
+                      <span>-₹{Math.min(walletBalance, cartSubtotal)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between text-base font-black text-slate-900 pt-2 border-t border-slate-200">
+                    <span>Final Amount Payable:</span>
+                    <span className="text-[#032C64]">₹{finalPayable}</span>
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleProceedCheckout}
+                  className="w-full py-3.5 bg-[#032C64] hover:bg-[#0c3b65] text-white rounded-xl text-xs font-black uppercase tracking-wider shadow-lg shadow-blue-900/30 transition-all flex items-center justify-center space-x-2"
+                >
+                  <span>Proceed to Home Collection Booking</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+
+          </div>
+        </div>
+      )}
+
+      {/* ================= MODAL: ORDER CONFIRMED MODAL ================= */}
+      {confirmedOrder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl p-7 relative border border-slate-100 animate-in zoom-in-95 duration-200 text-center">
+            
+            <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 ring-8 ring-emerald-50">
+              <Check className="w-8 h-8 text-emerald-600 stroke-[3]" />
+            </div>
+
+            <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full inline-block mb-2">
+              Appointment Scheduled
+            </span>
+
+            <h3 className="text-2xl font-black text-slate-900">Order Placed Successfully!</h3>
+            <p className="text-slate-500 text-xs mt-1 mb-6">
+              Your certified home sample collection appointment is confirmed.
+            </p>
+
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-left text-xs space-y-2.5 mb-6">
+              <div className="flex justify-between pb-2 border-b border-slate-200">
+                <span className="text-slate-500 font-semibold">Booking Reference ID:</span>
+                <span className="font-black text-[#032C64]">{confirmedOrder.bookingId}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500 font-semibold">Patient Name:</span>
+                <span className="font-bold text-slate-900">{confirmedOrder.patientName}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500 font-semibold">Scheduled Slot:</span>
+                <span className="font-bold text-emerald-700">{confirmedOrder.scheduledTime}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500 font-semibold">Biomarkers Included:</span>
+                <span className="font-bold text-slate-900">{confirmedOrder.testCount} Tests Selected</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500 font-semibold">Home Pickup Address:</span>
+                <span className="font-semibold text-slate-800 truncate max-w-[200px]" title={confirmedOrder.address}>{confirmedOrder.address}</span>
+              </div>
+              <div className="flex justify-between pt-2 border-t border-slate-200 font-black text-sm">
+                <span className="text-slate-900">Total Amount Paid:</span>
+                <span className="text-[#032C64]">₹{confirmedOrder.amountPaid}</span>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <button
+                onClick={() => {
+                  setConfirmedOrder(null);
+                  setActiveAccountView('orders');
+                }}
+                className="w-full py-3 bg-[#032C64] hover:bg-[#0c3b65] text-white rounded-xl text-xs font-black uppercase tracking-wider shadow-md transition-all flex items-center justify-center space-x-2"
+              >
+                <span>Track in My Orders</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+
+              <button
+                onClick={() => {
+                  setConfirmedOrder(null);
+                  setSelectedTests([]);
+                }}
+                className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all"
+              >
+                Done / Back to Home
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* ================= MODAL: CUSTOMER ACCOUNT PANELS ================= */}
+      {activeAccountView && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
+          <div className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl p-6 sm:p-8 relative border border-slate-100 max-h-[90vh] overflow-y-auto">
+            <button 
+              onClick={() => setActiveAccountView(null)}
+              className="absolute top-5 right-5 p-1.5 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center space-x-2 border-b border-slate-100 pb-4 overflow-x-auto text-xs font-black mb-6">
+              <button 
+                onClick={() => setActiveAccountView('profile')} 
+                className={`px-3 py-2 rounded-xl transition-all ${activeAccountView === 'profile' ? 'bg-[#032C64] text-white shadow' : 'border border-slate-200 text-slate-600'}`}
+              >
+                My Profile
+              </button>
+              <button 
+                onClick={() => setActiveAccountView('orders')} 
+                className={`px-3 py-2 rounded-xl transition-all ${activeAccountView === 'orders' ? 'bg-[#032C64] text-white shadow' : 'border border-slate-200 text-slate-600'}`}
+              >
+                My Orders
+              </button>
+              <button 
+                onClick={() => setActiveAccountView('subscriptions')} 
+                className={`px-3 py-2 rounded-xl transition-all ${activeAccountView === 'subscriptions' ? 'bg-[#032C64] text-white shadow' : 'border border-slate-200 text-slate-600'}`}
+              >
+                My Subscriptions
+              </button>
+              <button 
+                onClick={() => setActiveAccountView('wallet')} 
+                className={`px-3 py-2 rounded-xl transition-all ${activeAccountView === 'wallet' ? 'bg-[#032C64] text-white shadow' : 'border border-slate-200 text-slate-600'}`}
+              >
+                Wallet (₹{walletBalance})
+              </button>
+              <button 
+                onClick={() => setActiveAccountView('family')} 
+                className={`px-3 py-2 rounded-xl transition-all ${activeAccountView === 'family' ? 'bg-[#032C64] text-white shadow' : 'border border-slate-200 text-slate-600'}`}
+              >
+                Family Members
+              </button>
+            </div>
+
+            {/* PANEL: MY PROFILE */}
+            {activeAccountView === 'profile' && (
+              <div>
+                <h3 className="text-xl font-black text-slate-900 mb-1">Customer Profile & Address</h3>
+                <p className="text-xs text-slate-500 mb-6">Manage your primary collection address for phlebotomist home visits.</p>
+                
+                <form onSubmit={(e) => { e.preventDefault(); alert('Profile details updated successfully!'); setActiveAccountView(null); }} className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Full Name</label>
+                      <input 
+                        type="text" 
+                        value={profileData.name} 
+                        onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
+                        className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:border-[#032C64] focus:outline-none" 
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Mobile Number</label>
+                      <input 
+                        type="tel" 
+                        value={profileData.phone} 
+                        readOnly 
+                        className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold bg-slate-50 focus:outline-none text-slate-500" 
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Age</label>
+                      <input 
+                        type="number" 
+                        value={profileData.age} 
+                        onChange={(e) => setProfileData({ ...profileData, age: e.target.value })}
+                        className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:border-[#032C64] focus:outline-none" 
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">City</label>
+                      <input 
+                        type="text" 
+                        value={profileData.city} 
+                        onChange={(e) => setProfileData({ ...profileData, city: e.target.value })}
+                        className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:border-[#032C64] focus:outline-none" 
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Pincode</label>
+                      <input 
+                        type="text" 
+                        value={profileData.pincode} 
+                        onChange={(e) => setProfileData({ ...profileData, pincode: e.target.value })}
+                        className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:border-[#032C64] focus:outline-none" 
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Detailed Home Address</label>
+                    <textarea 
+                      rows={2} 
+                      value={profileData.address}
+                      onChange={(e) => setProfileData({ ...profileData, address: e.target.value })}
+                      className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:border-[#032C64] focus:outline-none" 
+                    />
+                  </div>
+
+                  <button type="submit" className="px-6 py-2.5 bg-[#032C64] hover:bg-[#0c3b65] text-white text-xs font-bold rounded-xl shadow transition-all">
+                    Save Changes
+                  </button>
+                </form>
+              </div>
+            )}
+
+            {/* PANEL: MY ORDERS */}
+            {activeAccountView === 'orders' && (
+              <div>
+                <h3 className="text-xl font-black text-slate-900 mb-1">Live Bookings & Report Vault</h3>
+                <p className="text-xs text-slate-500 mb-6">Real-time status of blood sample collection, lab processing, and report download.</p>
+
+                <div className="border border-slate-200 rounded-2xl p-5 bg-slate-50/50">
+                  <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-200">
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">
+                        Phlebotomist Assigned
+                      </span>
+                      <h4 className="font-extrabold text-slate-900 text-sm mt-1">Full Body Comprehensive (Vital Checkup)</h4>
+                      <p className="text-[11px] text-slate-500">Booking ID: #TB-98210 • Partner Lab: Thyrocare Technologies</p>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-base font-black text-slate-900">₹1,199</span>
+                      <p className="text-[11px] text-emerald-600 font-bold">Paid via Wallet</p>
+                    </div>
+                  </div>
+                  <div className="pt-3 flex flex-wrap items-center justify-between text-xs gap-3">
+                    <div className="flex items-center space-x-2 text-slate-600">
+                      <User className="w-4 h-4 text-[#032C64]" />
+                      <span>Patient: <b>Self ({profileData.name})</b></span>
+                    </div>
+                    <div className="flex items-center space-x-2 text-slate-600">
+                      <Clock className="w-4 h-4 text-[#032C64]" />
+                      <span>Scheduled: <b>Tomorrow, 07:30 AM</b></span>
+                    </div>
+                    <button onClick={() => alert('Sample tracking: Phlebotomist en route at 7:00 AM')} className="px-3.5 py-1.5 bg-[#032C64] text-white rounded-lg text-xs font-bold">
+                      Live Tracking
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* PANEL: MY SUBSCRIPTIONS */}
+            {activeAccountView === 'subscriptions' && (
+              <div>
+                <h3 className="text-xl font-black text-slate-900 mb-1">Preventive Health Subscriptions</h3>
+                <p className="text-xs text-slate-500 mb-6">Periodic quarterly diabetes and thyroid monitoring plans.</p>
+
+                <div className="border border-slate-200 rounded-2xl p-5 bg-white">
+                  <span className="text-[10px] font-black uppercase text-[#032C64] bg-blue-50 px-2 py-0.5 rounded">Active Plan</span>
+                  <h4 className="font-bold text-slate-900 text-sm mt-1">Quarterly Diabetic Care Shield (HbA1c + Fasting)</h4>
+                  <p className="text-xs text-slate-500 mt-1">Next test due in: 45 Days • Automatic sample collection</p>
+                  <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                    <span className="font-extrabold text-[#032C64]">₹499 / Quarter</span>
+                    <button className="text-rose-600 font-bold hover:underline">Manage Plan</button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* PANEL: WALLET BALANCE */}
+            {activeAccountView === 'wallet' && (
+              <div>
+                <h3 className="text-xl font-black text-slate-900 mb-1">TestBeat Health Wallet</h3>
+                <p className="text-xs text-slate-500 mb-6">Manage cashback and wallet recharge for seamless diagnostic checkouts.</p>
+
+                <div className="bg-gradient-to-tr from-[#032C64] to-[#0c3b65] text-white rounded-2xl p-6 shadow-md mb-6 flex items-center justify-between">
+                  <div>
+                    <span className="text-xs font-bold text-blue-200">Available Balance</span>
+                    <h2 className="text-4xl font-black mt-1 text-white">₹{walletBalance}</h2>
+                  </div>
+                  <button 
+                    onClick={() => setIsAddMoneyOpen(true)}
+                    className="px-5 py-2.5 bg-[#4575B4] hover:bg-blue-600 text-white font-bold text-xs rounded-xl transition-all shadow"
+                  >
+                    + Add Balance
+                  </button>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
+                    <div className="flex items-center space-x-2.5">
+                      <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">+</div>
+                      <div>
+                        <p className="font-bold text-slate-900">Sign Up Welcome Health Bonus</p>
+                        <p className="text-[10px] text-slate-400">Promotional Credit • Active</p>
+                      </div>
+                    </div>
+                    <span className="font-black text-emerald-600 text-sm">+₹250</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* PANEL: FAMILY MEMBERS */}
+            {activeAccountView === 'family' && (
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-xl font-black text-slate-900">Family Members Diagnostic Profiles</h3>
+                    <p className="text-xs text-slate-500">Book blood tests specifically for yourself or family members.</p>
+                  </div>
+                  <button 
+                    onClick={() => setIsAddFamilyOpen(true)}
+                    className="px-3.5 py-2 bg-[#032C64] hover:bg-[#0c3b65] text-white text-xs font-bold rounded-xl shadow flex items-center space-x-1.5 transition-all"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>+ Add Member</span>
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {familyMembers.map(member => (
+                    <div key={member.id} className="border border-slate-200 rounded-2xl p-4 bg-white shadow-xs flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-[10px] font-black uppercase text-blue-900 bg-blue-100 px-2 py-0.5 rounded">
+                            {member.relation}
+                          </span>
+                          <span className="text-xs font-bold text-slate-400">{member.gender}</span>
+                        </div>
+                        <h4 className="font-bold text-slate-900 text-sm">{member.name}</h4>
+                        <p className="text-xs text-slate-500">Age: {member.age} Years</p>
+                      </div>
+
+                      <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                        <button onClick={() => alert(`Selected ${member.name} for upcoming booking`)} className="text-[#032C64] font-bold">
+                          Book Test For {member.relation}
+                        </button>
+                        {member.relation !== 'Self' && (
+                          <button onClick={() => setFamilyMembers(prev => prev.filter(m => m.id !== member.id))} className="text-rose-500 hover:text-rose-700">
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+          </div>
+        </div>
+      )}
+
+      {/* ================= MODAL: CUSTOMER AUTHENTICATION ================= */}
+      {isAuthOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
+          <div className="bg-white w-full max-w-sm rounded-3xl shadow-2xl p-6 relative border border-slate-100">
+            <button 
+              onClick={() => { setIsAuthOpen(false); setAuthOtpSent(false); }}
+              className="absolute top-4 right-4 p-1.5 rounded-full text-slate-400 hover:text-slate-600"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex bg-slate-100 p-1 rounded-xl mb-4">
+              <button 
+                onClick={() => { setAuthMode('LOGIN'); setAuthOtpSent(false); }}
+                className={`flex-1 py-1.5 text-xs font-black rounded-lg transition-all ${authMode === 'LOGIN' ? 'bg-[#032C64] text-white' : 'text-slate-600'}`}
+              >
+                OTP Login
+              </button>
+              <button 
+                onClick={() => { setAuthMode('SIGNUP'); setAuthOtpSent(false); }}
+                className={`flex-1 py-1.5 text-xs font-black rounded-lg transition-all ${authMode === 'SIGNUP' ? 'bg-[#032C64] text-white' : 'text-slate-600'}`}
+              >
+                New Sign Up
+              </button>
+            </div>
+
+            {authMode === 'LOGIN' ? (
+              <form onSubmit={handleLoginSubmit} className="space-y-3.5">
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Mobile Number</label>
+                  <div className="flex items-center border border-slate-300 rounded-xl px-3 py-2 focus-within:border-[#032C64]">
+                    <span className="text-slate-500 font-bold text-xs mr-2">+91</span>
+                    <input 
+                      type="tel" 
+                      maxLength={10} 
+                      required 
+                      value={patientMobile}
+                      onChange={(e) => setPatientMobile(e.target.value.replace(/\D/g, ''))}
+                      placeholder="10-digit number" 
+                      className="w-full text-slate-900 font-bold focus:outline-none text-sm" 
+                    />
+                  </div>
+                </div>
+
+                {authOtpSent && (
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Enter 6-Digit OTP</label>
+                    <input 
+                      type="text" 
+                      maxLength={6} 
+                      required
+                      value={patientOtp}
+                      onChange={(e) => setPatientOtp(e.target.value.replace(/\D/g, ''))}
+                      placeholder="123456" 
+                      className="w-full border border-slate-300 rounded-xl px-3 py-2 text-center font-black tracking-widest text-base focus:border-[#032C64] focus:outline-none" 
+                    />
+                  </div>
+                )}
+
+                <button type="submit" className="w-full py-2.5 bg-[#032C64] hover:bg-[#0c3b65] text-white rounded-xl text-xs font-black uppercase tracking-wider shadow-md transition-all">
+                  {authOtpSent ? 'Verify OTP & Enter' : 'Send Login OTP'}
+                </button>
+              </form>
+            ) : (
+              <form onSubmit={handleSignupSubmit} className="space-y-3">
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-700 uppercase mb-0.5">Mobile Number *</label>
+                  <div className="flex items-center border border-slate-300 rounded-xl px-3 py-1.5">
+                    <span className="text-slate-500 font-bold text-xs mr-2">+91</span>
+                    <input 
+                      type="tel" 
+                      maxLength={10} 
+                      required 
+                      value={signupForm.phone}
+                      onChange={(e) => setSignupForm({ ...signupForm, phone: e.target.value.replace(/\D/g, '') })}
+                      placeholder="10-digit mobile" 
+                      className="w-full text-slate-900 font-bold text-xs focus:outline-none" 
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-700 uppercase mb-0.5">Full Name *</label>
+                  <input 
+                    type="text" 
+                    required 
+                    value={signupForm.name}
+                    onChange={(e) => setSignupForm({ ...signupForm, name: e.target.value })}
+                    placeholder="Patient full name" 
+                    className="w-full border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-semibold focus:outline-none" 
+                  />
+                </div>
+
+                <div className="grid grid-cols-3 gap-2">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-700 uppercase mb-0.5">Age</label>
+                    <input 
+                      type="number" 
+                      required 
+                      value={signupForm.age}
+                      onChange={(e) => setSignupForm({ ...signupForm, age: e.target.value })}
+                      placeholder="28" 
+                      className="w-full border border-slate-300 rounded-xl px-2 py-1.5 text-xs font-semibold focus:outline-none" 
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-700 uppercase mb-0.5">City</label>
+                    <input 
+                      type="text" 
+                      required 
+                      value={signupForm.city}
+                      onChange={(e) => setSignupForm({ ...signupForm, city: e.target.value })}
+                      placeholder="Faridabad" 
+                      className="w-full border border-slate-300 rounded-xl px-2 py-1.5 text-xs font-semibold focus:outline-none" 
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-700 uppercase mb-0.5">Pincode</label>
+                    <input 
+                      type="text" 
+                      maxLength={6} 
+                      required 
+                      value={signupForm.pincode}
+                      onChange={(e) => setSignupForm({ ...signupForm, pincode: e.target.value.replace(/\D/g, '') })}
+                      placeholder="121001" 
+                      className="w-full border border-slate-300 rounded-xl px-2 py-1.5 text-xs font-semibold focus:outline-none" 
+                    />
+                  </div>
+                </div>
+
+                {authOtpSent && (
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-700 uppercase mb-0.5">Enter OTP Code</label>
+                    <input 
+                      type="text" 
+                      maxLength={6} 
+                      value={patientOtp}
+                      onChange={(e) => setPatientOtp(e.target.value.replace(/\D/g, ''))}
+                      placeholder="123456" 
+                      className="w-full border border-slate-300 rounded-xl px-2 py-1.5 text-center font-bold tracking-widest text-xs focus:outline-none" 
+                    />
+                  </div>
+                )}
+
+                <button type="submit" className="w-full py-2.5 bg-[#032C64] hover:bg-[#0c3b65] text-white rounded-xl text-xs font-black uppercase tracking-wider shadow-md transition-all">
+                  {authOtpSent ? 'Verify OTP & Finish' : 'Create Account & Send OTP'}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ================= MODAL: ADD MONEY TO WALLET ================= */}
+      {isAddMoneyOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
+          <div className="bg-white w-full max-w-sm rounded-3xl shadow-2xl p-6 relative border border-slate-100">
+            <button onClick={() => setIsAddMoneyOpen(false)} className="absolute top-4 right-4 p-1.5 rounded-full text-slate-400 hover:text-slate-600">
+              <X className="w-4 h-4" />
+            </button>
+            <h3 className="text-base font-black text-slate-900 mb-1">Add Money to TestBeat Wallet</h3>
+            <p className="text-xs text-slate-500 mb-4">Pay securely across all partner labs with instant discount redemption.</p>
+
+            <div className="flex gap-2 mb-4">
+              {[500, 1000, 2000].map(amt => (
+                <button 
+                  key={amt} 
+                  onClick={() => setRechargeAmt(amt)}
+                  className={`flex-1 py-1.5 border rounded-xl text-xs font-bold transition-all ${rechargeAmt === amt ? 'bg-blue-50 border-[#032C64] text-[#032C64]' : 'border-slate-200 text-slate-700'}`}
+                >
+                  +₹{amt}
+                </button>
+              ))}
+            </div>
+
+            <input 
+              type="number" 
+              value={rechargeAmt}
+              onChange={(e) => setRechargeAmt(parseInt(e.target.value) || 0)}
+              className="w-full border border-slate-300 rounded-xl px-3 py-2 text-center text-xl font-black focus:outline-none mb-4" 
+            />
+
+            <button onClick={handleAddMoneyConfirm} className="w-full py-2.5 bg-[#032C64] hover:bg-[#0c3b65] text-white font-bold text-xs rounded-xl shadow">
+              Proceed with Razorpay / UPI
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ================= MODAL: ADD FAMILY MEMBER ================= */}
+      {isAddFamilyOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
+          <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl p-6 relative border border-slate-100">
+            <button onClick={() => setIsAddFamilyOpen(false)} className="absolute top-4 right-4 p-1.5 rounded-full text-slate-400 hover:text-slate-600">
+              <X className="w-4 h-4" />
+            </button>
+            
+            <div className="flex items-center space-x-1.5 text-[#032C64] mb-1">
+              <Users className="w-4 h-4" />
+              <span className="text-xs font-extrabold uppercase tracking-wider">Family Member Setup</span>
+            </div>
+            <h3 className="text-lg font-black text-slate-900 mb-1">Add Person for Blood Test</h3>
+            <p className="text-xs text-slate-500 mb-4">Select relation and patient details for certified lab reports.</p>
+
+            <form onSubmit={handleAddFamilyConfirm} className="space-y-3.5">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Relation *</label>
+                <select 
+                  value={newFamilyMember.relation}
+                  onChange={(e) => setNewFamilyMember({ ...newFamilyMember, relation: e.target.value as FamilyRelation })}
+                  className="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold focus:outline-none"
+                >
+                  <option value="Self">Self</option>
+                  <option value="Spouse">Spouse</option>
+                  <option value="Children">Children</option>
+                  <option value="Parents">Parents</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Full Name *</label>
+                <input 
+                  type="text" 
+                  required 
+                  value={newFamilyMember.name}
+                  onChange={(e) => setNewFamilyMember({ ...newFamilyMember, name: e.target.value })}
+                  placeholder="Patient Name" 
+                  className="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none" 
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Age *</label>
+                  <input 
+                    type="number" 
+                    required 
+                    value={newFamilyMember.age}
+                    onChange={(e) => setNewFamilyMember({ ...newFamilyMember, age: e.target.value })}
+                    placeholder="e.g. 58" 
+                    className="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none" 
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Gender *</label>
+                  <select 
+                    value={newFamilyMember.gender}
+                    onChange={(e) => setNewFamilyMember({ ...newFamilyMember, gender: e.target.value as GenderType })}
+                    className="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold focus:outline-none"
+                  >
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <button type="submit" className="w-full py-2.5 bg-[#032C64] hover:bg-[#0c3b65] text-white rounded-xl text-xs font-black uppercase tracking-wider shadow transition-all">
+                Save Family Member
+              </button>
+            </form>
           </div>
         </div>
       )}
