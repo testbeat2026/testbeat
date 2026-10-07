@@ -38,11 +38,54 @@ import {
   ChevronLeft
 } from 'lucide-react';
 
-// ==========================================
-// 100% EXACT VECTORIZED TESTBEAT LOGO (POINT 1)
-// ==========================================
+// ============================================================
+// 1. SINGLE 'T' ICON (Exact vector from your standalone upload)
+// ============================================================
+export const TestBeatIcon = ({ className = "w-10 h-10", darkBg = false }: { className?: string; darkBg?: boolean }) => {
+  const strokeColor = darkBg ? "#FFFFFF" : "#032C64";
+  const ecgColor = darkBg ? "#74ADD1" : "#4575B4";
 
-const TestBeatLogo = ({ className = "h-11 w-auto", darkBg = false }: { className?: string; darkBg?: boolean }) => {
+  return (
+    <svg viewBox="0 0 100 100" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g transform="translate(18, 10) rotate(-22 32 40)">
+        {/* Outer Border Outline */}
+        <path
+          d="M 6 12 C 6 4, 12 0, 20 0 L 44 0 C 52 0, 58 4, 58 12 C 58 17, 54 21, 48 22 L 48 64 C 48 74, 40 82, 32 82 C 24 82, 16 74, 16 64 L 16 22 C 10 21, 6 17, 6 12 Z"
+          stroke={strokeColor}
+          strokeWidth="6"
+          strokeLinejoin="round"
+          fill="none"
+        />
+
+        {/* Inner Chamber */}
+        <path
+          d="M 12 11 C 12 7, 15 5, 20 5 L 44 5 C 49 5, 52 7, 52 11 C 52 14, 49 16, 43 17 L 43 64 C 43 71, 38 76, 32 76 C 26 76, 21 71, 21 64 L 21 17 C 15 16, 12 14, 12 11 Z"
+          fill={darkBg ? "rgba(255,255,255,0.08)" : "rgba(3,44,100,0.05)"}
+        />
+
+        {/* ECG Pulse Waveform Line inside Tube */}
+        <path
+          d="M 23 48 L 27 48 L 30 42 L 34 54 L 37 46 L 41 48"
+          stroke={ecgColor}
+          strokeWidth="3.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+
+        {/* Blood Droplet */}
+        <path
+          d="M 32 58 C 32 58 27 65 27 68.5 C 27 71.5 29.2 73.5 32 73.5 C 34.8 73.5 37 71.5 37 68.5 C 37 65 32 58 32 58 Z"
+          fill="#D73027"
+        />
+      </g>
+    </svg>
+  );
+};
+
+// ============================================================
+// 2. 100% EXACT VECTORIZED TESTBEAT LOGO (Header & Footer)
+// ============================================================
+export const TestBeatLogo = ({ className = "h-11 w-auto", darkBg = false }: { className?: string; darkBg?: boolean }) => {
   const fill = darkBg ? "#FFFFFF" : "#032C64";
   return (
     <svg viewBox="0 0 540 135" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -186,7 +229,6 @@ const TESTS_CATALOG: TestItem[] = [
   { id: 't12', name: 'Complete Hemogram (CBC & ESR)', code: 'HM013', category: 'full-body', parametersCount: 29, fastingRequired: false, sampleType: 'EDTA Blood', description: 'Complete Blood Count with automated ESR sedimentation rate.', mrp: 600, offerPrice: 449 }
 ];
 
-// Featured Diagnostic Plans across top accredited diagnostic laboratories
 const FEATURED_DIAGNOSTIC_PLANS: FeaturedDiagnosticPlan[] = [
   {
     id: 'f-plan-1',
@@ -473,7 +515,7 @@ export default function TestBeatPortal() {
   const [showCompareTable, setShowCompareTable] = useState(false);
   const [expandedPlanId, setExpandedPlanId] = useState<string | null>(null);
 
-  // Slider controls for Point 2: Sliding Lab Features Section
+  // Slider controls for auto-sliding featured diagnostic plans
   const sliderRef = useRef<HTMLDivElement>(null);
   const [isSliderPaused, setIsSliderPaused] = useState(false);
 
@@ -558,7 +600,7 @@ export default function TestBeatPortal() {
     category: 'Doctor / Clinic'
   });
 
-  // Auto-scroll loop for Point 2: Sliding Lab Features in single line
+  // Auto-slide loop for Featured Labs
   useEffect(() => {
     if (isSliderPaused) return;
     const interval = setInterval(() => {
@@ -1344,6 +1386,7 @@ export default function TestBeatPortal() {
           <p className="text-slate-500 text-xs sm:text-sm mt-1">Select an organ category or individual biomarker to calculate multi-lab prices.</p>
         </div>
 
+        {/* Decorated Categories Tabs */}
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 mb-8">
           {CLINICAL_CATEGORIES.map(cat => {
             const Icon = cat.icon;
@@ -1367,6 +1410,7 @@ export default function TestBeatPortal() {
           })}
         </div>
 
+        {/* Selectable Test Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {filteredCatalog.map(test => {
             const isSelected = selectedTests.some(t => t.id === test.id);
@@ -1578,7 +1622,7 @@ export default function TestBeatPortal() {
         </div>
       </section>
 
-      {/* POINT 2 & 6: RE-DESIGNED SLIDING LAB FEATURES SECTION (SINGLE LINE SMOOTH CAROUSEL) */}
+      {/* 7. SLIDING LAB FEATURES SECTION */}
       <section className="bg-white py-16 px-4 sm:px-6 lg:px-8 border-b border-slate-200 relative" id="featured-tests">
         <div className="max-w-7xl mx-auto">
           
@@ -1632,7 +1676,7 @@ export default function TestBeatPortal() {
                   className="flex-shrink-0 w-[350px] sm:w-[380px] bg-gradient-to-b from-white to-slate-50/80 border border-slate-200 hover:border-[#4575B4] rounded-3xl p-6 flex flex-col justify-between transition-all shadow-sm hover:shadow-xl hover:-translate-y-1"
                 >
                   <div>
-                    {/* BOLD HIGHLIGHTED LAB NAME (PROFESSIONAL DESIGN) */}
+                    {/* BOLD HIGHLIGHTED LAB NAME */}
                     <div className="flex items-start justify-between gap-2 mb-3.5">
                       <div className="bg-blue-50 border border-blue-200/80 text-[#032C64] px-3.5 py-1.5 rounded-xl shadow-2xs">
                         <span className="text-xs font-black tracking-wide uppercase">
