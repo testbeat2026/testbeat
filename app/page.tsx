@@ -51,7 +51,7 @@ interface PincodeEntry {
   allPins: string[];
 }
 
-// 111 Serviceable Districts across 23 States directly from Excel
+// 111 Districts across 23 States directly from Excel
 const SERVICEABLE_LOCATIONS_DATA: PincodeEntry[] = [
   { city: 'Gautambuddha Nagar (Greater Noida)', state: 'Uttar Pradesh', pin: '201310', allPins: ['201310', '201306', '201308', '201312', '201314', '201315'] },
   { city: 'Noida', state: 'Uttar Pradesh', pin: '201301', allPins: ['201301', '201303', '201304', '201305', '201307', '201309', '201313'] },
@@ -94,7 +94,7 @@ const CLINICAL_CATEGORIES = [
   { id: 'heart', name: 'Heart & Lipid', icon: Heart, color: 'from-rose-500 to-red-600', textLight: 'text-rose-800', bgLight: 'bg-rose-50/70', border: 'border-rose-200' },
   { id: 'liver', name: 'Liver Health', icon: Activity, color: 'from-emerald-500 to-teal-700', textLight: 'text-emerald-800', bgLight: 'bg-emerald-50/70', border: 'border-emerald-200' },
   { id: 'kidney', name: 'Kidney (Renal)', icon: Activity, color: 'from-cyan-500 to-blue-700', textLight: 'text-cyan-800', bgLight: 'bg-cyan-50/70', border: 'border-cyan-200' },
-  { id: 'vitamins', name: 'Vitamins & Iron', icon: Sparkles, color: 'from-violet-500 to-purple-700', textLight: 'text-purple-800', bgLight: 'bg-purple-50/70', border: 'border-purple-200' }
+  { id: 'vitamins', name: 'Vitamins & Iron', icon: Sparkles, color: 'from-violet-500 to-purple-700', textLight: 'text-purple-800', bgLight: 'bg-violet-50/70', border: 'border-purple-200' }
 ];
 
 interface TestItem {
@@ -425,7 +425,7 @@ export default function TestBeatPortal() {
     category: 'Doctor / Clinic'
   });
 
-  // Point 8: Location search by city name OR PIN code
+  // Dynamic filter for Location (City, State, or Pincode - Point 8)
   const filteredLocationResults = useMemo(() => {
     const q = locationSearchInput.toLowerCase().trim();
     if (!q) return SERVICEABLE_LOCATIONS_DATA;
@@ -575,6 +575,7 @@ export default function TestBeatPortal() {
             }
           });
 
+          // Auto-select matched tests into user's selection
           if (matchedCatalogTests.length > 0) {
             setSelectedTests(prev => {
               const merged = [...prev];
@@ -1274,7 +1275,7 @@ export default function TestBeatPortal() {
               <span className="text-xs font-black text-teal-800 bg-teal-100 px-3 py-1 rounded-full uppercase tracking-wider">
                 Real-Time Comparative Pricing
               </span>
-              <h2 className="text-3xl font-black text-slate-900 mt-2">
+              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mt-2">
                 Compare India&apos;s Top Diagnostic Labs
               </h2>
               <p className="text-slate-500 text-xs sm:text-sm mt-1">
@@ -1678,7 +1679,7 @@ export default function TestBeatPortal() {
         </span>
       </a>
 
-      {/* Point 7: COMPACT FLOATING CART / COMPARE BADGE (Clean 1-line strip replacing big blue box) */}
+      {/* Point 7: COMPACT FLOATING CART / COMPARE BADGE */}
       {selectedTests.length > 0 && (
         <div className="fixed bottom-6 left-6 z-40 bg-[#012C63] text-white px-4 py-2.5 rounded-2xl shadow-2xl border border-teal-500/40 flex items-center space-x-3.5 animate-in slide-in-from-bottom duration-300">
           <div className="flex items-center space-x-2">
