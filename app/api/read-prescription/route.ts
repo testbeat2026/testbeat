@@ -33,9 +33,10 @@ Extract ALL prescribed diagnostic tests, blood tests, and lab investigations (e.
 Return the result strictly as a raw JSON array of strings containing standard test names, for example: ["Complete Blood Count (CBC) Test", "Thyroid Profile Total (T3, T4, TSH)", "HBA1C Test"].
 If no diagnostic tests are written, return []. Do not include markdown formatting or backticks. Return ONLY the raw JSON array.`;
 
+    // Multi-model endpoints to prevent "model not found" errors
     const endpointsToTry = [
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
       'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
       'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
       'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent'
     ];
