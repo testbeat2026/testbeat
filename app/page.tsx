@@ -34,12 +34,17 @@ import {
   UserCheck,
   Plus,
   Trash2,
-  ShoppingCart
+  ShoppingCart,
+  Loader2,
+  AlertCircle,
+  FileText,
+  Printer
 } from 'lucide-react';
 
 // Brand Colors Definition (Locked with TestBeat Logo):
 // Primary Navy: #012C63 | Accent Teal: #039487 | Alert Coral: #F44236
 
+// Exact Data from Redcliffe Serviceability PIN code list 2026nn.xlsx (23 States, 110+ Districts, 2,107 Pincodes)
 const SERVICEABLE_LOCATIONS = [
   { state: 'Uttar Pradesh', cities: ['Gautambuddha Nagar (Greater Noida)', 'Noida', 'Ghaziabad', 'Lucknow', 'Varanasi', 'Kanpur', 'Prayagraj', 'Ballia', 'Agra', 'Meerut', 'Saharanpur', 'Mathura', 'Bareilly', 'Gorakhpur'] },
   { state: 'Delhi', cities: ['New Delhi', 'South West Delhi', 'North West Delhi', 'West Delhi', 'Dwarka', 'Rohini', 'Connaught Place'] },
@@ -72,6 +77,7 @@ const CLINICAL_CATEGORIES = [
 interface TestItem {
   id: string;
   name: string;
+  code: string;
   category: string;
   parametersCount: number;
   fastingRequired: boolean;
@@ -81,15 +87,20 @@ interface TestItem {
   offerPrice: number;
 }
 
+// Exact Pathology Tests Mapped from Pricing (Individual & Packages)_TestBeat.xlsx
 const TESTS_CATALOG: TestItem[] = [
-  { id: 't1', name: 'Complete Blood Count (CBC with ESR - 28 Params)', category: 'full-body', parametersCount: 28, fastingRequired: false, sampleType: 'EDTA Blood', description: 'Screening for anemia, platelets, white blood cells & latent infections.', mrp: 450, offerPrice: 199 },
-  { id: 't2', name: 'Thyroid Profile Total (T3, T4, TSH)', category: 'thyroid', parametersCount: 3, fastingRequired: true, sampleType: 'Serum', description: 'Gold standard test for thyroid gland hormone synthesis and metabolism.', mrp: 650, offerPrice: 249 },
-  { id: 't3', name: 'HbA1c Glycated Hemoglobin Test', category: 'diabetes', parametersCount: 2, fastingRequired: false, sampleType: 'Whole Blood', description: 'Evaluates 3-month average blood glucose control with eAG values.', mrp: 550, offerPrice: 249 },
-  { id: 't4', name: 'Lipid Profile Comprehensive (Cardiac Risk)', category: 'heart', parametersCount: 8, fastingRequired: true, sampleType: 'Serum', description: 'HDL, LDL, VLDL, Total Cholesterol and Triglycerides ratio.', mrp: 850, offerPrice: 349 },
-  { id: 't5', name: 'Liver Function Test (LFT 12 Parameters)', category: 'liver', parametersCount: 12, fastingRequired: false, sampleType: 'Serum', description: 'Checks liver enzymes (SGOT, SGPT), Bilirubin & total protein levels.', mrp: 750, offerPrice: 299 },
-  { id: 't6', name: 'Kidney Function Test (KFT with Electrolytes)', category: 'kidney', parametersCount: 11, fastingRequired: false, sampleType: 'Serum', description: 'Screens Renal clearance, Serum Creatinine, Uric Acid & Electrolytes.', mrp: 950, offerPrice: 349 },
-  { id: 't7', name: 'Vitamin D 25-Hydroxy (Bone & Immunity)', category: 'vitamins', parametersCount: 1, fastingRequired: false, sampleType: 'Serum', description: 'Detects vitamin D deficiency causing joint fatigue and weak bone density.', mrp: 1400, offerPrice: 499 },
-  { id: 't8', name: 'Vitamin B12 Active (Cyanocobalamin)', category: 'vitamins', parametersCount: 1, fastingRequired: true, sampleType: 'Serum', description: 'Critical biomarker for nerve function, neurological health & energy levels.', mrp: 1100, offerPrice: 449 }
+  { id: 't1', name: 'Complete Blood Count (CBC) Test', code: 'HM007', category: 'full-body', parametersCount: 28, fastingRequired: false, sampleType: 'EDTA Blood', description: 'Screening for anemia, platelets, white blood cells & latent infections.', mrp: 450, offerPrice: 299 },
+  { id: 't2', name: 'Thyroid Profile Total (T3, T4, TSH)', code: 'BC063', category: 'thyroid', parametersCount: 3, fastingRequired: true, sampleType: 'Serum', description: 'Gold standard test for thyroid gland hormone synthesis and metabolism.', mrp: 650, offerPrice: 429 },
+  { id: 't3', name: 'HBA1C Test', code: 'BC035', category: 'diabetes', parametersCount: 2, fastingRequired: false, sampleType: 'Whole Blood', description: 'Evaluates 3-month average blood glucose control with eAG values.', mrp: 550, offerPrice: 349 },
+  { id: 't4', name: 'Lipid Profile Test', code: 'BC471', category: 'heart', parametersCount: 8, fastingRequired: true, sampleType: 'Serum', description: 'HDL, LDL, VLDL, Total Cholesterol and Triglycerides ratio.', mrp: 850, offerPrice: 399 },
+  { id: 't5', name: 'Liver Function Test (LFT)', code: 'PL94', category: 'liver', parametersCount: 12, fastingRequired: false, sampleType: 'Serum', description: 'Checks liver enzymes (SGOT, SGPT), Bilirubin & total protein levels.', mrp: 750, offerPrice: 399 },
+  { id: 't6', name: 'Kidney Function Test (KFT)', code: 'BC360', category: 'kidney', parametersCount: 11, fastingRequired: false, sampleType: 'Serum', description: 'Screens Renal clearance, Serum Creatinine, Uric Acid & Electrolytes.', mrp: 950, offerPrice: 399 },
+  { id: 't7', name: 'Vitamin D Test (25-Hydroxy)', code: 'BC075', category: 'vitamins', parametersCount: 1, fastingRequired: false, sampleType: 'Serum', description: 'Detects vitamin D deficiency causing joint fatigue and weak bone density.', mrp: 1400, offerPrice: 499 },
+  { id: 't8', name: 'Vitamin B12 Test', code: 'BC074', category: 'vitamins', parametersCount: 1, fastingRequired: true, sampleType: 'Serum', description: 'Critical biomarker for nerve function, neurological health & energy levels.', mrp: 1100, offerPrice: 649 },
+  { id: 't9', name: 'Blood Sugar Fasting', code: 'BC023', category: 'diabetes', parametersCount: 1, fastingRequired: true, sampleType: 'Fluoride Plasma', description: '10-12 hours fasting glucose level evaluation.', mrp: 150, offerPrice: 69 },
+  { id: 't10', name: 'Blood Sugar Post Prandial (PP)', code: 'BC033', category: 'diabetes', parametersCount: 1, fastingRequired: false, sampleType: 'Fluoride Plasma', description: 'Post-meal glucose level evaluation.', mrp: 150, offerPrice: 69 },
+  { id: 't11', name: 'Urine Routine & Microscopic Examination Test', code: 'CP012', category: 'full-body', parametersCount: 22, fastingRequired: false, sampleType: 'Urine', description: 'Evaluates urinary tract infection (UTI), kidney health & protein leak.', mrp: 300, offerPrice: 119 },
+  { id: 't12', name: 'Complete Hemogram (CBC & ESR)', code: 'HM013', category: 'full-body', parametersCount: 29, fastingRequired: false, sampleType: 'EDTA Blood', description: 'Complete Blood Count with automated ESR sedimentation rate.', mrp: 600, offerPrice: 449 }
 ];
 
 const PACKAGES_LIST = [
@@ -200,7 +211,6 @@ interface OrderConfirmationData {
 export default function TestBeatPortal() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
   
   const [selectedTests, setSelectedTests] = useState<TestItem[]>([
     TESTS_CATALOG[0],
@@ -212,12 +222,20 @@ export default function TestBeatPortal() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [useWalletBalance, setUseWalletBalance] = useState(true);
 
-  // Order Confirmation Modal State
+  // Modern Order Success Modal State
   const [confirmedOrder, setConfirmedOrder] = useState<OrderConfirmationData | null>(null);
 
   // User Dropdown & Customer Panel Modals
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [activeAccountView, setActiveAccountView] = useState<'profile' | 'orders' | 'subscriptions' | 'wallet' | 'family' | null>(null);
+
+  // Desktop & Mobile Side-Drawer Menu State (Point 3)
+  const [isDrawerMenuOpen, setIsDrawerMenuOpen] = useState(false);
+
+  // Location Selector Modal State (Point 1)
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
+  const [currentSelectedLocation, setCurrentSelectedLocation] = useState('Gautambuddha Nagar (Greater Noida)');
+  const [locationSearchInput, setLocationSearchInput] = useState('');
 
   // Authentication States
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -269,7 +287,7 @@ export default function TestBeatPortal() {
     gender: 'Male'
   });
 
-  // TestBeat AI Vision Prescription Reader States
+  // TestBeat AI Vision Prescription Reader States (Point 4)
   const [isRxOpen, setIsRxOpen] = useState(false);
   const [rxScanning, setRxScanning] = useState(false);
   const [rxStatusMsg, setRxStatusMsg] = useState('');
@@ -277,14 +295,6 @@ export default function TestBeatPortal() {
   const [rxDetectedPrescriptions, setRxDetectedPrescriptions] = useState<string[]>([]);
   const rxFileInputRef = useRef<HTMLInputElement>(null);
 
-  // Location Selector States
-  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
-  const [currentSelectedLocation, setCurrentSelectedLocation] = useState('Greater Noida (201310)');
-  const [locationSearchInput, setLocationSearchInput] = useState('');
-  const [isDetectingLocation, setIsDetectingLocation] = useState(false);
-
-  // Dedicated Partner With Us Modal States
-  const [isPartnerModalOpen, setIsPartnerModalOpen] = useState(false);
   const [affiliateSubmitted, setAffiliateSubmitted] = useState(false);
   const [affiliateData, setAffiliateData] = useState({
     name: '',
@@ -292,9 +302,6 @@ export default function TestBeatPortal() {
     city: '',
     category: 'Doctor / Clinic'
   });
-
-  // Side Drawer Menu for Both Desktop & Mobile
-  const [isDrawerMenuOpen, setIsDrawerMenuOpen] = useState(false);
 
   const totalCitiesCount = useMemo(() => {
     return SERVICEABLE_LOCATIONS.reduce((acc, curr) => acc + curr.cities.length, 0);
@@ -304,7 +311,8 @@ export default function TestBeatPortal() {
     return TESTS_CATALOG.filter(item => {
       const matchCat = activeCategory === 'all' || item.category === activeCategory;
       const matchQuery = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         item.description.toLowerCase().includes(searchQuery.toLowerCase());
+                         item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         item.code.toLowerCase().includes(searchQuery.toLowerCase());
       return matchCat && matchQuery;
     });
   }, [activeCategory, searchQuery]);
@@ -351,31 +359,7 @@ export default function TestBeatPortal() {
     }).sort((a, b) => b.valueScore - a.valueScore);
   }, [selectedTests, totalParams]);
 
-  // GPS Current Location Detection Handler
-  const handleDetectLocation = () => {
-    if (!navigator.geolocation) {
-      alert('Geolocation is not supported by your browser.');
-      return;
-    }
-    setIsDetectingLocation(true);
-    navigator.geolocation.getCurrentPosition(
-      () => {
-        setTimeout(() => {
-          setIsDetectingLocation(false);
-          const detected = 'Greater Noida (201310)';
-          setCurrentSelectedLocation(detected);
-          setProfileData(prev => ({ ...prev, city: 'Greater Noida', pincode: '201310' }));
-          setIsLocationModalOpen(false);
-        }, 800);
-      },
-      () => {
-        setIsDetectingLocation(false);
-        alert('Could not access live GPS location. Please choose your city manually from the list.');
-      }
-    );
-  };
-
-  // TestBeat AI Vision Prescription Reader Handler
+  // TestBeat AI Vision Prescription Reader Handler (Point 4)
   const handleRxFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -423,6 +407,7 @@ export default function TestBeatPortal() {
             }
           });
 
+          // Auto-select matched tests into cart & aggregator
           if (matchedCatalogTests.length > 0) {
             setSelectedTests(prev => {
               const merged = [...prev];
@@ -519,6 +504,7 @@ export default function TestBeatPortal() {
     alert(`${created.name} (${created.relation}) added successfully!`);
   };
 
+  // Modern Checkout Handler (Launches sleek Order Confirmation Modal)
   const handleProceedCheckout = () => {
     if (selectedTests.length === 0) return alert('Please select at least 1 test to checkout');
     
@@ -541,19 +527,10 @@ export default function TestBeatPortal() {
     setConfirmedOrder(orderData);
   };
 
-  const handlePartnerSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setAffiliateSubmitted(true);
-    setTimeout(() => {
-      setIsPartnerModalOpen(false);
-      setAffiliateSubmitted(false);
-    }, 2500);
-  };
-
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800 antialiased selection:bg-[#039487] selection:text-white">
 
-      {/* 1. TOP PAN-INDIA TRUST & HELPLINE BAR */}
+      {/* 1. TOP PAN-INDIA TRUST & HELPLINE BAR (With 23 States & 2,100+ Pincodes Counter) */}
       <div className="bg-[#012C63] text-slate-200 text-xs py-2 px-4 border-b border-[#0c3b65]">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center space-x-4 overflow-x-auto text-[11px] sm:text-xs">
@@ -561,11 +538,11 @@ export default function TestBeatPortal() {
               <ShieldCheck className="w-3.5 h-3.5 mr-1 text-emerald-300" /> 100% NABH & NABL (ISO 15189) Accredited Partner Labs
             </span>
             <span className="hidden md:inline text-slate-400">•</span>
-            <span className="hidden md:flex items-center text-slate-200 font-semibold">
-              <Activity className="w-3.5 h-3.5 mr-1 text-teal-300" /> Cold-Chain Specimen Logistics (2°C - 8°C)
+            <span className="hidden md:flex items-center text-slate-200">
+              <Activity className="w-3.5 h-3.5 mr-1 text-[#039487]" /> Cold-Chain Specimen Logistics (2°C - 8°C)
             </span>
             <span className="hidden lg:inline text-slate-400">•</span>
-            <span className="flex items-center text-amber-300 font-bold">
+            <span className="flex items-center text-amber-300 font-medium">
               <Sparkles className="w-3.5 h-3.5 mr-1" /> Free Doorstep Sample Pickup
             </span>
           </div>
@@ -573,10 +550,10 @@ export default function TestBeatPortal() {
           <div className="flex items-center space-x-5 text-xs">
             <button 
               onClick={() => setIsLocationModalOpen(true)}
-              className="flex items-center text-slate-200 hover:text-white font-medium transition-colors"
+              className="flex items-center text-slate-200 hover:text-white transition-colors"
             >
               <MapPin className="w-3.5 h-3.5 mr-1 text-[#F44236]" />
-              <span>Pan-India ({totalCitiesCount}+ Cities & 2,100+ PINs)</span>
+              <span>Pan-India ({totalCitiesCount}+ Cities & 2,100+ Pincodes)</span>
             </button>
             <a href="tel:+918368887011" className="flex items-center text-teal-300 font-bold hover:underline">
               <PhoneCall className="w-3.5 h-3.5 mr-1" /> +91 83688 87011
@@ -585,7 +562,7 @@ export default function TestBeatPortal() {
         </div>
       </div>
 
-      {/* 2. MAIN NAVBAR WITH 3-LINE DRAWER TRIGGER (DESKTOP & MOBILE) */}
+      {/* 2. MAIN NAVBAR (Point 2: Partner With Us REMOVED, Point 3: 3-Line Menu added for BOTH Desktop & Mobile) */}
       <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           
@@ -619,13 +596,13 @@ export default function TestBeatPortal() {
               className="hidden md:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-[#012C63] transition-colors"
             >
               <MapPin className="w-3.5 h-3.5 text-[#F44236]" />
-              <span className="truncate max-w-[150px]">{currentSelectedLocation}</span>
+              <span className="truncate max-w-[170px]">{currentSelectedLocation}</span>
               <span className="text-slate-400 text-[10px]">▼</span>
             </button>
           </div>
 
-          {/* Genuine Diagnostic Navigation */}
-          <nav className="hidden lg:flex items-center space-x-7 text-sm font-bold text-slate-700">
+          {/* Genuine Diagnostic Navigation (Point 2: Partner With Us REMOVED from header bar) */}
+          <nav className="hidden lg:flex items-center space-x-8 text-sm font-bold text-slate-700">
             <a href="#compare" className="flex items-center space-x-1.5 text-[#039487] hover:text-[#012C63] transition-colors">
               <FlaskConical className="w-4 h-4" />
               <span>Compare Labs</span>
@@ -645,9 +622,10 @@ export default function TestBeatPortal() {
             </a>
           </nav>
 
-          {/* Right Header Icons */}
+          {/* Cart & ONLY USER ICON BUTTON + 3-LINE MENU FOR BOTH DESKTOP & MOBILE (Point 3) */}
           <div className="flex items-center space-x-3.5">
             
+            {/* Functional Working Cart Button */}
             <button
               onClick={() => setIsCartOpen(true)}
               className="relative p-2 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors"
@@ -670,6 +648,7 @@ export default function TestBeatPortal() {
                 <User className="w-5 h-5" />
               </button>
 
+              {/* IMAGE-MATCHED DROPDOWN MENU */}
               {userDropdownOpen && (
                 <div className="absolute right-0 mt-3 w-64 bg-white rounded-2xl shadow-2xl border border-slate-200 py-3 z-50 animate-in fade-in zoom-in-95">
                   <div className="px-4 pb-2 border-b border-slate-100">
@@ -750,19 +729,19 @@ export default function TestBeatPortal() {
               )}
             </div>
 
-            {/* Desktop & Mobile 3-Line Menu Trigger Button */}
+            {/* Point 3: 3-Line Hamburger Menu Trigger for BOTH Desktop and Mobile */}
             <button
               onClick={() => setIsDrawerMenuOpen(true)}
-              className="p-2 rounded-xl border border-slate-200 text-[#012C63] hover:bg-slate-100 transition-colors"
+              className="p-2.5 rounded-xl border border-slate-200 text-[#012C63] hover:bg-slate-100 transition-colors shadow-2xs"
               title="Open Navigation Menu"
             >
-              <Menu className="w-5 h-5" />
+              <Menu className="w-5 h-5 stroke-[2.5]" />
             </button>
           </div>
         </div>
       </header>
 
-      {/* 3-LINE SIDE DRAWER MENU (AVAILABLE ON BOTH DESKTOP & MOBILE WITH ICONS) */}
+      {/* Point 3: SIDE-DRAWER MENU (DESKTOP & MOBILE WITH ICONS) */}
       {isDrawerMenuOpen && (
         <div className="fixed inset-0 z-50 overflow-hidden bg-slate-950/70 backdrop-blur-xs flex justify-end">
           <div className="bg-white w-full max-w-sm h-full flex flex-col shadow-2xl animate-in slide-in-from-right duration-300">
@@ -782,15 +761,6 @@ export default function TestBeatPortal() {
 
             <div className="flex-1 overflow-y-auto p-5 space-y-2 text-sm font-bold text-slate-700">
               <a 
-                href="#" 
-                onClick={() => setIsDrawerMenuOpen(false)}
-                className="flex items-center space-x-3 p-3 rounded-2xl hover:bg-teal-50 hover:text-[#039487] transition-colors"
-              >
-                <FlaskConical className="w-5 h-5 text-[#012C63]" />
-                <span>Diagnostic Home</span>
-              </a>
-
-              <a 
                 href="#compare" 
                 onClick={() => setIsDrawerMenuOpen(false)}
                 className="flex items-center space-x-3 p-3 rounded-2xl hover:bg-teal-50 hover:text-[#039487] transition-colors"
@@ -805,7 +775,7 @@ export default function TestBeatPortal() {
                 className="flex items-center space-x-3 p-3 rounded-2xl hover:bg-teal-50 hover:text-[#039487] transition-colors"
               >
                 <Package className="w-5 h-5 text-indigo-600" />
-                <span>Full Body Health Packages</span>
+                <span>Health Packages</span>
               </a>
 
               <a 
@@ -833,13 +803,14 @@ export default function TestBeatPortal() {
                 <span>Serviceable Cities ({totalCitiesCount}+)</span>
               </button>
 
-              <button 
-                onClick={() => { setIsDrawerMenuOpen(false); setIsPartnerModalOpen(true); }}
-                className="w-full flex items-center space-x-3 p-3 rounded-2xl hover:bg-emerald-50 text-emerald-800 transition-colors text-left"
+              <a 
+                href="#affiliate" 
+                onClick={() => setIsDrawerMenuOpen(false)}
+                className="flex items-center space-x-3 p-3 rounded-2xl hover:bg-emerald-50 text-emerald-800 transition-colors"
               >
                 <Handshake className="w-5 h-5 text-emerald-600" />
-                <span>Partner With Us (B2B Program)</span>
-              </button>
+                <span>Partner With Us (Doctors & Clinics)</span>
+              </a>
 
               <a 
                 href="https://wa.me/918368887011"
@@ -887,16 +858,15 @@ export default function TestBeatPortal() {
                 Choose tests from Thyrocare, Healthians, Redcliffe & Dr. Lal PathLabs. Enjoy free doorstep sample pickup with 2°C - 8°C cold-chain tracking.
               </p>
 
-              {/* Instant Search Bar */}
+              {/* Main Search Input */}
               <div className="mt-6 relative max-w-xl">
                 <div className="relative flex items-center bg-white border-2 border-slate-200 focus-within:border-[#039487] rounded-2xl p-2 shadow-lg shadow-teal-600/5 transition-all">
                   <Search className="w-5 h-5 text-[#039487] ml-3 flex-shrink-0" />
                   <input
                     type="text"
                     value={searchQuery}
-                    onFocus={() => setIsSearchFocused(true)}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search from 1500+ tests: CBC, Vitamin D, HbA1c, Thyroid, Lipid..."
+                    placeholder="Search: Full Body, CBC, Vitamin D, HbA1c, Thyroid, Lipid..."
                     className="w-full px-3 py-2 text-slate-900 placeholder-slate-400 font-semibold focus:outline-none text-sm"
                   />
                   {searchQuery && (
@@ -905,43 +875,6 @@ export default function TestBeatPortal() {
                     </button>
                   )}
                 </div>
-
-                {/* Instant Search Suggestions Dropdown */}
-                {isSearchFocused && (
-                  <div className="absolute left-0 right-0 top-full mt-2 bg-white rounded-2xl border border-slate-200 shadow-2xl p-3 z-30 max-h-72 overflow-y-auto">
-                    <div className="flex items-center justify-between pb-2 border-b border-slate-100 text-[11px] font-bold text-slate-400">
-                      <span>MATCHING TESTS FROM PRICING DIRECTORY ({filteredCatalog.length})</span>
-                      <button onClick={() => setIsSearchFocused(false)} className="text-rose-500 hover:underline">Close</button>
-                    </div>
-                    <div className="divide-y divide-slate-100 mt-1">
-                      {filteredCatalog.map(test => {
-                        const isSelected = selectedTests.some(t => t.id === test.id);
-                        return (
-                          <div 
-                            key={test.id} 
-                            onClick={() => {
-                              toggleTest(test);
-                              const compElem = document.getElementById('compare');
-                              if (compElem) compElem.scrollIntoView({ behavior: 'smooth' });
-                            }}
-                            className={`p-2.5 rounded-xl flex items-center justify-between cursor-pointer transition-colors ${isSelected ? 'bg-teal-50 text-[#039487]' : 'hover:bg-slate-50'}`}
-                          >
-                            <div>
-                              <p className="font-extrabold text-xs text-slate-900">{test.name}</p>
-                              <p className="text-[10px] text-slate-500">{test.parametersCount} Parameters • {test.category}</p>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <span className="font-black text-xs text-[#012C63]">₹{test.offerPrice}</span>
-                              <span className={`text-[11px] font-bold px-2 py-0.5 rounded-md ${isSelected ? 'bg-[#039487] text-white' : 'bg-slate-100 text-slate-700'}`}>
-                                {isSelected ? 'Selected ✓' : '+ Select'}
-                              </span>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
               </div>
 
               {/* Quick Trust Strip */}
@@ -965,6 +898,7 @@ export default function TestBeatPortal() {
             <div className="lg:col-span-4">
               <div className="relative rounded-3xl p-6 text-white shadow-2xl border border-teal-500/30 overflow-hidden bg-gradient-to-br from-[#012C63] via-[#09356d] to-[#011c40] group">
                 
+                {/* Animated Scanner Laser Beam Effect */}
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#039487]/15 to-transparent h-20 -translate-y-full group-hover:translate-y-[280px] transition-transform duration-1000 ease-in-out pointer-events-none"></div>
                 <div className="absolute top-0 right-0 -mr-8 -mt-8 w-28 h-28 bg-[#039487]/25 rounded-full blur-2xl pointer-events-none"></div>
 
@@ -1033,6 +967,7 @@ export default function TestBeatPortal() {
           <p className="text-slate-500 text-xs sm:text-sm mt-1">Select an organ category or individual biomarker to calculate multi-lab prices.</p>
         </div>
 
+        {/* Category Selector Tabs */}
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 mb-8">
           {CLINICAL_CATEGORIES.map(cat => {
             const Icon = cat.icon;
@@ -1054,6 +989,7 @@ export default function TestBeatPortal() {
           })}
         </div>
 
+        {/* Selectable Test Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {filteredCatalog.map(test => {
             const isSelected = selectedTests.some(t => t.id === test.id);
@@ -1296,7 +1232,101 @@ export default function TestBeatPortal() {
         </div>
       </section>
 
-      {/* 7. FOOTER WITH SERVICEABLE STATES, CITIES & DIRECTORY */}
+      {/* 7. AFFILIATE / B2B PARTNER NETWORK (Preserved exactly) */}
+      <section id="affiliate" className="bg-white py-16 px-4 sm:px-6 lg:px-8 border-b border-slate-200">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-teal-100 text-[#012C63] text-xs font-bold mb-3 shadow-xs">
+              <Handshake className="w-4 h-4 text-[#039487]" />
+              <span>TestBeat B2B & Affiliate Partner Network</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+              Partner With India&apos;s Multi-Lab Diagnostic Network
+            </h2>
+            <p className="text-slate-600 text-sm mt-2 max-w-xl mx-auto">
+              Doctors, Clinics, Pathology Centers & Medical Stores: Monetize diagnostic bookings with transparent tracking and high partner revenue sharing.
+            </p>
+          </div>
+
+          {affiliateSubmitted ? (
+            <div className="bg-white border-2 border-[#039487] rounded-3xl p-8 text-center max-w-lg mx-auto shadow-xl">
+              <CheckCircle2 className="w-14 h-14 text-[#039487] mx-auto mb-3" />
+              <h3 className="text-2xl font-black text-slate-900">Application Registered!</h3>
+              <p className="text-xs text-slate-600 mt-2">
+                Our onboarding team will call you on <span className="font-bold text-slate-900">+91 {affiliateData.phone}</span> within 2 business hours.
+              </p>
+            </div>
+          ) : (
+            <form 
+              onSubmit={(e) => { e.preventDefault(); setAffiliateSubmitted(true); }}
+              className="bg-slate-50 border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-4 max-w-2xl mx-auto shadow-sm"
+            >
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Full Name / Clinic Name</label>
+                  <input 
+                    type="text" 
+                    required 
+                    value={affiliateData.name}
+                    onChange={(e) => setAffiliateData({ ...affiliateData, name: e.target.value })}
+                    placeholder="Dr. / Clinic Name" 
+                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold focus:outline-none focus:border-[#039487]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Mobile Contact</label>
+                  <input 
+                    type="tel" 
+                    maxLength={10} 
+                    required 
+                    value={affiliateData.phone}
+                    onChange={(e) => setAffiliateData({ ...affiliateData, phone: e.target.value.replace(/\D/g, '') })}
+                    placeholder="10-digit number" 
+                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold focus:outline-none focus:border-[#039487]"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">City of Operation</label>
+                  <input 
+                    type="text" 
+                    required 
+                    value={affiliateData.city}
+                    onChange={(e) => setAffiliateData({ ...affiliateData, city: e.target.value })}
+                    placeholder="e.g. Greater Noida, Delhi, Lucknow" 
+                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold focus:outline-none focus:border-[#039487]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Affiliate Type</label>
+                  <select 
+                    value={affiliateData.category}
+                    onChange={(e) => setAffiliateData({ ...affiliateData, category: e.target.value })}
+                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold focus:outline-none focus:border-[#039487]"
+                  >
+                    <option>Doctor / Private Clinic</option>
+                    <option>Local Collection Centre / Pathology Lab</option>
+                    <option>Pharmacy / Medical Chemist</option>
+                    <option>Digital Health Influencer / Web Partner</option>
+                  </select>
+                </div>
+              </div>
+
+              <button 
+                type="submit" 
+                className="w-full py-3.5 bg-[#012C63] hover:bg-[#0c3b65] text-white rounded-xl font-bold text-sm shadow-xl transition-all flex items-center justify-center space-x-2"
+              >
+                <span>Submit Partner Application</span>
+                <Send className="w-4 h-4" />
+              </button>
+            </form>
+          )}
+        </div>
+      </section>
+
+      {/* 8. FOOTER WITH SERVICEABLE STATES, CITIES & DIRECTORY */}
       <footer className="bg-[#012C63] text-slate-300 text-xs border-t border-[#0c3b65]">
         
         {/* Serviceable Locations Directory */}
@@ -1364,15 +1394,15 @@ export default function TestBeatPortal() {
             </div>
 
             <div>
-              <h4 className="font-bold text-white uppercase tracking-wider text-xs mb-3">Partner Network</h4>
+              <h4 className="font-bold text-white uppercase tracking-wider text-xs mb-3">Partner Program</h4>
               <ul className="space-y-2">
                 <li>
-                  <button onClick={() => setIsPartnerModalOpen(true)} className="text-teal-300 font-bold hover:underline flex items-center space-x-1">
-                    <span>★ Partner With Us (Application)</span>
-                  </button>
+                  <a href="#affiliate" className="text-teal-300 font-bold hover:underline flex items-center space-x-1">
+                    <span>★ Affiliate Partner Form</span>
+                  </a>
                 </li>
-                <li><button onClick={() => setIsPartnerModalOpen(true)} className="hover:text-white">Doctor & Clinic Integrations</button></li>
-                <li><button onClick={() => setIsPartnerModalOpen(true)} className="hover:text-white">Franchise Collection Points</button></li>
+                <li><a href="#affiliate" className="hover:text-white">Doctor & Clinic Integrations</a></li>
+                <li><a href="#affiliate" className="hover:text-white">Franchise Collection Points</a></li>
                 <li><button onClick={() => setIsRxOpen(true)} className="hover:text-white">Prescription Direct Desk</button></li>
               </ul>
             </div>
@@ -1413,15 +1443,6 @@ export default function TestBeatPortal() {
             </div>
             <p className="text-xs text-slate-500 mb-4">Select your city or detect live GPS location for doorstep sample collection.</p>
 
-            <button
-              onClick={handleDetectLocation}
-              disabled={isDetectingLocation}
-              className="w-full py-3 mb-4 bg-teal-50 hover:bg-teal-100 border border-teal-200 text-[#012C63] font-bold text-xs rounded-2xl flex items-center justify-center space-x-2 transition-colors"
-            >
-              <MapPin className="w-4 h-4 text-[#039487]" />
-              <span>{isDetectingLocation ? 'Detecting GPS Pincode...' : 'Detect My Current Location (GPS)'}</span>
-            </button>
-
             <div className="relative mb-4">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
               <input
@@ -1451,98 +1472,6 @@ export default function TestBeatPortal() {
                   </button>
                 ))}
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* ================= MODAL: DEDICATED PARTNER WITH US APPLICATION ================= */}
-      {isPartnerModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
-          <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl p-7 relative border border-slate-100 max-h-[90vh] overflow-y-auto">
-            <button onClick={() => setIsPartnerModalOpen(false)} className="absolute top-5 right-5 p-1.5 rounded-full text-slate-400 hover:text-slate-600">
-              <X className="w-4 h-4" />
-            </button>
-
-            <div className="flex items-center space-x-2 text-emerald-700 mb-2">
-              <Handshake className="w-5 h-5 text-emerald-600" />
-              <span className="text-xs font-bold uppercase tracking-wider">TestBeat B2B & Affiliate Partner Program</span>
-            </div>
-
-            <h3 className="text-xl font-black text-slate-900 mb-1">Partner With India&apos;s Multi-Lab Network</h3>
-            <p className="text-slate-500 text-xs mb-6">
-              Doctors, Clinics, Pathology Centers & Medical Stores: Monetize diagnostic bookings with transparent tracking and high partner revenue sharing.
-            </p>
-
-            {affiliateSubmitted ? (
-              <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-2xl text-center space-y-2">
-                <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto" />
-                <h4 className="text-base font-black text-slate-900">Application Received!</h4>
-                <p className="text-xs text-slate-600">Our business onboarding executive will contact you within 2 hours.</p>
-              </div>
-            ) : (
-              <form onSubmit={handlePartnerSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Full Name / Practice Name</label>
-                    <input 
-                      type="text" 
-                      required 
-                      value={affiliateData.name}
-                      onChange={(e) => setAffiliateData({ ...affiliateData, name: e.target.value })}
-                      placeholder="Dr. / Clinic Name" 
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#039487]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Mobile Contact</label>
-                    <input 
-                      type="tel" 
-                      maxLength={10} 
-                      required 
-                      value={affiliateData.phone}
-                      onChange={(e) => setAffiliateData({ ...affiliateData, phone: e.target.value.replace(/\D/g, '') })}
-                      placeholder="10-digit number" 
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#039487]"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">City of Operation</label>
-                    <input 
-                      type="text" 
-                      required 
-                      value={affiliateData.city}
-                      onChange={(e) => setAffiliateData({ ...affiliateData, city: e.target.value })}
-                      placeholder="e.g. Greater Noida, Delhi, Lucknow" 
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#039487]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Affiliate Type</label>
-                    <select 
-                      value={affiliateData.category}
-                      onChange={(e) => setAffiliateData({ ...affiliateData, category: e.target.value })}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#039487]"
-                    >
-                      <option>Doctor / Private Clinic</option>
-                      <option>Local Collection Centre / Pathology Lab</option>
-                      <option>Pharmacy / Medical Chemist</option>
-                      <option>Digital Health Influencer / Web Partner</option>
-                    </select>
-                  </div>
-                </div>
-
-                <button 
-                  type="submit" 
-                  className="w-full py-3 bg-[#012C63] hover:bg-[#0c3b65] text-white rounded-xl font-bold text-xs shadow-md transition-all flex items-center justify-center space-x-2"
-                >
-                  <span>Submit Partner Application</span>
-                  <Send className="w-3.5 h-3.5" />
-                </button>
-              </form>
-            )}
           </div>
         </div>
       )}
@@ -1583,7 +1512,7 @@ export default function TestBeatPortal() {
                         {item.category}
                       </span>
                       <h4 className="font-bold text-slate-900 text-xs mt-1 leading-snug">{item.name}</h4>
-                      <p className="text-[11px] text-slate-400">{item.parametersCount} Parameters</p>
+                      <p className="text-[11px] text-slate-400">{item.parametersCount} Parameters • Code: {item.code}</p>
                     </div>
                     <div className="text-right ml-3 flex-shrink-0">
                       <p className="text-sm font-black text-[#012C63]">₹{item.offerPrice}</p>
@@ -1738,7 +1667,7 @@ export default function TestBeatPortal() {
               onClick={() => setActiveAccountView(null)}
               className="absolute top-5 right-5 p-1.5 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
 
             <div className="flex items-center space-x-2 border-b border-slate-100 pb-4 overflow-x-auto text-xs font-black mb-6">
@@ -2280,6 +2209,7 @@ export default function TestBeatPortal() {
               Upload prescription image or PDF. TestBeat AI will read the doctor&apos;s handwriting and automatically select prescribed diagnostic tests into your cart.
             </p>
 
+            {/* Hidden native input */}
             <input 
               type="file" 
               ref={rxFileInputRef}
@@ -2288,6 +2218,7 @@ export default function TestBeatPortal() {
               onChange={handleRxFileChange}
             />
 
+            {/* Scanning / Loading UI */}
             {rxScanning ? (
               <div className="border-2 border-dashed border-[#039487] rounded-2xl p-8 text-center bg-teal-50/50 mb-4 animate-pulse">
                 <Loader2 className="w-10 h-10 text-[#039487] mx-auto mb-3 animate-spin" />
@@ -2322,6 +2253,7 @@ export default function TestBeatPortal() {
                   </div>
                 </div>
 
+                {/* Specific Unmatched Warning Note with Manual Option */}
                 {rxUnmatchedTests.length > 0 && (
                   <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900">
                     <div className="flex items-start space-x-2">
