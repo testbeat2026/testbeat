@@ -1,11 +1,18 @@
-import AdminShell from '@/components/AdminShell';
+import React from 'react';
 
-// This forces ALL /admin pages to be 100% dynamic at the server level.
-// Next.js will NEVER attempt static prerendering during build.
-export const dynamic = 'force-dynamic';
-export const dynamicParams = true;
-export const revalidate = 0;
+export const metadata = {
+  title: 'Super Admin Console | TestBeat',
+  description: 'TestBeat Healthcare Diagnostics Super Admin Management Portal',
+};
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return <AdminShell>{children}</AdminShell>;
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="min-h-screen bg-[#F4F6F9] antialiased">
+      {children}
+    </div>
+  );
 }
