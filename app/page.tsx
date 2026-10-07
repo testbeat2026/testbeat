@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   ShieldCheck, 
   MapPin, 
@@ -17,26 +17,19 @@ import {
   ArrowRight, 
   Handshake, 
   CheckCircle2, 
-  Lock, 
   Send, 
   Check, 
-  UploadCloud, 
-  Microscope, 
-  ChevronRight, 
   Package, 
   Users, 
   Heart, 
   Droplet, 
   Zap, 
-  Camera, 
   Wallet, 
   Calendar, 
   UserCheck, 
   Plus, 
   Trash2, 
   ShoppingCart, 
-  AlertCircle, 
-  ChevronDown, 
   MessageCircle, 
   BookOpen 
 } from 'lucide-react';
@@ -49,28 +42,22 @@ const TestBeatLogo = ({ className = "h-9 w-auto", darkBg = false }: { className?
   const textColor = darkBg ? "#FFFFFF" : "#032C64";
   return (
     <svg viewBox="0 0 420 110" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Tilted Test Tube Icon forming the letter 'T' */}
       <g transform="translate(10, 8) rotate(-15 35 35)">
         <rect x="18" y="8" width="46" height="14" rx="7" fill={textColor} />
         <rect x="28" y="18" width="26" height="52" rx="13" stroke={textColor} strokeWidth="5.5" fill="none" />
-        {/* ECG pulse inside tube */}
         <path d="M34 46L38 46L41 40L44 52L47 46L50 46" stroke="#4575B4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-        {/* Droplet */}
         <path d="M41 57C41 57 37 62 37 65C37 67.2 38.8 69 41 69C43.2 69 45 67.2 45 65C45 62 41 57 41 57Z" fill="#D73027" />
       </g>
       
-      {/* "TestBeat" Typography */}
       <text x="68" y="65" fill={textColor} fontFamily="system-ui, -apple-system, sans-serif" fontWeight="900" fontSize="56" letterSpacing="-1.5">
         TestBeat
       </text>
 
-      {/* Heart Pulse Icon at the end of text */}
       <g transform="translate(325, 34) scale(0.95)">
         <path d="M16 6C11.5 0.5 2 3.5 2 12C2 18 10 24 16 28C22 24 30 18 30 12C30 3.5 20.5 0.5 16 6Z" stroke={textColor} strokeWidth="3.5" fill="none" />
         <path d="M7 13L11 13L13 9L17 19L20 13L24 13" stroke="#D73027" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
       </g>
 
-      {/* 8-Step Spectrum Stripe under the Logo */}
       <g transform="translate(10, 84)">
         <rect x="0" y="0" width="44" height="6.5" rx="3.2" fill="#D73027" />
         <rect x="44" y="0" width="44" height="6.5" fill="#F46D43" />
@@ -92,7 +79,6 @@ interface PincodeEntry {
   allPins: string[];
 }
 
-// 111 Districts across 23 States mapped directly from Excel
 const SERVICEABLE_LOCATIONS_DATA: PincodeEntry[] = [
   { city: 'Gautambuddha Nagar (Greater Noida)', state: 'Uttar Pradesh', pin: '201310', allPins: ['201310', '201306', '201308', '201312', '201314', '201315'] },
   { city: 'Noida', state: 'Uttar Pradesh', pin: '201301', allPins: ['201301', '201303', '201304', '201305', '201307', '201309', '201313'] },
@@ -126,7 +112,6 @@ const SERVICEABLE_LOCATIONS_DATA: PincodeEntry[] = [
   { city: 'Dehradun', state: 'Uttarakhand', pin: '248001', allPins: ['248001', '248002', '248007'] }
 ];
 
-// Point 4: Decorated categories with unique gradient & borders
 const CLINICAL_CATEGORIES = [
   { id: 'all', name: 'All Tests', icon: FlaskConical, color: 'from-[#032C64] to-[#4575B4]', textLight: 'text-blue-900', bgLight: 'bg-blue-50/70', border: 'border-blue-200' },
   { id: 'full-body', name: 'Full Body Checkup', icon: Package, color: 'from-blue-600 to-indigo-700', textLight: 'text-indigo-900', bgLight: 'bg-indigo-50/70', border: 'border-indigo-200' },
@@ -156,7 +141,6 @@ interface FeaturedTestItem extends TestItem {
   labBadge: string;
 }
 
-// Pathology catalog directly from Pricing (Individual & Packages)_TestBeat.xlsx
 const TESTS_CATALOG: TestItem[] = [
   { id: 't1', name: 'Complete Blood Count (CBC) Test', code: 'HM007', category: 'full-body', parametersCount: 28, fastingRequired: false, sampleType: 'EDTA Blood', description: 'Screening for anemia, platelets, white blood cells & latent infections.', mrp: 450, offerPrice: 299 },
   { id: 't2', name: 'Thyroid Profile Total (T3, T4, TSH)', code: 'BC063', category: 'thyroid', parametersCount: 3, fastingRequired: true, sampleType: 'Serum', description: 'Gold standard test for thyroid gland hormone synthesis and metabolism.', mrp: 650, offerPrice: 429 },
@@ -275,7 +259,6 @@ interface BlogArticle {
   content: string[];
 }
 
-// Point 6: Complete detailed clinical articles
 const HEALTH_WELLNESS_BLOGS: BlogArticle[] = [
   {
     slug: 'cbc-test-guide',
@@ -402,6 +385,15 @@ export default function TestBeatPortal() {
   const [patientMobile, setPatientMobile] = useState('');
   const [patientOtp, setPatientOtp] = useState('');
 
+  // Quick Direct Contact Test Booking Form (Replaced upload)
+  const [quickForm, setQuickForm] = useState({
+    name: '',
+    mobile: '',
+    city: 'Greater Noida',
+    testNeeded: 'Complete Blood Count (CBC) Test'
+  });
+  const [quickFormSubmitted, setQuickFormSubmitted] = useState(false);
+
   // Initial Signup Data
   const [signupForm, setSignupForm] = useState({
     phone: '',
@@ -443,15 +435,6 @@ export default function TestBeatPortal() {
     age: '',
     gender: 'Male'
   });
-
-  // Prescription Reader States (100% English & Inline UI - Point 1 & 2)
-  const [isRxOpen, setIsRxOpen] = useState(false);
-  const [rxScanning, setRxScanning] = useState(false);
-  const [rxStatusMsg, setRxStatusMsg] = useState('');
-  const [rxUnmatchedTests, setRxUnmatchedTests] = useState<string[]>([]);
-  const [rxDetectedPrescriptions, setRxDetectedPrescriptions] = useState<string[]>([]);
-  const [rxManualSearch, setRxManualSearch] = useState('');
-  const rxFileInputRef = useRef<HTMLInputElement>(null);
 
   // Blog Detailed View Modal (Point 6)
   const [activeBlogModal, setActiveBlogModal] = useState<BlogArticle | null>(null);
@@ -568,83 +551,19 @@ export default function TestBeatPortal() {
     );
   };
 
-  // Point 2: Prescription upload & AI scan (No browser alert, inline status)
-  const handleRxFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setRxScanning(true);
-    setRxStatusMsg('Uploading prescription slip...');
-    setRxUnmatchedTests([]);
-    setRxDetectedPrescriptions([]);
-
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const base64String = reader.result as string;
-      setRxStatusMsg('Scanning doctor handwriting & lab biomarkers...');
-
-      try {
-        const response = await fetch('/api/read-prescription', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ imageBase64: base64String })
-        });
-
-        const data = await response.json();
-
-        if (response.ok && data.success && Array.isArray(data.tests)) {
-          const detected: string[] = data.tests;
-          setRxDetectedPrescriptions(detected);
-
-          const matchedCatalogTests: TestItem[] = [];
-          const unmatched: string[] = [];
-
-          detected.forEach((rxTestName: string) => {
-            const rxLower = rxTestName.toLowerCase().trim();
-            const foundInCatalog = TESTS_CATALOG.find(catItem => {
-              const catLower = catItem.name.toLowerCase();
-              return catLower.includes(rxLower) || 
-                     rxLower.includes(catItem.name.split(' ')[0].toLowerCase());
-            });
-
-            if (foundInCatalog) {
-              if (!matchedCatalogTests.some(m => m.id === foundInCatalog.id)) {
-                matchedCatalogTests.push(foundInCatalog);
-              }
-            } else {
-              unmatched.push(rxTestName);
-            }
-          });
-
-          // Auto-select matched tests into user's selection
-          if (matchedCatalogTests.length > 0) {
-            setSelectedTests(prev => {
-              const merged = [...prev];
-              matchedCatalogTests.forEach(item => {
-                if (!merged.some(m => m.id === item.id)) {
-                  merged.push(item);
-                }
-              });
-              return merged;
-            });
-          }
-
-          setRxUnmatchedTests(unmatched);
-          setRxStatusMsg(
-            matchedCatalogTests.length > 0
-              ? `Success! ${matchedCatalogTests.length} tests matched and auto-selected.`
-              : 'Prescription scanned successfully.'
-          );
-        } else {
-          setRxStatusMsg(data.error || 'Handwriting could not be read clearly. Please select tests manually below.');
-        }
-      } catch {
-        setRxStatusMsg('Network issue occurred. Please select tests manually below.');
-      } finally {
-        setRxScanning(false);
-      }
-    };
-    reader.readAsDataURL(file);
+  // Quick Direct Contact Test Booking Handler
+  const handleQuickFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (quickForm.mobile.length !== 10) {
+      alert('Please enter a valid 10-digit mobile number.');
+      return;
+    }
+    setQuickFormSubmitted(true);
+    // Find matching test and add to user cart
+    const foundTest = TESTS_CATALOG.find(t => t.name.toLowerCase().includes(quickForm.testNeeded.toLowerCase()));
+    if (foundTest && !selectedTests.some(s => s.id === foundTest.id)) {
+      setSelectedTests(prev => [...prev, foundTest]);
+    }
   };
 
   // Auth Handlers
@@ -779,13 +698,12 @@ export default function TestBeatPortal() {
         </div>
       </div>
 
-      {/* 2. MAIN NAVBAR WITH NEW OFFICIAL TESTBEAT LOGO */}
+      {/* 2. MAIN NAVBAR WITH OFFICIAL TESTBEAT LOGO */}
       <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           
           <div className="flex items-center space-x-4">
             <a href="#" className="flex items-center group">
-              {/* Official Brand Logo */}
               <TestBeatLogo className="h-10 w-auto group-hover:scale-105 transition-transform" />
             </a>
 
@@ -921,7 +839,6 @@ export default function TestBeatPortal() {
               )}
             </div>
 
-            {/* Desktop & Mobile 3-Line Menu Trigger */}
             <button
               onClick={() => setIsDrawerMenuOpen(true)}
               className="p-2.5 rounded-xl border border-slate-200 text-[#032C64] hover:bg-slate-100 transition-colors shadow-2xs"
@@ -989,14 +906,6 @@ export default function TestBeatPortal() {
               </a>
 
               <button 
-                onClick={() => { setIsDrawerMenuOpen(false); setIsRxOpen(true); }}
-                className="w-full flex items-center space-x-3 p-3 rounded-2xl hover:bg-blue-50 hover:text-[#032C64] transition-colors text-left"
-              >
-                <UploadCloud className="w-5 h-5 text-amber-500" />
-                <span>Upload Doctor Prescription</span>
-              </button>
-
-              <button 
                 onClick={() => { setIsDrawerMenuOpen(false); setIsLocationModalOpen(true); }}
                 className="w-full flex items-center space-x-3 p-3 rounded-2xl hover:bg-blue-50 hover:text-[#032C64] transition-colors text-left"
               >
@@ -1036,13 +945,13 @@ export default function TestBeatPortal() {
         </div>
       )}
 
-      {/* 3. HERO SECTION WITH 100% ENGLISH COPY */}
+      {/* 3. HERO SECTION WITH DIRECT TEST BOOKING CONTACT FORM */}
       <section className="bg-gradient-to-b from-blue-50/50 via-white to-slate-50 pt-10 pb-12 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
-            <div className="lg:col-span-8">
+            <div className="lg:col-span-7">
               <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-blue-100 text-[#032C64] text-xs font-bold mb-4 shadow-xs">
                 <Sparkles className="w-4 h-4 text-[#4575B4]" />
                 <span>India&apos;s Multi-Lab Aggregator • Up to 70% Real Savings</span>
@@ -1153,58 +1062,111 @@ export default function TestBeatPortal() {
               </div>
             </div>
 
-            {/* Right Column: 100% English Prescription Card */}
-            <div className="lg:col-span-4">
-              <div className="relative rounded-3xl p-6 text-white shadow-2xl border border-blue-500/30 overflow-hidden bg-gradient-to-br from-[#032C64] via-[#09356d] to-[#011c40] group">
+            {/* Right Column: DIRECT LAB TEST CONTACT BOOKING FORM (Replaced Prescription Upload) */}
+            <div className="lg:col-span-5">
+              <div className="relative rounded-3xl p-6 text-white shadow-2xl border border-blue-500/30 overflow-hidden bg-gradient-to-br from-[#032C64] via-[#09356d] to-[#011c40]">
                 
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#4575B4]/15 to-transparent h-20 -translate-y-full group-hover:translate-y-[280px] transition-transform duration-1000 ease-in-out pointer-events-none"></div>
-                <div className="absolute top-0 right-0 -mr-8 -mt-8 w-28 h-28 bg-[#4575B4]/25 rounded-full blur-2xl pointer-events-none"></div>
-
-                <div className="flex items-center justify-between mb-3 relative z-10">
+                <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center space-x-2 text-blue-200">
-                    <div className="w-7 h-7 rounded-lg bg-[#4575B4]/30 flex items-center justify-center border border-blue-400/40">
-                      <Camera className="w-4 h-4 text-blue-200" />
-                    </div>
-                    <span className="text-[11px] font-black uppercase tracking-wider text-blue-200">
-                      TestBeat AI Vision
+                    <FlaskConical className="w-5 h-5 text-[#4575B4]" />
+                    <span className="text-xs font-black uppercase tracking-wider text-blue-200">
+                      Instant Test Booking
                     </span>
                   </div>
-                  <span className="bg-blue-500/20 text-blue-200 border border-blue-400/30 text-[10px] font-black px-2 py-0.5 rounded-full flex items-center space-x-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-blue-300 animate-ping"></span>
-                    <span>Live Scanner</span>
+                  <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[10px] font-black px-2 py-0.5 rounded-full">
+                    Free Home Pickup
                   </span>
                 </div>
-                
-                <h3 className="text-xl font-black leading-snug relative z-10">
-                  Upload Doctor Prescription
-                </h3>
-                <p className="text-slate-200 text-xs mt-1.5 mb-5 leading-relaxed relative z-10">
-                  Upload your doctor&apos;s prescription slip. <span className="text-blue-200 font-bold">TestBeat AI</span> automatically detects prescribed tests, checks live laboratory prices, and matches the cheapest rate.
+
+                <h3 className="text-xl font-black text-white">Book Blood Test Directly</h3>
+                <p className="text-blue-100 text-xs mt-1 mb-4">
+                  Enter your contact details. Our lab certified advisor will book your test at lowest aggregator price.
                 </p>
 
-                <div className="space-y-3 relative z-10">
-                  <button
-                    onClick={() => setIsRxOpen(true)}
-                    className="w-full py-3.5 bg-gradient-to-r from-[#D73027] via-[#FDAE61] to-[#4575B4] hover:opacity-95 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center space-x-2 shadow-lg shadow-blue-900/50 hover:scale-[1.02]"
-                  >
-                    <UploadCloud className="w-4 h-4" />
-                    <span>Upload & Scan Prescription (TestBeat AI)</span>
-                  </button>
+                {quickFormSubmitted ? (
+                  <div className="p-6 bg-white/10 border border-emerald-400/40 rounded-2xl text-center space-y-2 animate-in zoom-in-95">
+                    <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto" />
+                    <h4 className="text-base font-black text-white">Booking Request Received!</h4>
+                    <p className="text-xs text-blue-100">
+                      Our phlebotomist coordinator will call you at <span className="font-bold text-white">+91 {quickForm.mobile}</span> within 5 minutes.
+                    </p>
+                    <button 
+                      onClick={() => setQuickFormSubmitted(false)}
+                      className="mt-2 text-xs text-blue-200 underline font-semibold"
+                    >
+                      Book Another Test
+                    </button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleQuickFormSubmit} className="space-y-3">
+                    <div>
+                      <label className="block text-[11px] font-bold text-blue-200 uppercase mb-0.5">Patient Full Name *</label>
+                      <input 
+                        type="text" 
+                        required 
+                        value={quickForm.name}
+                        onChange={(e) => setQuickForm({ ...quickForm, name: e.target.value })}
+                        placeholder="e.g. Ramesh Kumar" 
+                        className="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-xs text-white placeholder-blue-200/60 font-semibold focus:outline-none focus:border-blue-400"
+                      />
+                    </div>
 
-                  <a
-                    href="https://wa.me/918368887011?text=Hello%20TestBeat,%20I%20want%20to%20book%20tests%20from%20my%20prescription"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="w-full py-2.5 bg-white/10 hover:bg-white/15 text-blue-200 border border-blue-400/30 rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-2"
-                  >
-                    <span>Send via WhatsApp (+91 83688 87011)</span>
-                  </a>
-                </div>
+                    <div className="grid grid-cols-2 gap-2.5">
+                      <div>
+                        <label className="block text-[11px] font-bold text-blue-200 uppercase mb-0.5">10-Digit Mobile *</label>
+                        <input 
+                          type="tel" 
+                          maxLength={10} 
+                          required 
+                          value={quickForm.mobile}
+                          onChange={(e) => setQuickForm({ ...quickForm, mobile: e.target.value.replace(/\D/g, '') })}
+                          placeholder="9876543210" 
+                          className="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-xs text-white placeholder-blue-200/60 font-semibold focus:outline-none focus:border-blue-400"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-bold text-blue-200 uppercase mb-0.5">City / Location</label>
+                        <input 
+                          type="text" 
+                          required 
+                          value={quickForm.city}
+                          onChange={(e) => setQuickForm({ ...quickForm, city: e.target.value })}
+                          placeholder="Greater Noida" 
+                          className="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-xs text-white placeholder-blue-200/60 font-semibold focus:outline-none focus:border-blue-400"
+                        />
+                      </div>
+                    </div>
 
-                <div className="flex items-center justify-between text-[10px] text-slate-300 mt-4 pt-3 border-t border-white/10 relative z-10">
-                  <span>✓ 100% Medical Privacy</span>
-                  <span>⚡ Instant Test Extraction</span>
-                </div>
+                    <div>
+                      <label className="block text-[11px] font-bold text-blue-200 uppercase mb-0.5">Test or Package Required</label>
+                      <select 
+                        value={quickForm.testNeeded}
+                        onChange={(e) => setQuickForm({ ...quickForm, testNeeded: e.target.value })}
+                        className="w-full bg-[#012C63] border border-white/20 rounded-xl px-3 py-2 text-xs text-white font-semibold focus:outline-none focus:border-blue-400"
+                      >
+                        {TESTS_CATALOG.map(t => (
+                          <option key={t.id} value={t.name}>{t.name} (₹{t.offerPrice})</option>
+                        ))}
+                        <option value="Full Body Vital Checkup">Smart Full Body Vital Checkup (₹1,099)</option>
+                        <option value="Other Consultation">Other (Doctor will suggest on call)</option>
+                      </select>
+                    </div>
+
+                    <button 
+                      type="submit" 
+                      className="w-full py-3 bg-gradient-to-r from-[#D73027] via-[#FDAE61] to-[#4575B4] hover:opacity-95 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-blue-900/50 flex items-center justify-center space-x-1.5"
+                    >
+                      <Send className="w-3.5 h-3.5" />
+                      <span>Confirm Doorstep Booking Call</span>
+                    </button>
+
+                    <div className="flex items-center justify-between text-[10px] text-blue-200 pt-1">
+                      <span>✓ 100% Privacy Protected</span>
+                      <span>⚡ Phlebotomist Call in 5 Mins</span>
+                    </div>
+                  </form>
+                )}
+
               </div>
             </div>
 
@@ -1562,7 +1524,7 @@ export default function TestBeatPortal() {
         </div>
       </section>
 
-      {/* 9. FOOTER WITH SERVICEABLE LOCATIONS & DETAILED BLOGS */}
+      {/* 9. FOOTER WITH SERVICEABLE LOCATIONS & DETAILED BLOGS (Reviews completely removed) */}
       <footer className="bg-[#032C64] text-slate-300 text-xs border-t border-[#0c3b65]">
         
         {/* Serviceable Locations Directory */}
@@ -1606,7 +1568,7 @@ export default function TestBeatPortal() {
           </div>
         </div>
 
-        {/* Diagnostic Blogs with Full Article Reading Modal */}
+        {/* Diagnostic Blogs with Full Article Reading Modal (Point 6) */}
         <div className="border-b border-[#0c3b65]/80 py-10 px-4 sm:px-6 lg:px-8" id="blogs">
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center space-x-2 mb-5">
@@ -1635,7 +1597,7 @@ export default function TestBeatPortal() {
           </div>
         </div>
 
-        {/* Corporate Details with In-Code White Logo */}
+        {/* Corporate Details */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div className="space-y-3 md:col-span-2">
@@ -1659,7 +1621,7 @@ export default function TestBeatPortal() {
                 </li>
                 <li><button onClick={() => setIsPartnerModalOpen(true)} className="hover:text-white">Doctor & Clinic Integrations</button></li>
                 <li><button onClick={() => setIsPartnerModalOpen(true)} className="hover:text-white">Franchise Collection Points</button></li>
-                <li><button onClick={() => setIsRxOpen(true)} className="hover:text-white">Prescription Direct Desk</button></li>
+                <li><a href="#compare" className="hover:text-white">Book Lab Investigation</a></li>
               </ul>
             </div>
 
@@ -1755,156 +1717,6 @@ export default function TestBeatPortal() {
                 className="px-4 py-2 bg-[#032C64] text-white rounded-xl text-xs font-bold"
               >
                 Close Article
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ================= MODAL: 100% ENGLISH TESTBEAT AI PRESCRIPTION SCANNER ================= */}
-      {isRxOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
-          <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl p-6 relative border border-slate-100 max-h-[90vh] overflow-y-auto">
-            <button
-              onClick={() => {
-                setIsRxOpen(false);
-                setRxScanning(false);
-                setRxStatusMsg('');
-              }}
-              className="absolute top-4 right-4 p-1.5 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100"
-            >
-              <X className="w-4 h-4" />
-            </button>
-
-            <div className="flex items-center space-x-1.5 text-[#032C64] mb-1">
-              <Camera className="w-4 h-4 text-[#4575B4]" />
-              <span className="text-[11px] font-black uppercase tracking-wider text-[#032C64]">TestBeat AI Vision Scanner</span>
-            </div>
-
-            <h3 className="text-xl font-black text-slate-900 mb-1">Doctor Prescription Scanner</h3>
-            <p className="text-slate-500 text-xs mb-4">
-              Upload prescription image or PDF. TestBeat AI analyzes doctor handwriting and automatically selects matching pathology tests into your cart.
-            </p>
-
-            <input 
-              type="file" 
-              ref={rxFileInputRef}
-              accept="image/*,.pdf" 
-              className="hidden" 
-              onChange={handleRxFileChange}
-            />
-
-            {/* Scanning progress */}
-            {rxScanning ? (
-              <div className="border-2 border-dashed border-[#032C64] rounded-2xl p-8 text-center bg-blue-50/50 mb-4 animate-pulse">
-                <div className="w-10 h-10 border-4 border-[#032C64] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-                <p className="text-xs font-black text-[#032C64]">{rxStatusMsg}</p>
-                <p className="text-[10px] text-slate-400 mt-1">Analyzing medical handwriting & biomarker tokens...</p>
-              </div>
-            ) : (
-              <div
-                onClick={() => rxFileInputRef.current?.click()}
-                className="border-2 border-dashed border-slate-300 hover:border-[#032C64] rounded-2xl p-6 text-center bg-slate-50 hover:bg-blue-50/40 transition-all cursor-pointer mb-4 group"
-              >
-                <UploadCloud className="w-10 h-10 text-[#032C64] mx-auto mb-2 group-hover:scale-110 transition-transform" />
-                <p className="text-xs font-bold text-slate-800">Tap to upload prescription slip from mobile or gallery</p>
-                <p className="text-[10px] text-slate-400 mt-0.5">JPG, PNG, PDF up to 10MB</p>
-              </div>
-            )}
-
-            {/* Results Feedback & Unmatched Tests Notice (No browser popup) */}
-            {rxDetectedPrescriptions.length > 0 && !rxScanning && (
-              <div className="mb-4 space-y-2">
-                <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs">
-                  <p className="font-bold text-[#032C64] flex items-center">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 mr-1.5" />
-                    Prescription Tests Detected by TestBeat AI:
-                  </p>
-                  <div className="flex flex-wrap gap-1.5 mt-2">
-                    {rxDetectedPrescriptions.map((tName, i) => (
-                      <span key={i} className="bg-white border border-blue-300 text-[#032C64] font-bold text-[11px] px-2 py-0.5 rounded-md">
-                        {tName}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {rxUnmatchedTests.length > 0 && (
-                  <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900">
-                    <div className="flex items-start space-x-2">
-                      <AlertCircle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <p className="font-bold">
-                          Note: {rxUnmatchedTests.length} test{rxUnmatchedTests.length > 1 ? 's' : ''} ({rxUnmatchedTests.join(', ')}) could not be matched automatically.
-                        </p>
-                        <p className="text-[11px] text-amber-800 mt-1">
-                          You can easily add them manually using the search box below.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Compact Inline Manual Test Search & Add inside Modal */}
-            <div className="mb-4">
-              <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">
-                Add Missing Test Manually (Optional)
-              </label>
-              <div className="relative">
-                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
-                <input
-                  type="text"
-                  value={rxManualSearch}
-                  onChange={(e) => setRxManualSearch(e.target.value)}
-                  placeholder="Type test name (e.g. CBC, KFT, Thyroid)..."
-                  className="w-full pl-8 pr-3 py-1.5 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#032C64]"
-                />
-              </div>
-
-              {rxManualSearch.trim().length > 0 && (
-                <div className="mt-1 max-h-32 overflow-y-auto border border-slate-200 rounded-xl divide-y divide-slate-100 bg-white">
-                  {TESTS_CATALOG.filter(t => t.name.toLowerCase().includes(rxManualSearch.toLowerCase())).map(test => {
-                    const isAdded = selectedTests.some(t => t.id === test.id);
-                    return (
-                      <div key={test.id} className="p-2 flex items-center justify-between text-xs hover:bg-slate-50">
-                        <span className="font-bold text-slate-800 truncate mr-2">{test.name}</span>
-                        <button
-                          onClick={() => {
-                            toggleTest(test);
-                            setRxManualSearch('');
-                          }}
-                          className={`px-2 py-0.5 rounded text-[10px] font-black ${isAdded ? 'bg-rose-100 text-rose-700' : 'bg-[#032C64] text-white'}`}
-                        >
-                          {isAdded ? 'Remove' : '+ Add (₹' + test.offerPrice + ')'}
-                        </button>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-
-            {/* Modal Bottom Buttons */}
-            <div className="flex space-x-2">
-              <button
-                disabled={rxScanning}
-                onClick={() => rxFileInputRef.current?.click()}
-                className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-black uppercase tracking-wider transition-all"
-              >
-                {rxScanning ? 'Scanning...' : 'Upload Another File'}
-              </button>
-              <button
-                onClick={() => {
-                  setIsRxOpen(false);
-                  setShowCompareTable(true);
-                  const compElem = document.getElementById('compare');
-                  if (compElem) compElem.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="flex-1 py-3 bg-[#032C64] hover:bg-[#0c3b65] text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow"
-              >
-                Continue & Compare Labs ({selectedTests.length})
               </button>
             </div>
           </div>
@@ -2066,714 +1878,6 @@ export default function TestBeatPortal() {
                 </button>
               </form>
             )}
-          </div>
-        </div>
-      )}
-
-      {/* ================= FUNCTIONAL SHOPPING CART SLIDE-OVER DRAWER ================= */}
-      {isCartOpen && (
-        <div className="fixed inset-0 z-50 overflow-hidden bg-slate-950/70 backdrop-blur-xs flex justify-end">
-          <div className="bg-white w-full max-w-md h-full flex flex-col shadow-2xl animate-in slide-in-from-right duration-300">
-            
-            <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">
-              <div className="flex items-center space-x-2">
-                <ShoppingCart className="w-5 h-5 text-[#4575B4]" />
-                <h3 className="text-lg font-black text-slate-900">Diagnostic Cart</h3>
-                <span className="bg-blue-100 text-[#032C64] text-xs font-black px-2 py-0.5 rounded-full">
-                  {selectedTests.length} Items
-                </span>
-              </div>
-              <button 
-                onClick={() => setIsCartOpen(false)}
-                className="p-1.5 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-200"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="flex-1 overflow-y-auto p-6 space-y-3">
-              {selectedTests.length === 0 ? (
-                <div className="text-center py-16">
-                  <ShoppingCart className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                  <p className="text-sm font-bold text-slate-700">Your cart is empty</p>
-                  <p className="text-xs text-slate-400 mt-1">Select blood tests or scan prescription to begin.</p>
-                </div>
-              ) : (
-                selectedTests.map(item => (
-                  <div key={item.id} className="p-3.5 border border-slate-200 rounded-2xl flex items-center justify-between bg-white shadow-2xs">
-                    <div>
-                      <span className="text-[9px] font-black uppercase text-blue-900 bg-blue-50 px-1.5 py-0.5 rounded">
-                        {item.category}
-                      </span>
-                      <h4 className="font-bold text-slate-900 text-xs mt-1 leading-snug">{item.name}</h4>
-                      <p className="text-[11px] text-slate-400">{item.parametersCount} Parameters • Code: {item.code}</p>
-                    </div>
-                    <div className="text-right ml-3 flex-shrink-0">
-                      <p className="text-sm font-black text-[#032C64]">₹{item.offerPrice}</p>
-                      <button 
-                        onClick={() => toggleTest(item)}
-                        className="text-[11px] text-rose-500 hover:underline font-semibold"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-
-            {selectedTests.length > 0 && (
-              <div className="p-6 border-t border-slate-200 bg-slate-50 space-y-3">
-                {walletBalance > 0 && (
-                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-between text-xs">
-                    <div className="flex items-center space-x-2">
-                      <Wallet className="w-4 h-4 text-[#4575B4]" />
-                      <div>
-                        <p className="font-bold text-slate-800">Use TestBeat Wallet</p>
-                        <p className="text-[10px] text-blue-700">Balance: ₹{walletBalance}</p>
-                      </div>
-                    </div>
-                    <input 
-                      type="checkbox" 
-                      checked={useWalletBalance} 
-                      onChange={(e) => setUseWalletBalance(e.target.checked)}
-                      className="w-4 h-4 accent-[#032C64] cursor-pointer" 
-                    />
-                  </div>
-                )}
-
-                <div className="space-y-1.5 text-xs text-slate-600">
-                  <div className="flex justify-between">
-                    <span>Tests Subtotal:</span>
-                    <span className="font-bold text-slate-900">₹{cartSubtotal}</span>
-                  </div>
-                  <div className="flex justify-between text-emerald-600 font-medium">
-                    <span>Total Discount Saved:</span>
-                    <span>-₹{cartDiscount}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Phlebotomist Doorstep Collection:</span>
-                    <span className="font-bold text-emerald-600">FREE ₹0</span>
-                  </div>
-                  {useWalletBalance && walletBalance > 0 && (
-                    <div className="flex justify-between text-blue-800 font-bold">
-                      <span>Wallet Deduction Applied:</span>
-                      <span>-₹{Math.min(walletBalance, cartSubtotal)}</span>
-                    </div>
-                  )}
-                  <div className="flex justify-between text-base font-black text-slate-900 pt-2 border-t border-slate-200">
-                    <span>Final Amount Payable:</span>
-                    <span className="text-[#032C64]">₹{finalPayable}</span>
-                  </div>
-                </div>
-
-                <button
-                  onClick={handleProceedCheckout}
-                  className="w-full py-3.5 bg-[#032C64] hover:bg-[#0c3b65] text-white rounded-xl text-xs font-black uppercase tracking-wider shadow-lg shadow-blue-900/30 transition-all flex items-center justify-center space-x-2"
-                >
-                  <span>Proceed to Home Collection Booking</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
-            )}
-
-          </div>
-        </div>
-      )}
-
-      {/* ================= MODAL: ORDER CONFIRMED MODAL ================= */}
-      {confirmedOrder && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl p-7 relative border border-slate-100 animate-in zoom-in-95 duration-200 text-center">
-            
-            <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 ring-8 ring-emerald-50">
-              <Check className="w-8 h-8 text-emerald-600 stroke-[3]" />
-            </div>
-
-            <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full inline-block mb-2">
-              Appointment Scheduled
-            </span>
-
-            <h3 className="text-2xl font-black text-slate-900">Order Placed Successfully!</h3>
-            <p className="text-slate-500 text-xs mt-1 mb-6">
-              Your certified home sample collection appointment is confirmed.
-            </p>
-
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-left text-xs space-y-2.5 mb-6">
-              <div className="flex justify-between pb-2 border-b border-slate-200">
-                <span className="text-slate-500 font-semibold">Booking Reference ID:</span>
-                <span className="font-black text-[#032C64]">{confirmedOrder.bookingId}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500 font-semibold">Patient Name:</span>
-                <span className="font-bold text-slate-900">{confirmedOrder.patientName}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500 font-semibold">Scheduled Slot:</span>
-                <span className="font-bold text-emerald-700">{confirmedOrder.scheduledTime}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500 font-semibold">Biomarkers Included:</span>
-                <span className="font-bold text-slate-900">{confirmedOrder.testCount} Tests Selected</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500 font-semibold">Home Pickup Address:</span>
-                <span className="font-semibold text-slate-800 truncate max-w-[200px]" title={confirmedOrder.address}>{confirmedOrder.address}</span>
-              </div>
-              <div className="flex justify-between pt-2 border-t border-slate-200 font-black text-sm">
-                <span className="text-slate-900">Total Amount Paid:</span>
-                <span className="text-[#032C64]">₹{confirmedOrder.amountPaid}</span>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <button
-                onClick={() => {
-                  setConfirmedOrder(null);
-                  setActiveAccountView('orders');
-                }}
-                className="w-full py-3 bg-[#032C64] hover:bg-[#0c3b65] text-white rounded-xl text-xs font-black uppercase tracking-wider shadow-md transition-all flex items-center justify-center space-x-2"
-              >
-                <span>Track in My Orders</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-
-              <button
-                onClick={() => {
-                  setConfirmedOrder(null);
-                  setSelectedTests([]);
-                }}
-                className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all"
-              >
-                Done / Back to Home
-              </button>
-            </div>
-
-          </div>
-        </div>
-      )}
-
-      {/* ================= MODAL: CUSTOMER ACCOUNT PANELS ================= */}
-      {activeAccountView && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
-          <div className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl p-6 sm:p-8 relative border border-slate-100 max-h-[90vh] overflow-y-auto">
-            <button 
-              onClick={() => setActiveAccountView(null)}
-              className="absolute top-5 right-5 p-1.5 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="flex items-center space-x-2 border-b border-slate-100 pb-4 overflow-x-auto text-xs font-black mb-6">
-              <button 
-                onClick={() => setActiveAccountView('profile')} 
-                className={`px-3 py-2 rounded-xl transition-all ${activeAccountView === 'profile' ? 'bg-[#032C64] text-white shadow' : 'border border-slate-200 text-slate-600'}`}
-              >
-                My Profile
-              </button>
-              <button 
-                onClick={() => setActiveAccountView('orders')} 
-                className={`px-3 py-2 rounded-xl transition-all ${activeAccountView === 'orders' ? 'bg-[#032C64] text-white shadow' : 'border border-slate-200 text-slate-600'}`}
-              >
-                My Orders
-              </button>
-              <button 
-                onClick={() => setActiveAccountView('subscriptions')} 
-                className={`px-3 py-2 rounded-xl transition-all ${activeAccountView === 'subscriptions' ? 'bg-[#032C64] text-white shadow' : 'border border-slate-200 text-slate-600'}`}
-              >
-                My Subscriptions
-              </button>
-              <button 
-                onClick={() => setActiveAccountView('wallet')} 
-                className={`px-3 py-2 rounded-xl transition-all ${activeAccountView === 'wallet' ? 'bg-[#032C64] text-white shadow' : 'border border-slate-200 text-slate-600'}`}
-              >
-                Wallet (₹{walletBalance})
-              </button>
-              <button 
-                onClick={() => setActiveAccountView('family')} 
-                className={`px-3 py-2 rounded-xl transition-all ${activeAccountView === 'family' ? 'bg-[#032C64] text-white shadow' : 'border border-slate-200 text-slate-600'}`}
-              >
-                Family Members
-              </button>
-            </div>
-
-            {/* PANEL: MY PROFILE */}
-            {activeAccountView === 'profile' && (
-              <div>
-                <h3 className="text-xl font-black text-slate-900 mb-1">Customer Profile & Address</h3>
-                <p className="text-xs text-slate-500 mb-6">Manage your primary collection address for phlebotomist home visits.</p>
-                
-                <form onSubmit={(e) => { e.preventDefault(); alert('Profile details updated successfully!'); setActiveAccountView(null); }} className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Full Name</label>
-                      <input 
-                        type="text" 
-                        value={profileData.name} 
-                        onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
-                        className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:border-[#032C64] focus:outline-none" 
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Mobile Number</label>
-                      <input 
-                        type="tel" 
-                        value={profileData.phone} 
-                        readOnly 
-                        className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold bg-slate-50 focus:outline-none text-slate-500" 
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Age</label>
-                      <input 
-                        type="number" 
-                        value={profileData.age} 
-                        onChange={(e) => setProfileData({ ...profileData, age: e.target.value })}
-                        className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:border-[#032C64] focus:outline-none" 
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">City</label>
-                      <input 
-                        type="text" 
-                        value={profileData.city} 
-                        onChange={(e) => setProfileData({ ...profileData, city: e.target.value })}
-                        className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:border-[#032C64] focus:outline-none" 
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Pincode</label>
-                      <input 
-                        type="text" 
-                        value={profileData.pincode} 
-                        onChange={(e) => setProfileData({ ...profileData, pincode: e.target.value })}
-                        className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:border-[#032C64] focus:outline-none" 
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Detailed Home Address</label>
-                    <textarea 
-                      rows={2} 
-                      value={profileData.address}
-                      onChange={(e) => setProfileData({ ...profileData, address: e.target.value })}
-                      className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:border-[#032C64] focus:outline-none" 
-                    />
-                  </div>
-
-                  <button type="submit" className="px-6 py-2.5 bg-[#032C64] hover:bg-[#0c3b65] text-white text-xs font-bold rounded-xl shadow transition-all">
-                    Save Changes
-                  </button>
-                </form>
-              </div>
-            )}
-
-            {/* PANEL: MY ORDERS */}
-            {activeAccountView === 'orders' && (
-              <div>
-                <h3 className="text-xl font-black text-slate-900 mb-1">Live Bookings & Report Vault</h3>
-                <p className="text-xs text-slate-500 mb-6">Real-time status of blood sample collection, lab processing, and report download.</p>
-
-                <div className="border border-slate-200 rounded-2xl p-5 bg-slate-50/50">
-                  <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-200">
-                    <div>
-                      <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">
-                        Phlebotomist Assigned
-                      </span>
-                      <h4 className="font-extrabold text-slate-900 text-sm mt-1">Full Body Comprehensive (Vital Checkup)</h4>
-                      <p className="text-[11px] text-slate-500">Booking ID: #TB-98210 • Partner Lab: Thyrocare Technologies</p>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-base font-black text-slate-900">₹1,199</span>
-                      <p className="text-[11px] text-emerald-600 font-bold">Paid via Wallet</p>
-                    </div>
-                  </div>
-                  <div className="pt-3 flex flex-wrap items-center justify-between text-xs gap-3">
-                    <div className="flex items-center space-x-2 text-slate-600">
-                      <User className="w-4 h-4 text-[#032C64]" />
-                      <span>Patient: <b>Self ({profileData.name})</b></span>
-                    </div>
-                    <div className="flex items-center space-x-2 text-slate-600">
-                      <Clock className="w-4 h-4 text-[#032C64]" />
-                      <span>Scheduled: <b>Tomorrow, 07:30 AM</b></span>
-                    </div>
-                    <button onClick={() => alert('Sample tracking: Phlebotomist en route at 7:00 AM')} className="px-3.5 py-1.5 bg-[#032C64] text-white rounded-lg text-xs font-bold">
-                      Live Tracking
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* PANEL: MY SUBSCRIPTIONS */}
-            {activeAccountView === 'subscriptions' && (
-              <div>
-                <h3 className="text-xl font-black text-slate-900 mb-1">Preventive Health Subscriptions</h3>
-                <p className="text-xs text-slate-500 mb-6">Periodic quarterly diabetes and thyroid monitoring plans.</p>
-
-                <div className="border border-slate-200 rounded-2xl p-5 bg-white">
-                  <span className="text-[10px] font-black uppercase text-[#032C64] bg-blue-50 px-2 py-0.5 rounded">Active Plan</span>
-                  <h4 className="font-bold text-slate-900 text-sm mt-1">Quarterly Diabetic Care Shield (HbA1c + Fasting)</h4>
-                  <p className="text-xs text-slate-500 mt-1">Next test due in: 45 Days • Automatic sample collection</p>
-                  <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                    <span className="font-extrabold text-[#032C64]">₹499 / Quarter</span>
-                    <button className="text-rose-600 font-bold hover:underline">Manage Plan</button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* PANEL: WALLET BALANCE */}
-            {activeAccountView === 'wallet' && (
-              <div>
-                <h3 className="text-xl font-black text-slate-900 mb-1">TestBeat Health Wallet</h3>
-                <p className="text-xs text-slate-500 mb-6">Manage cashback and wallet recharge for seamless diagnostic checkouts.</p>
-
-                <div className="bg-gradient-to-tr from-[#032C64] to-[#0c3b65] text-white rounded-2xl p-6 shadow-md mb-6 flex items-center justify-between">
-                  <div>
-                    <span className="text-xs font-bold text-blue-200">Available Balance</span>
-                    <h2 className="text-4xl font-black mt-1 text-white">₹{walletBalance}</h2>
-                  </div>
-                  <button 
-                    onClick={() => setIsAddMoneyOpen(true)}
-                    className="px-5 py-2.5 bg-[#4575B4] hover:bg-blue-600 text-white font-bold text-xs rounded-xl transition-all shadow"
-                  >
-                    + Add Balance
-                  </button>
-                </div>
-
-                <div className="space-y-3 text-xs">
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
-                    <div className="flex items-center space-x-2.5">
-                      <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">+</div>
-                      <div>
-                        <p className="font-bold text-slate-900">Sign Up Welcome Health Bonus</p>
-                        <p className="text-[10px] text-slate-400">Promotional Credit • Active</p>
-                      </div>
-                    </div>
-                    <span className="font-black text-emerald-600 text-sm">+₹250</span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* PANEL: FAMILY MEMBERS */}
-            {activeAccountView === 'family' && (
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <h3 className="text-xl font-black text-slate-900">Family Members Diagnostic Profiles</h3>
-                    <p className="text-xs text-slate-500">Book blood tests specifically for yourself or family members.</p>
-                  </div>
-                  <button 
-                    onClick={() => setIsAddFamilyOpen(true)}
-                    className="px-3.5 py-2 bg-[#032C64] hover:bg-[#0c3b65] text-white text-xs font-bold rounded-xl shadow flex items-center space-x-1.5 transition-all"
-                  >
-                    <Plus className="w-4 h-4" />
-                    <span>+ Add Member</span>
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {familyMembers.map(member => (
-                    <div key={member.id} className="border border-slate-200 rounded-2xl p-4 bg-white shadow-xs flex flex-col justify-between">
-                      <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-[10px] font-black uppercase text-blue-900 bg-blue-100 px-2 py-0.5 rounded">
-                            {member.relation}
-                          </span>
-                          <span className="text-xs font-bold text-slate-400">{member.gender}</span>
-                        </div>
-                        <h4 className="font-bold text-slate-900 text-sm">{member.name}</h4>
-                        <p className="text-xs text-slate-500">Age: {member.age} Years</p>
-                      </div>
-
-                      <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                        <button onClick={() => alert(`Selected ${member.name} for upcoming booking`)} className="text-[#032C64] font-bold">
-                          Book Test For {member.relation}
-                        </button>
-                        {member.relation !== 'Self' && (
-                          <button onClick={() => setFamilyMembers(prev => prev.filter(m => m.id !== member.id))} className="text-rose-500 hover:text-rose-700">
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-          </div>
-        </div>
-      )}
-
-      {/* ================= MODAL: CUSTOMER AUTHENTICATION ================= */}
-      {isAuthOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
-          <div className="bg-white w-full max-w-sm rounded-3xl shadow-2xl p-6 relative border border-slate-100">
-            <button 
-              onClick={() => { setIsAuthOpen(false); setAuthOtpSent(false); }}
-              className="absolute top-4 right-4 p-1.5 rounded-full text-slate-400 hover:text-slate-600"
-            >
-              <X className="w-4 h-4" />
-            </button>
-
-            <div className="flex bg-slate-100 p-1 rounded-xl mb-4">
-              <button 
-                onClick={() => { setAuthMode('LOGIN'); setAuthOtpSent(false); }}
-                className={`flex-1 py-1.5 text-xs font-black rounded-lg transition-all ${authMode === 'LOGIN' ? 'bg-[#032C64] text-white' : 'text-slate-600'}`}
-              >
-                OTP Login
-              </button>
-              <button 
-                onClick={() => { setAuthMode('SIGNUP'); setAuthOtpSent(false); }}
-                className={`flex-1 py-1.5 text-xs font-black rounded-lg transition-all ${authMode === 'SIGNUP' ? 'bg-[#032C64] text-white' : 'text-slate-600'}`}
-              >
-                New Sign Up
-              </button>
-            </div>
-
-            {authMode === 'LOGIN' ? (
-              <form onSubmit={handleLoginSubmit} className="space-y-3.5">
-                <div>
-                  <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Mobile Number</label>
-                  <div className="flex items-center border border-slate-300 rounded-xl px-3 py-2 focus-within:border-[#032C64]">
-                    <span className="text-slate-500 font-bold text-xs mr-2">+91</span>
-                    <input 
-                      type="tel" 
-                      maxLength={10} 
-                      required 
-                      value={patientMobile}
-                      onChange={(e) => setPatientMobile(e.target.value.replace(/\D/g, ''))}
-                      placeholder="10-digit number" 
-                      className="w-full text-slate-900 font-bold focus:outline-none text-sm" 
-                    />
-                  </div>
-                </div>
-
-                {authOtpSent && (
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">Enter 6-Digit OTP</label>
-                    <input 
-                      type="text" 
-                      maxLength={6} 
-                      required
-                      value={patientOtp}
-                      onChange={(e) => setPatientOtp(e.target.value.replace(/\D/g, ''))}
-                      placeholder="123456" 
-                      className="w-full border border-slate-300 rounded-xl px-3 py-2 text-center font-black tracking-widest text-base focus:border-[#032C64] focus:outline-none" 
-                    />
-                  </div>
-                )}
-
-                <button type="submit" className="w-full py-2.5 bg-[#032C64] hover:bg-[#0c3b65] text-white rounded-xl text-xs font-black uppercase tracking-wider shadow-md transition-all">
-                  {authOtpSent ? 'Verify OTP & Enter' : 'Send Login OTP'}
-                </button>
-              </form>
-            ) : (
-              <form onSubmit={handleSignupSubmit} className="space-y-3">
-                <div>
-                  <label className="block text-[11px] font-bold text-slate-700 uppercase mb-0.5">Mobile Number *</label>
-                  <div className="flex items-center border border-slate-300 rounded-xl px-3 py-1.5">
-                    <span className="text-slate-500 font-bold text-xs mr-2">+91</span>
-                    <input 
-                      type="tel" 
-                      maxLength={10} 
-                      required 
-                      value={signupForm.phone}
-                      onChange={(e) => setSignupForm({ ...signupForm, phone: e.target.value.replace(/\D/g, '') })}
-                      placeholder="10-digit mobile" 
-                      className="w-full text-slate-900 font-bold text-xs focus:outline-none" 
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-bold text-slate-700 uppercase mb-0.5">Full Name *</label>
-                  <input 
-                    type="text" 
-                    required 
-                    value={signupForm.name}
-                    onChange={(e) => setSignupForm({ ...signupForm, name: e.target.value })}
-                    placeholder="Patient full name" 
-                    className="w-full border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-semibold focus:outline-none" 
-                  />
-                </div>
-
-                <div className="grid grid-cols-3 gap-2">
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-700 uppercase mb-0.5">Age</label>
-                    <input 
-                      type="number" 
-                      required 
-                      value={signupForm.age}
-                      onChange={(e) => setSignupForm({ ...signupForm, age: e.target.value })}
-                      placeholder="28" 
-                      className="w-full border border-slate-300 rounded-xl px-2 py-1.5 text-xs font-semibold focus:outline-none" 
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-700 uppercase mb-0.5">City</label>
-                    <input 
-                      type="text" 
-                      required 
-                      value={signupForm.city}
-                      onChange={(e) => setSignupForm({ ...signupForm, city: e.target.value })}
-                      placeholder="Noida" 
-                      className="w-full border border-slate-300 rounded-xl px-2 py-1.5 text-xs font-semibold focus:outline-none" 
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-700 uppercase mb-0.5">Pincode</label>
-                    <input 
-                      type="text" 
-                      maxLength={6} 
-                      required 
-                      value={signupForm.pincode}
-                      onChange={(e) => setSignupForm({ ...signupForm, pincode: e.target.value.replace(/\D/g, '') })}
-                      placeholder="201310" 
-                      className="w-full border border-slate-300 rounded-xl px-2 py-1.5 text-xs font-semibold focus:outline-none" 
-                    />
-                  </div>
-                </div>
-
-                {authOtpSent && (
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-700 uppercase mb-0.5">Enter OTP Code</label>
-                    <input 
-                      type="text" 
-                      maxLength={6} 
-                      value={patientOtp}
-                      onChange={(e) => setPatientOtp(e.target.value.replace(/\D/g, ''))}
-                      placeholder="123456" 
-                      className="w-full border border-slate-300 rounded-xl px-2 py-1.5 text-center font-bold tracking-widest text-xs focus:outline-none" 
-                    />
-                  </div>
-                )}
-
-                <button type="submit" className="w-full py-2.5 bg-[#032C64] hover:bg-[#0c3b65] text-white rounded-xl text-xs font-black uppercase tracking-wider shadow-md transition-all">
-                  {authOtpSent ? 'Verify OTP & Finish' : 'Create Account & Send OTP'}
-                </button>
-              </form>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* ================= MODAL: ADD MONEY TO WALLET ================= */}
-      {isAddMoneyOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
-          <div className="bg-white w-full max-w-sm rounded-3xl shadow-2xl p-6 relative border border-slate-100">
-            <button onClick={() => setIsAddMoneyOpen(false)} className="absolute top-4 right-4 p-1.5 rounded-full text-slate-400 hover:text-slate-600">
-              <X className="w-4 h-4" />
-            </button>
-            <h3 className="text-base font-black text-slate-900 mb-1">Add Money to TestBeat Wallet</h3>
-            <p className="text-xs text-slate-500 mb-4">Pay securely across all partner labs with instant discount redemption.</p>
-
-            <div className="flex gap-2 mb-4">
-              {[500, 1000, 2000].map(amt => (
-                <button 
-                  key={amt} 
-                  onClick={() => setRechargeAmt(amt)}
-                  className={`flex-1 py-1.5 border rounded-xl text-xs font-bold transition-all ${rechargeAmt === amt ? 'bg-blue-50 border-[#032C64] text-[#032C64]' : 'border-slate-200 text-slate-700'}`}
-                >
-                  +₹{amt}
-                </button>
-              ))}
-            </div>
-
-            <input 
-              type="number" 
-              value={rechargeAmt}
-              onChange={(e) => setRechargeAmt(parseInt(e.target.value) || 0)}
-              className="w-full border border-slate-300 rounded-xl px-3 py-2 text-center text-xl font-black focus:outline-none mb-4" 
-            />
-
-            <button onClick={handleAddMoneyConfirm} className="w-full py-2.5 bg-[#032C64] hover:bg-[#0c3b65] text-white font-bold text-xs rounded-xl shadow">
-              Proceed with Razorpay / UPI
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* ================= MODAL: ADD FAMILY MEMBER ================= */}
-      {isAddFamilyOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
-          <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl p-6 relative border border-slate-100">
-            <button onClick={() => setIsAddFamilyOpen(false)} className="absolute top-4 right-4 p-1.5 rounded-full text-slate-400 hover:text-slate-600">
-              <X className="w-4 h-4" />
-            </button>
-            
-            <div className="flex items-center space-x-1.5 text-[#032C64] mb-1">
-              <Users className="w-4 h-4" />
-              <span className="text-xs font-extrabold uppercase tracking-wider">Family Member Setup</span>
-            </div>
-            <h3 className="text-lg font-black text-slate-900 mb-1">Add Person for Blood Test</h3>
-            <p className="text-xs text-slate-500 mb-4">Select relation and patient details for certified lab reports.</p>
-
-            <form onSubmit={handleAddFamilyConfirm} className="space-y-3.5">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Relation *</label>
-                <select 
-                  value={newFamilyMember.relation}
-                  onChange={(e) => setNewFamilyMember({ ...newFamilyMember, relation: e.target.value as FamilyRelation })}
-                  className="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold focus:outline-none"
-                >
-                  <option value="Self">Self</option>
-                  <option value="Spouse">Spouse</option>
-                  <option value="Children">Children</option>
-                  <option value="Parents">Parents</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Full Name *</label>
-                <input 
-                  type="text" 
-                  required 
-                  value={newFamilyMember.name}
-                  onChange={(e) => setNewFamilyMember({ ...newFamilyMember, name: e.target.value })}
-                  placeholder="Patient Name" 
-                  className="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none" 
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Age *</label>
-                  <input 
-                    type="number" 
-                    required 
-                    value={newFamilyMember.age}
-                    onChange={(e) => setNewFamilyMember({ ...newFamilyMember, age: e.target.value })}
-                    placeholder="e.g. 58" 
-                    className="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none" 
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Gender *</label>
-                  <select 
-                    value={newFamilyMember.gender}
-                    onChange={(e) => setNewFamilyMember({ ...newFamilyMember, gender: e.target.value as GenderType })}
-                    className="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold focus:outline-none"
-                  >
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </div>
-              </div>
-
-              <button type="submit" className="w-full py-2.5 bg-[#032C64] hover:bg-[#0c3b65] text-white rounded-xl text-xs font-black uppercase tracking-wider shadow transition-all">
-                Save Family Member
-              </button>
-            </form>
           </div>
         </div>
       )}
